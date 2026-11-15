@@ -31,6 +31,7 @@ a{color:var(--link);text-decoration:none}
 a:hover{text-decoration:underline}
 b,strong{font-weight:600}
 .hide{display:none!important}
+[hidden]{display:none!important}
 .muted{color:var(--muted)}
 small{font-size:12px}
 .ic{display:inline-block;vertical-align:-3px;flex:0 0 auto}
@@ -425,6 +426,19 @@ textarea.inp{resize:vertical;min-height:84px;line-height:1.5}
 .doc .dmeta small{display:block;color:var(--gray)}
 .doc .del{position:absolute;top:6px;right:6px;background:rgba(255,255,255,.92);border-radius:980px;padding:3px 8px;color:var(--gray)}
 
+.ig-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.ig-icon{width:60px;height:60px;border-radius:14px;box-shadow:0 0 0 1px rgba(0,0,0,.08),0 4px 14px rgba(0,0,0,.08)}
+.ig-head b{display:block;font-size:19px;letter-spacing:-.02em}
+.ig-head small{color:var(--gray);font-size:13px}
+.ig-head .x{width:32px;height:32px;border-radius:50%;background:var(--soft);display:grid;place-items:center;font-size:14px;color:var(--gray)}
+.ig-lead{margin:0 0 12px;font-size:15px;line-height:1.55}
+.ig-steps{list-style:none;margin:0 0 12px;padding:0;background:var(--soft);border-radius:14px}
+.ig-steps li{display:flex;gap:12px;align-items:flex-start;padding:13px 14px;border-bottom:1px solid #e8e8ed;font-size:14.5px;line-height:1.5}
+.ig-steps li:last-child{border-bottom:none}
+.ig-n{flex:0 0 22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;font-size:12px;font-weight:600;display:grid;place-items:center;margin-top:1px}
+.ig-arrow{text-align:center;font-size:12.5px;color:var(--link);margin:4px 0 2px}
+.ig-benefit{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:12px}
+.ig-benefit span{font-size:12px;color:var(--gray);background:var(--soft);border-radius:980px;padding:4px 10px}
 .setup-warn{background:#fff;border-radius:18px;padding:22px;margin:24px;line-height:1.6}
 .loader{display:grid;place-items:center;min-height:50vh}
 .spin{width:26px;height:26px;border-radius:50%;border:2.5px solid var(--line);border-top-color:var(--ink);animation:sp .8s linear infinite}
@@ -494,7 +508,7 @@ textarea.inp{resize:vertical;min-height:84px;line-height:1.5}
 const SB_URL = 'https://kcpymvsvczjjqptvtvxf.supabase.co';          // Project Settings → API → Project URL
 const SB_KEY = 'sb_publishable_I70vgd6mSVcflUH_NkzGAw_z0z2dWt7';                         // Project Settings → API Keys → anon(public) 또는 Publishable key
 const VAPID_PUBLIC_KEY = 'BORHql6j4hY0yWJlD1CXtbzeYXIF1dxkHLbD4SyYQqQn9riQjrM4j2w5gs2mhKcUHBvh_vkjFiVPOSnAA2W_IVw';
-const APP_VER = 'v2.1 · 2026.11';
+const APP_VER = 'v2.3 · 2026.11';
 
 /* ---------------- 기본 도구 ---------------- */
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -742,7 +756,7 @@ async function renderLogin(pick) {
     if (busy || pin.length < 4) return; busy = true;
     try {
       const r = await rpc('fh_login', { p_member: sel.id, p_pin: pin, p_ua: navigator.userAgent }, true);
-      S.token = r.token; store.set('token', r.token); store.set('last_member', sel.id); S.me = null; busy = false; location.hash = '#/'; render(); pushSyncSilently();
+      S.token = r.token; store.set('token', r.token); store.set('last_member', sel.id); S.me = null; busy = false; location.hash = '#/'; store.set('ig_after_login', true); render(); pushSyncSilently();
     } catch (e) {
       busy = false; pin = ''; draw();
       if (e.code === 'BADPIN') toast(`비밀번호가 틀렸어요${e.data.left != null ? ` (남은 기회 ${e.data.left}번)` : ''}`, 1);
@@ -806,7 +820,7 @@ route('/', '홈', async (el, alive) => {
   const td = h.today, myLog = h.logs[S.me.id] || {}, al = homeAlerts(h);
   notifyLocal(al);
   const hr = new Date().getHours(), greet = hr < 6 ? '좋은 밤이에요' : hr < 12 ? '좋은 아침이에요' : hr < 18 ? '좋은 오후예요' : '좋은 저녁이에요';
-  const CH = [['check', '할 일', '#/todo'], ['plane', '여행', '#/trip'], ['cal', '캘린더', '#/cal'], ['pin', '위치', '#/family'], ['board', '게시판', '#/board'], ['star', '포인트', '#/points'], ['flag', '미션', '#/mission'], ['cart', '장보기', '#/shop', h.shopping], ['image', '앨범', '#/album'], ['hourglass', '타임캡슐', '#/capsule'], ['trend', '성장', '#/growth'], ['chart', '리포트', '#/report'], ['box', 'Digital Hub', '#/hub'], ['game', '게임', 'games/']];
+  const CH = [['check', '할 일', '#/todo'], ['cal', '캘린더', '#/cal'], ['pin', '위치', '#/family'], ['board', '게시판', '#/board'], ['star', '포인트', '#/points'], ['flag', '미션', '#/mission'], ['plane', '여행', '#/trip'], ['cart', '장보기', '#/shop', h.shopping], ['image', '앨범', '#/album'], ['hourglass', '타임캡슐', '#/capsule'], ['trend', '성장', '#/growth'], ['chart', '리포트', '#/report'], ['box', 'Digital Hub', '#/hub'], ['game', '게임', 'games/']];
   el.insertAdjacentHTML('beforebegin', `<section class="hero"><h1>${esc(S.me.nick)},<br>${greet}.</h1><p>우리 가족의 오늘, 한곳에서.</p><div class="date">${D(td).getFullYear()}년 ${md(td)}</div></section>
     <nav class="chapter">${CH.map(([i, t, to, n]) => `<a href="${to}"><i>${icon(i, 30, 1.4)}</i>${t}${n ? `<span class="bdg">${n}</span>` : ''}</a>`).join('')}</nav>`);
   el.innerHTML = `
@@ -821,13 +835,13 @@ route('/', '홈', async (el, alive) => {
         ${loc && loc.status && Date.now() - Date.parse(loc.status_at) < 864e5 ? `<div class="st">${icon('pin', 13)} ${esc(loc.status)} · ${ago(loc.status_at)}</div>` : ''}
       </button>`; }).join('')}</div>
 
+    ${(h.trips || []).length ? `<div class="card"><h3>다가오는 여행 <small><a href="#/trip">전체</a></small></h3>${h.trips.map(t => `<a href="#/trip?id=${t.id}" class="trip-card" style="text-decoration:none;color:inherit"><span class="te">${t.emoji}</span><span class="tb"><b>${esc(t.title)}</b><small>${esc(t.place || '')} · ${md(t.start_on)} ~ ${md(t.end_on)}${t.pack_left ? ` · 준비물 ${t.pack_left}개 남음` : ''}</small></span><span class="tdd">${tripDD(t).txt}</span></a>`).join('')}</div>` : ''}
     <div class="card"><h3>오늘 나의 기분과 점수 <small>${md(td)}</small></h3>
       <div class="moodpick">${MOODS.map(([e, t]) => `<button data-mood="${e}" class="${myLog.mood === e ? 'on' : ''}">${e}<small>${t}</small></button>`).join('')}</div>
       <div class="score-row"><input type="range" id="scR" min="0" max="100" step="5" value="${myLog.score ?? 70}"><div class="score-big" id="scV">${myLog.score ?? '–'}${myLog.score != null ? '점' : ''}</div></div>
       <div class="row" style="margin-top:8px"><input class="inp" id="scN" maxlength="120" placeholder="오늘 한 줄 (선택)" value="${esc(myLog.note || '')}"><button class="btn p sm" id="scSave">저장</button></div>
       <p class="hint">하루 점수는 나에게 주는 점수예요.</p></div>
 
-    ${(h.trips || []).length ? `<div class="card"><h3>다가오는 여행 <small><a href="#/trip">전체</a></small></h3>${h.trips.map(t => `<a href="#/trip?id=${t.id}" class="trip-card" style="text-decoration:none;color:inherit"><span class="te">${t.emoji}</span><span class="tb"><b>${esc(t.title)}</b><small>${esc(t.place || '')} · ${md(t.start_on)} ~ ${md(t.end_on)}${t.pack_left ? ` · 준비물 ${t.pack_left}개 남음` : ''}</small></span><span class="tdd">${tripDD(t).txt}</span></a>`).join('')}</div>` : ''}
     ${h.missions.length ? `<div class="card"><h3>진행 중인 가족 미션 <small><a href="#/mission">전체</a></small></h3>${h.missions.map(x => { const pc = Math.min(100, x.sum / x.target * 100);
       return `<a href="#/mission" style="text-decoration:none;color:inherit;display:block;margin-bottom:10px"><div class="row" style="justify-content:space-between"><span>${x.emoji} ${esc(x.title)}</span><small class="muted">${fmtN(x.sum)} / ${fmtN(x.target)}${esc(x.unit)} · ~${md(x.end_on)}</small></div><div class="bar" style="margin-top:5px"><i style="width:${pc}%;background:${pc >= 100 ? 'var(--grn)' : 'var(--org)'}"></i></div></a>`; }).join('')}</div>` : ''}
 
@@ -841,6 +855,7 @@ route('/', '홈', async (el, alive) => {
   $('#scR').oninput = () => { scoreTouched = true; $('#scV').textContent = $('#scR').value + '점'; };
   $('#scSave').onclick = async () => { try { await rpc('fh_daylog_save', { p_day: td, p_score: scoreTouched ? +$('#scR').value : null, p_mood: mood, p_note: $('#scN').value.trim() || null }); toast('오늘 하루를 기록했어요'); } catch (e) { toast(e.message, 1); } };
   $$('[data-mem]', el).forEach(b => b.onclick = () => memberSheet(M(+b.dataset.mem)));
+  if (!isStandalone() && (store.get('ig_after_login', false) || ENV.mobile)) { const force = store.get('ig_after_login', false); store.del('ig_after_login'); setTimeout(() => { if (!$('.mask')) installGuide(force); }, 700); }
   $$('[data-photo]', el).forEach(async d => { const src = await photoSrc(+d.dataset.photo); if (src) { d.style.backgroundImage = `url(${src})`; d.onclick = () => lightbox(src); } });
 });
 
@@ -1108,8 +1123,9 @@ route('/album', '가족 앨범', async (el, alive) => {
    ===================================================================== */
 route('/more', '더보기', async el => {
   const h = S.home || {};
-  const T = [['#/trip', 'plane', '가족 여행', (h.trips || []).length ? tripDD(h.trips[0]).txt : '일정·준비물·서류', 1], ['#/cal', 'cal', '가족 캘린더', '일정·기념일'], ['#/points', 'star', '포인트', '칭찬·상점'],
+  const T = [['#/cal', 'cal', '가족 캘린더', '일정·기념일'], ['#/points', 'star', '포인트', '칭찬·상점'],
     ['#/mission', 'flag', '가족 미션', '함께 도전'], ['#/shop', 'cart', '장보기', `${h.shopping || 0}개 남음`], ['#/album', 'image', '가족 앨범', '1년 전 오늘'],
+    ['#/trip', 'plane', '가족 여행', (h.trips || []).length ? tripDD(h.trips[0]).txt : '일정·준비물·서류', 1],
     ['#/capsule', 'hourglass', '타임캡슐', '미래에 열리는 편지'], ['#/growth', 'trend', '성장 기록', '키·몸무게·추억'], ['#/report', 'chart', '주간 리포트', '이번 주 우리 가족'],
     ['#/msg', 'mail', '비밀 메시지', '둘만 보는 편지'], ['games/', 'game', '가족 게임', '룰렛·사다리 외'], ['#/hub', 'box', 'Digital Hub', '내 폰에 보관'], ['#/me', 'gear', '내 설정', '사진·비번·알림']];
   if (S.me.role === 'admin') T.push(['admin/', 'shield', 'admin', h.adminPending ? `승인 대기 ${h.adminPending}` : '관리자', 1]);
@@ -1660,7 +1676,7 @@ route('/me', '내 설정', async el => {
       ${ps.on ? '<button class="btn sm" id="pushTest" style="margin-top:10px">테스트 알림 보내기</button>' : ''}
       <p class="hint">새 비밀 메시지·게시판 글·댓글·칭찬 스티커·도착 알림·일정 D-day·생일·저녁 9시 하루 마무리 알림이 와요.<br><b>아이폰</b>은 Safari에서 <b>공유 → 홈 화면에 추가</b>로 설치한 뒤, 설치한 앱에서 켜야 알림이 와요.</p></div>
     <div class="card"><h3>비밀번호 바꾸기</h3>${pinForm(false)}</div>
-    <div class="card"><h3>앱으로 설치</h3><p class="hint" style="margin:0">· 안드로이드(크롬·삼성 인터넷): 메뉴 ⋮ → <b>홈 화면에 추가 / 앱 설치</b><br>· 아이폰(Safari): 아래 공유 버튼 → <b>홈 화면에 추가</b></p>${window.__bip ? '<button class="btn p sm" id="inst" style="margin-top:10px">지금 설치하기</button>' : ''}</div>
+    <div class="card"><h3>홈 화면에 추가 <small>${isStandalone() ? '앱으로 실행 중' : ''}</small></h3><div class="row"><img src="icons/apple-touch-icon.png" alt="" style="width:48px;height:48px;border-radius:11px;box-shadow:0 0 0 1px var(--line-2)"><p class="hint" style="margin:0;flex:1">수박 아이콘의 <b>Family Hub</b>를 홈 화면에 두고 앱처럼 실행하세요.</p></div>${isStandalone() ? '' : '<button class="btn p sm" id="inst" style="margin-top:12px">추가 방법 보기</button>'}</div>
     ${S.me.role === 'admin' ? '<a class="btn block" href="admin/" style="margin-bottom:12px">admin 사이트 열기</a>' : ''}
     <button class="btn block" id="logout">로그아웃</button>
     <p class="hint" style="text-align:center">Family Hub ${APP_VER}</p>`;
@@ -1671,10 +1687,62 @@ route('/me', '내 설정', async el => {
   $$('[data-c]', el).forEach(b => b.onclick = async () => { const r = await rpc('fh_profile_save', { p_emoji: null, p_color: b.dataset.c }); applyMe(r); render(); });
   $('#pushOn').onchange = async e => { e.target.disabled = true; try { if (e.target.checked) await pushEnable(); else await pushDisable(); } catch (er) { toast(er.message, 1); } render(); };
   if ($('#pushTest')) $('#pushTest').onclick = async () => { const r = await rpc('fh_push_test'); toast(r.server ? `테스트 알림을 보냈어요 (구독 ${r.subs}개)` : '알림 서버가 아직 연결되지 않았어요 (설치 안내 5단계)', !r.server); };
-  if ($('#inst')) $('#inst').onclick = () => { window.__bip.prompt(); window.__bip = null; };
+  if ($('#inst')) $('#inst').onclick = () => installGuide(true);
   $('#logout').onclick = async () => { if (!(await confirmBox('로그아웃할까요?', '로그아웃'))) return; await rpc('fh_logout').catch(() => {}); logoutLocal(); location.hash = '#/'; render(); };
 });
-window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); window.__bip = e; });
+
+/* =====================================================================
+   홈 화면에 "Family Hub" 수박 아이콘 추가 안내 (로그인 직후)
+   ===================================================================== */
+const ENV = (() => { const ua = navigator.userAgent;
+  const ios = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const android = /Android/.test(ua), inapp = /KAKAOTALK|NAVER|Instagram|FBAN|FBAV|Line\/|DaumApps|everytimeApp/i.test(ua);
+  const samsung = /SamsungBrowser/.test(ua), iosChrome = ios && /CriOS|FxiOS|EdgiOS/.test(ua);
+  return { ios, android, inapp, samsung, iosChrome, mobile: ios || android }; })();
+const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); window.__bip = e; const b = $('#igInstall'); if (b) b.hidden = false; });
+window.addEventListener('appinstalled', () => { window.__bip = null; store.set('installed', true); const c = $('#igBody'); if (c) c.innerHTML = installDone(); toast('홈 화면에 Family Hub가 추가됐어요'); });
+const SHARE_IC = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0071e3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M12 15V3M8 7l4-4 4 4"/><path d="M5 11v9h14v-9"/></svg>';
+const PLUS_IC = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1d1d1f" stroke-width="1.8" stroke-linecap="round" style="vertical-align:-3px"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 8v8M8 12h8"/></svg>';
+const DOTS_IC = '<b style="font-size:17px;letter-spacing:1px">⋮</b>';
+function installDone() { return `<div style="text-align:center;padding:10px 0 4px"><div style="font-size:15px;font-weight:600">설치가 끝났어요</div><p class="hint" style="margin-top:6px">이제 이 창을 닫고 <b>홈 화면의 Family Hub(수박) 아이콘</b>을 눌러 열어 주세요.<br>주소창 없이 앱처럼 열리고, 알림도 받을 수 있어요.</p></div>`; }
+function stepList(items) { return `<ol class="ig-steps">${items.map((t, i) => `<li><span class="ig-n">${i + 1}</span><span>${t}</span></li>`).join('')}</ol>`; }
+function installGuide(force) {
+  if (isStandalone()) { if (force) toast('이미 Family Hub 앱으로 실행 중이에요'); return; }
+  if (!force) { const until = store.get('ig_snooze', 0); if (Date.now() < until) return; }
+  let body;
+  const url = location.origin + location.pathname;
+  if (ENV.inapp) {
+    const intent = `intent://${location.host}${location.pathname}#Intent;scheme=https;package=com.android.chrome;end`;
+    body = `<p class="ig-lead">지금은 카카오톡·네이버 같은 앱 <b>안의 브라우저</b>예요. 여기서는 홈 화면에 추가할 수 없어요.</p>
+      ${ENV.android ? `<a class="btn p block" href="${intent}">Chrome으로 열기</a><p class="hint" style="text-align:center">Chrome에서 열린 뒤 다시 로그인하면 설치 안내가 나와요.</p>`
+        : stepList([`오른쪽 아래(또는 위) <b>⋯ / 공유</b> 버튼을 누르세요`, `<b>Safari로 열기</b>(기본 브라우저로 열기)를 고르세요`, `Safari에서 다시 로그인하면 설치 안내가 나와요`])}
+      <button class="btn block" id="igCopy" style="margin-top:10px">주소 복사하기</button>`;
+  } else if (ENV.ios && ENV.iosChrome) {
+    body = `<p class="ig-lead">아이폰에서는 <b>Safari</b>에서 추가하는 것이 가장 확실해요.</p>
+      ${stepList([`주소를 복사한 뒤 <b>Safari</b>를 열어 붙여넣으세요`, `Safari 아래쪽 ${SHARE_IC} <b>공유</b> 버튼을 누르세요`, `${PLUS_IC} <b>홈 화면에 추가</b> → 이름이 <b>Family Hub</b>인지 확인 → <b>추가</b>`])}
+      <button class="btn p block" id="igCopy" style="margin-top:6px">주소 복사하기</button>`;
+  } else if (ENV.ios) {
+    body = `<p class="ig-lead">Safari에서 아래 순서대로 하면 홈 화면에 <b>수박 아이콘</b>이 생겨요.</p>
+      ${stepList([`화면 아래쪽(아이패드는 위쪽)의 ${SHARE_IC} <b>공유</b> 버튼을 누르세요`, `목록을 아래로 내려 ${PLUS_IC} <b>홈 화면에 추가</b>를 누르세요`, `이름이 <b>Family Hub</b>인지 확인하고 오른쪽 위 <b>추가</b>를 누르세요`, `홈 화면의 <b>Family Hub</b> 아이콘을 눌러 앱으로 실행하세요`])}
+      <div class="ig-arrow">${SHARE_IC} 공유 버튼은 화면 아래에 있어요</div>`;
+  } else {
+    body = `<p class="ig-lead">${window.__bip ? '버튼 한 번이면' : '아래 순서대로 하면'} 홈 화면에 <b>Family Hub</b> 수박 아이콘이 생겨요.</p>
+      <button class="btn p block" id="igInstall" ${window.__bip ? '' : 'hidden'}>홈 화면에 추가</button>
+      <div id="igManual" ${window.__bip ? 'hidden' : ''}>${stepList(ENV.samsung ? [`아래쪽 <b>≡ 메뉴</b>를 누르세요`, `<b>현재 페이지 추가 → 홈 화면</b>을 누르세요`, `이름 <b>Family Hub</b> 확인 후 <b>추가</b>`, `홈 화면의 Family Hub 아이콘으로 실행하세요`]
+        : ENV.mobile ? [`오른쪽 위 ${DOTS_IC} 메뉴를 누르세요`, `<b>앱 설치</b> 또는 <b>홈 화면에 추가</b>를 누르세요`, `이름 <b>Family Hub</b> 확인 후 <b>설치/추가</b>`, `홈 화면의 Family Hub 아이콘으로 실행하세요`]
+        : [`주소창 오른쪽의 <b>설치 아이콘(⊕)</b> 또는 ${DOTS_IC} 메뉴 → <b>앱 설치</b>`, `이름 <b>Family Hub</b> 확인 후 <b>설치</b>`, `바탕화면·시작 메뉴의 Family Hub로 실행하세요`])}</div>`;
+  }
+  sheet(`<div class="ig-head"><img src="icons/apple-touch-icon.png" alt="" class="ig-icon"><div><b>Family Hub</b><small>홈 화면에 앱으로 추가하기</small></div><button class="x" data-close style="margin-left:auto">✕</button></div>
+    <div id="igBody">${body}</div>
+    <div class="ig-benefit"><span>앱처럼 전체 화면</span><span>알림 받기</span><span>로그인 유지</span></div>
+    <button id="igLater" style="display:block;margin:16px auto 2px;font-size:14px;color:var(--link)">나중에 할게요</button>`, (sh, close) => {
+    const ins = sh.querySelector('#igInstall'); if (ins) ins.onclick = async () => { if (!window.__bip) return; window.__bip.prompt(); const r = await window.__bip.userChoice.catch(() => ({})); window.__bip = null; if (r.outcome === 'accepted') sh.querySelector('#igBody').innerHTML = installDone(); };
+    const cp = sh.querySelector('#igCopy'); if (cp) cp.onclick = async () => { try { await navigator.clipboard.writeText(url); toast('주소를 복사했어요'); } catch (e) { prompt('주소를 길게 눌러 복사하세요', url); } };
+    sh.querySelector('#igLater').onclick = () => { store.set('ig_snooze', Date.now() + 3 * 864e5); close(); };
+  });
+}
+
 
 /* ---------------- 웹 푸시 ---------------- */
 const b64u = s => { const p = '='.repeat((4 - s.length % 4) % 4), b = atob((s + p).replace(/-/g, '+').replace(/_/g, '/')); return Uint8Array.from([...b].map(c => c.charCodeAt(0))); };
