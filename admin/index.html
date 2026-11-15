@@ -134,7 +134,10 @@ async function loadPhotos() { const ids = MEMBERS.filter(m => m.photo_v).map(m =
 function cropSquare(file, size = 320) { return new Promise((res, rej) => { const url = URL.createObjectURL(file), img = new Image(); img.onload = () => { const m = Math.min(img.width, img.height), c = document.createElement('canvas'); c.width = c.height = size; c.getContext('2d').drawImage(img, (img.width - m) / 2, (img.height - m) / 2, m, m, 0, 0, size, size); URL.revokeObjectURL(url); res(c.toDataURL('image/jpeg', .85)); }; img.onerror = () => rej(new Error('사진을 읽을 수 없어요')); img.src = url; }); }
 function sheet(html, mount) { const m = document.createElement('div'); m.className = 'mask'; m.innerHTML = `<div class="sheet">${html}</div>`; const close = () => m.remove(); m.onclick = e => { if (e.target === m || e.target.closest('[data-close]')) close(); }; document.body.appendChild(m); mount && mount(m.querySelector('.sheet'), close); }
 
+const STANDALONE = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+function renderOnlyApp() { $('#app').innerHTML = `<div class="login card" style="padding:30px 24px"><h2 style="margin:0 0 8px;font-size:22px">Family Hub 앱에서 열어 주세요</h2><p class="hint" style="font-size:14px">admin은 바로가기로 설치한 <b>Family Hub 앱</b> 안에서만 열려요.<br>앱 실행 → <b>설정 → admin</b> 으로 들어오세요.</p><a class="btn p" href="../" style="margin-top:12px">설치 안내 보기</a></div>`; }
 async function renderLogin(msg) {
+  if (!STANDALONE) return renderOnlyApp();
   if (SB_URL.includes('YOUR-')) { $('#app').innerHTML = '<div class="login card">admin/index.html 의 SB_URL·SB_KEY 를 앱과 같은 값으로 바꿔 주세요.</div>'; return; }
   let list = []; try { list = await rpc('fh_public_members', {}, true); } catch (e) { $('#app').innerHTML = `<div class="login card">${esc(e.message)}</div>`; return; }
   let sel = null;
@@ -149,6 +152,7 @@ async function renderLogin(msg) {
 }
 
 async function boot() {
+  if (!STANDALONE) return renderOnlyApp();
   if (!TOKEN) return renderLogin();
   try { MEMBERS = await rpc('fh_admin_members'); } catch (e) { return; }
   ME = MEMBERS.find(m => m.role === 'admin') || null;

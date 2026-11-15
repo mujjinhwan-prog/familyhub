@@ -460,6 +460,14 @@ li.pf.done .pf-ck{background:var(--blue);border-color:var(--blue);color:#fff!imp
 .rv-ph figure{margin:0}
 .rv-img{aspect-ratio:3/4;border-radius:14px;background:var(--soft) center/cover no-repeat;display:grid;place-items:center;color:var(--gray);font-size:13px;cursor:zoom-in}
 .rv-ph figcaption{text-align:center;font-size:12px;font-weight:600;color:var(--gray);margin-top:6px}
+.gate{min-height:100vh;background:#fff;display:flex;justify-content:center;padding:40px 18px calc(30px + var(--safe-b))}
+.gate-in{width:100%;max-width:440px;text-align:center}
+.gate .lg-logo svg{width:52px;height:52px;color:var(--ink)}
+.gate h1{margin:10px 0 0;font-size:30px;font-weight:700;letter-spacing:-.03em}
+.gate-sub{margin:10px 0 22px;color:var(--gray);font-size:15px;line-height:1.6}
+.gate-sub b{color:var(--ink)}
+.gate-card{text-align:left;background:#fff;border:1px solid var(--line-2);border-radius:18px;padding:18px 16px;box-shadow:0 8px 30px rgba(0,0,0,.06)}
+.gate-foot{margin-top:18px;font-size:13px;color:var(--gray)}
 .setup-warn{background:#fff;border-radius:18px;padding:22px;margin:24px;line-height:1.6}
 .loader{display:grid;place-items:center;min-height:50vh}
 .spin{width:26px;height:26px;border-radius:50%;border:2.5px solid var(--line);border-top-color:var(--ink);animation:sp .8s linear infinite}
@@ -616,7 +624,7 @@ li.pf.done .pf-ck{background:var(--blue);border-color:var(--blue);color:#fff!imp
 const SB_URL = 'https://kcpymvsvczjjqptvtvxf.supabase.co';          // Project Settings → API → Project URL
 const SB_KEY = 'sb_publishable_I70vgd6mSVcflUH_NkzGAw_z0z2dWt7';                         // Project Settings → API Keys → anon(public) 또는 Publishable key
 const VAPID_PUBLIC_KEY = 'BORHql6j4hY0yWJlD1CXtbzeYXIF1dxkHLbD4SyYQqQn9riQjrM4j2w5gs2mhKcUHBvh_vkjFiVPOSnAA2W_IVw';
-const APP_VER = 'v2.6 · 2026.11';
+const APP_VER = 'v2.7 · 2026.11';
 
 /* ---------------- 기본 도구 ---------------- */
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -767,6 +775,7 @@ window.addEventListener('hashchange', () => render());
 let renderSeq = 0;
 async function render() {
   if (!CONFIGURED) return renderSetup();
+  if (!isStandalone()) return renderGate();
   if (!S.token) return renderLogin();
   if (!S.me) { try { await loadHome(); } catch (e) { if (!S.token) return renderLogin(); $('#app').innerHTML = `<div class="setup-warn">${esc(e.message)}<br><br><button class="btn" onclick="location.reload()">다시 시도</button></div>`; return; } }
   if (S.me.must_change) return renderForcePin();
@@ -1885,7 +1894,8 @@ const ENV = (() => { const ua = navigator.userAgent;
   const ios = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   const android = /Android/.test(ua), inapp = /KAKAOTALK|NAVER|Instagram|FBAN|FBAV|Line\/|DaumApps|everytimeApp/i.test(ua);
   const samsung = /SamsungBrowser/.test(ua), iosChrome = ios && /CriOS|FxiOS|EdgiOS/.test(ua);
-  return { ios, android, inapp, samsung, iosChrome, mobile: ios || android }; })();
+  const firefox = /Firefox\//.test(ua) && !ios, safariDesk = !ios && /Macintosh/.test(ua) && /Safari\//.test(ua) && !/Chrome|Chromium|Edg\//.test(ua);
+  return { ios, android, inapp, samsung, iosChrome, firefox, safariDesk, mobile: ios || android }; })();
 const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); window.__bip = e; const b = $('#igInstall'); if (b) b.hidden = false; });
 window.addEventListener('appinstalled', () => { window.__bip = null; store.set('installed', true); const c = $('#igBody'); if (c) c.innerHTML = installDone(); toast('홈 화면에 Family Hub가 추가됐어요'); });
@@ -1894,9 +1904,7 @@ const PLUS_IC = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" str
 const DOTS_IC = '<b style="font-size:17px;letter-spacing:1px">⋮</b>';
 function installDone() { return `<div style="text-align:center;padding:10px 0 4px"><div style="font-size:15px;font-weight:600">설치가 끝났어요</div><p class="hint" style="margin-top:6px">이제 이 창을 닫고 <b>홈 화면의 Family Hub(수박) 아이콘</b>을 눌러 열어 주세요.<br>주소창 없이 앱처럼 열리고, 알림도 받을 수 있어요.</p></div>`; }
 function stepList(items) { return `<ol class="ig-steps">${items.map((t, i) => `<li><span class="ig-n">${i + 1}</span><span>${t}</span></li>`).join('')}</ol>`; }
-function installGuide(force) {
-  if (isStandalone()) { if (force) toast('이미 Family Hub 앱으로 실행 중이에요'); return; }
-  if (!force) { const until = store.get('ig_snooze', 0); if (Date.now() < until) return; }
+function igBodyHTML() {
   let body;
   const url = location.origin + location.pathname;
   if (ENV.inapp) {
@@ -1914,22 +1922,49 @@ function installGuide(force) {
       ${stepList([`화면 아래쪽(아이패드는 위쪽)의 ${SHARE_IC} <b>공유</b> 버튼을 누르세요`, `목록을 아래로 내려 ${PLUS_IC} <b>홈 화면에 추가</b>를 누르세요`, `이름이 <b>Family Hub</b>인지 확인하고 오른쪽 위 <b>추가</b>를 누르세요`, `홈 화면의 <b>Family Hub</b> 아이콘을 눌러 앱으로 실행하세요`])}
       <div class="ig-arrow">${SHARE_IC} 공유 버튼은 화면 아래에 있어요</div>`;
   } else {
-    body = `<p class="ig-lead">${window.__bip ? '버튼 한 번이면' : '아래 순서대로 하면'} 홈 화면에 <b>Family Hub</b> 수박 아이콘이 생겨요.</p>
-      <button class="btn p block" id="igInstall" ${window.__bip ? '' : 'hidden'}>홈 화면에 추가</button>
+    body = `<p class="ig-lead">${window.__bip ? '버튼 한 번이면' : '아래 순서대로 하면'} ${ENV.mobile ? '홈 화면' : '바탕화면·시작 메뉴'}에 <b>Family Hub</b> 수박 아이콘이 생겨요.</p>
+      <button class="btn p block" id="igInstall" ${window.__bip ? '' : 'hidden'}>${ENV.mobile ? '홈 화면에 추가' : 'Family Hub 앱 설치'}</button>
       <div id="igManual" ${window.__bip ? 'hidden' : ''}>${stepList(ENV.samsung ? [`아래쪽 <b>≡ 메뉴</b>를 누르세요`, `<b>현재 페이지 추가 → 홈 화면</b>을 누르세요`, `이름 <b>Family Hub</b> 확인 후 <b>추가</b>`, `홈 화면의 Family Hub 아이콘으로 실행하세요`]
         : ENV.mobile ? [`오른쪽 위 ${DOTS_IC} 메뉴를 누르세요`, `<b>앱 설치</b> 또는 <b>홈 화면에 추가</b>를 누르세요`, `이름 <b>Family Hub</b> 확인 후 <b>설치/추가</b>`, `홈 화면의 Family Hub 아이콘으로 실행하세요`]
+        : ENV.safariDesk ? [`Safari 메뉴 막대의 <b>파일</b>을 누르세요`, `<b>Dock에 추가…</b>를 누르세요`, `이름 <b>Family Hub</b> 확인 후 <b>추가</b>`, `Dock·Launchpad의 Family Hub로 실행하세요`]
+        : ENV.firefox ? [`Firefox는 앱 설치를 지원하지 않아요`, `<b>Chrome</b> 또는 <b>Edge</b>로 이 주소를 여세요`, `주소창 오른쪽 <b>설치 아이콘(⊕)</b> → <b>설치</b>`, `바탕화면·시작 메뉴의 Family Hub로 실행하세요`]
         : [`주소창 오른쪽의 <b>설치 아이콘(⊕)</b> 또는 ${DOTS_IC} 메뉴 → <b>앱 설치</b>`, `이름 <b>Family Hub</b> 확인 후 <b>설치</b>`, `바탕화면·시작 메뉴의 Family Hub로 실행하세요`])}</div>`;
   }
+  return body;
+}
+function installGuide(force) {
+  if (isStandalone()) { if (force) toast('이미 Family Hub 앱으로 실행 중이에요'); return; }
+  if (!force) { const until = store.get('ig_snooze', 0); if (Date.now() < until) return; }
+  const body = igBodyHTML(), url = location.origin + location.pathname;
   sheet(`<div class="ig-head"><img src="icons/apple-touch-icon.png" alt="" class="ig-icon"><div><b>Family Hub</b><small>홈 화면에 앱으로 추가하기</small></div><button class="x" data-close style="margin-left:auto">✕</button></div>
     <div id="igBody">${body}</div>
     <div class="ig-benefit"><span>앱처럼 전체 화면</span><span>알림 받기</span><span>로그인 유지</span></div>
     <button id="igLater" style="display:block;margin:16px auto 2px;font-size:14px;color:var(--link)">나중에 할게요</button>`, (sh, close) => {
-    const ins = sh.querySelector('#igInstall'); if (ins) ins.onclick = async () => { if (!window.__bip) return; window.__bip.prompt(); const r = await window.__bip.userChoice.catch(() => ({})); window.__bip = null; if (r.outcome === 'accepted') sh.querySelector('#igBody').innerHTML = installDone(); };
-    const cp = sh.querySelector('#igCopy'); if (cp) cp.onclick = async () => { try { await navigator.clipboard.writeText(url); toast('주소를 복사했어요'); } catch (e) { prompt('주소를 길게 눌러 복사하세요', url); } };
+    igBind(sh);
     sh.querySelector('#igLater').onclick = () => { store.set('ig_snooze', Date.now() + 3 * 864e5); close(); };
   });
 }
 
+
+function igBind(root) {
+  const url = location.origin + location.pathname;
+  const ins = root.querySelector('#igInstall'); if (ins) ins.onclick = async () => { if (!window.__bip) return; window.__bip.prompt(); const r = await window.__bip.userChoice.catch(() => ({})); window.__bip = null; if (r.outcome === 'accepted') { const b = root.querySelector('#igBody'); if (b) b.innerHTML = installDone(); } };
+  const cp = root.querySelector('#igCopy'); if (cp) cp.onclick = async () => { try { await navigator.clipboard.writeText(url); toast('주소를 복사했어요'); } catch (e) { prompt('주소를 길게 눌러 복사하세요', url); } };
+}
+/* 바로가기(설치한 앱)로 연 경우에만 Family Hub 실행 — 브라우저 탭으로 열면 설치 안내만 보여줌 */
+function renderGate() {
+  document.title = 'Family Hub';
+  $('#app').innerHTML = `<div class="gate"><div class="gate-in">
+      <div class="lg-logo">${LOGO}</div>
+      <h1>Family Hub</h1>
+      <p class="gate-sub">Family Hub는 <b>바로가기 앱</b>으로만 열 수 있어요.<br>홈 화면(PC는 바탕화면)에 추가한 수박 아이콘으로 실행해 주세요.</p>
+      <div class="gate-card"><div class="ig-head"><img src="icons/apple-touch-icon.png" alt="" class="ig-icon"><div><b>Family Hub 추가하기</b><small>${ENV.mobile ? '휴대폰 홈 화면' : 'PC 바탕화면·Dock'}에 앱으로</small></div></div>
+        <div id="igBody">${igBodyHTML()}</div></div>
+      <div class="ig-benefit"><span>주소창 없는 전체 화면</span><span>알림 받기</span><span>로그인 유지</span></div>
+      <p class="gate-foot">이미 추가했다면 이 창을 닫고 <b>Family Hub 아이콘</b>을 눌러 주세요.</p>
+    </div></div>`;
+  igBind($('#app'));
+}
 
 /* ---------------- 웹 푸시 ---------------- */
 const b64u = s => { const p = '='.repeat((4 - s.length % 4) % 4), b = atob((s + p).replace(/-/g, '+').replace(/_/g, '/')); return Uint8Array.from([...b].map(c => c.charCodeAt(0))); };
