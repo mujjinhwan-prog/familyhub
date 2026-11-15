@@ -6,59 +6,64 @@
 <title>Family Hub · admin</title>
 <meta name="robots" content="noindex">
 <link rel="icon" href="../icons/favicon-32.png">
-<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
-:root{--ink:#2b2f3a;--cream:#fff4e6;--bg:#f6f3ee;--line:#e6dccd;--muted:#868e96;--org:#ff8a3d;--org-d:#e8681a;--red:#fa5252;--grn:#40c057;--yel:#ffd43b;--hf:'Black Han Sans',sans-serif;--bf:'Jua','Apple SD Gothic Neo','Malgun Gothic',sans-serif}
+:root{--navy:#1b2a4a;--ink:#1f2937;--gray:#6b7280;--line:#e5e7eb;--soft:#f5f6f8;--muted:#6b7280;--org:#f57c20;--org-d:#d9650f;--org-soft:#fff4ea;--red:#dc2626;--grn:#16a34a;--bf:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--bf);font-size:15px}
+body{margin:0;background:var(--soft);color:var(--ink);font-family:var(--bf);font-size:14.5px;letter-spacing:-.2px;-webkit-font-smoothing:antialiased}
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;font-size:inherit;padding:0}
 input,select{font-family:var(--bf);font-size:15px;color:var(--ink)}
-.top{background:var(--ink);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:5}
-.top h1{margin:0;font-family:var(--hf);font-weight:400;font-size:21px;flex:1}
-.top h1 span{color:var(--org)}
-.top a{color:#fff;font-size:14px}
-.tabs{display:flex;gap:6px;overflow-x:auto;padding:10px 14px;background:#fff;border-bottom:2px solid var(--line);position:sticky;top:48px;z-index:4}
-.tabs button{flex:0 0 auto;padding:7px 13px;border-radius:999px;border:2px solid var(--ink);background:#fff;font-size:14px;position:relative}
-.tabs button.on{background:var(--ink);color:#fff}
-.tabs .bdg{position:absolute;top:-7px;right:-6px;background:var(--red);color:#fff;border-radius:10px;font-size:11px;min-width:18px;height:18px;display:grid;place-items:center;padding:0 4px}
+b{font-weight:600}
+.top{background:var(--navy);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:5}
+.top h1{margin:0;font-weight:700;font-size:17px;flex:1;display:flex;align-items:center;gap:6px}
+.top h1 span{color:#fff}
+.top h1 i{width:7px;height:7px;border-radius:50%;background:var(--org);display:inline-block}
+.top a{color:#cbd5e1;font-size:13.5px;text-decoration:none}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:10px 14px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:48px;z-index:4}
+.tabs button{flex:0 0 auto;padding:7px 13px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:13.5px;position:relative}
+.tabs button.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.tabs .bdg{position:absolute;top:-6px;right:-5px;background:var(--org);color:#fff;border-radius:9px;font-size:11px;min-width:18px;height:18px;display:grid;place-items:center;padding:0 4px}
 .wrap{max-width:860px;margin:0 auto;padding:14px}
-.card{background:#fff;border:2.5px solid var(--ink);border-radius:16px;padding:14px;margin-bottom:14px}
-.card h3{margin:0 0 10px;font-family:var(--hf);font-weight:400;font-size:18px;display:flex;align-items:center;gap:8px}
-.card h3 small{font-family:var(--bf);font-size:12.5px;color:var(--muted);margin-left:auto}
-.btn{display:inline-flex;align-items:center;gap:5px;border:2px solid var(--ink);border-radius:11px;background:#fff;padding:7px 12px;font-size:14px;box-shadow:0 2px 0 var(--ink)}
-.btn:active{transform:translateY(2px);box-shadow:none}
-.btn.p{background:var(--org);color:#fff}.btn.g{background:var(--grn);color:#fff}.btn.r{background:var(--red);color:#fff}
-.btn.sm{padding:4px 9px;font-size:13px}
-.inp{width:100%;border:2px solid var(--ink);border-radius:10px;padding:8px 10px;background:#fff}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}
+.card h3{margin:0 0 12px;font-weight:700;font-size:15.5px;color:var(--navy);display:flex;align-items:center;gap:8px}
+.card h3 small{font-weight:400;font-size:12.5px;color:var(--muted);margin-left:auto}
+.btn{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:9px;background:#fff;padding:8px 12px;font-size:13.5px;font-weight:600;color:var(--navy)}
+.btn:active{background:var(--soft)}
+.btn.p{background:var(--org);border-color:var(--org);color:#fff}.btn.g{background:var(--navy);border-color:var(--navy);color:#fff}.btn.r{color:var(--red);border-color:#fecaca}
+.btn.sm{padding:5px 10px;font-size:12.5px}
+.inp{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 11px;background:#fff;outline:none}
+.inp:focus{border-color:var(--navy)}
 table{width:100%;border-collapse:collapse;font-size:14px}
-th,td{padding:8px 6px;border-bottom:1.5px dashed var(--line);text-align:left;vertical-align:middle}
-th{font-weight:400;color:var(--muted);font-size:12.5px}
-.av{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;border:2px solid var(--ink);font-size:19px}
-.tag{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:8px;background:#f1f3f5;color:#555}
-.tag.ok{background:#d3f9d8;color:#2b8a3e}.tag.wait{background:#fff3bf;color:#a6730b}.tag.no{background:#ffe3e3;color:#c92a2a}.tag.adm{background:#ffe8cc;color:#d9480f}
+th,td{padding:9px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{font-weight:500;color:var(--muted);font-size:12.5px}
+.av{display:inline-grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--c,#1b2a4a);color:#fff;font-weight:600;font-size:15px;overflow:hidden;flex:0 0 auto}
+.av img{width:100%;height:100%;object-fit:cover}
+.tag{display:inline-block;font-size:11.5px;padding:2px 7px;border-radius:6px;background:var(--soft);color:#555;font-weight:500}
+.tag.ok{background:#ecfdf3;color:var(--grn)}.tag.wait{background:var(--org-soft);color:var(--org-d)}.tag.no{background:#fef2f2;color:var(--red)}.tag.adm{background:var(--navy);color:#fff}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
-.stat{background:var(--cream);border-radius:14px;padding:12px;text-align:center}
-.stat b{display:block;font-family:var(--hf);font-weight:400;font-size:24px;color:var(--org-d)}
+.stat{background:var(--soft);border-radius:12px;padding:12px;text-align:center}
+.stat b{display:block;font-weight:800;font-size:22px;color:var(--navy)}
 .stat span{font-size:12.5px;color:var(--muted)}
-.lbl{display:block;margin:10px 0 4px;font-size:13px;color:#555}
+.lbl{display:block;margin:12px 0 5px;font-size:12.5px;font-weight:600;color:var(--gray)}
 .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .row>.inp{flex:1;min-width:120px}
-.mask{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:50;padding:14px}
-.sheet{background:#fff;border:3px solid var(--ink);border-radius:18px;padding:16px;width:100%;max-width:440px;max-height:92vh;overflow:auto}
-.sheet h2{margin:0 0 8px;font-family:var(--hf);font-weight:400;font-size:20px}
-.foot{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
-#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;opacity:0;transition:.25s;z-index:99;pointer-events:none}
-#toast.on{opacity:1}#toast.err{background:#e03131}
+.mask{position:fixed;inset:0;background:rgba(17,24,39,.45);display:flex;align-items:center;justify-content:center;z-index:50;padding:14px}
+.sheet{background:#fff;border-radius:16px;padding:18px;width:100%;max-width:440px;max-height:92vh;overflow:auto}
+.sheet h2{margin:0 0 8px;font-weight:700;font-size:18px;color:var(--navy)}
+.foot{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 16px;border-radius:10px;opacity:0;transition:.2s;z-index:99;pointer-events:none}
+#toast.on{opacity:1}#toast.err{background:var(--red)}
 .login{max-width:340px;margin:60px auto;text-align:center}
-.who{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
-.who button{border:2.5px solid var(--ink);border-radius:14px;padding:12px;background:#fff;display:flex;flex-direction:column;align-items:center;gap:4px}
-.who button.on{background:var(--cream);box-shadow:0 3px 0 var(--org)}
-.hint{font-size:12.5px;color:var(--muted);line-height:1.55}
+.who{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
+.who button{border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff;display:flex;flex-direction:column;align-items:center;gap:6px;font-weight:600;color:var(--navy)}
+.who button.on{border-color:var(--navy);box-shadow:0 0 0 1px var(--navy)}
+.hint{font-size:12.5px;color:var(--muted);line-height:1.6}
 .muted{color:var(--muted)}
 .scroll{overflow-x:auto}
-.mrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1.5px dashed var(--line)}
+.mrow{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.mrow:last-of-type{border-bottom:none}
 .mrow .mi{flex:1;min-width:0;line-height:1.6}
-.mrow .mi b{font-weight:400;font-size:16px}
+.mrow .mi b{font-size:15px;color:var(--navy)}
 </style>
 </head>
 <body>
@@ -66,8 +71,8 @@ th{font-weight:400;color:var(--muted);font-size:12.5px}
 <div id="toast"></div>
 <script>
 /* ===== 설정: 앱(index.html)과 같은 값으로 바꿔 주세요 ===== */
-const SB_URL = 'https://kcpymvsvczjjqptvtvxf.supabase.co';
-const SB_KEY = 'sb_publishable_I70vgd6mSVcflUH_NkzGAw_z0z2dWt7';
+const SB_URL = 'https://YOUR-PROJECT-ID.supabase.co';
+const SB_KEY = 'YOUR-ANON-PUBLIC-KEY';
 
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -84,18 +89,22 @@ async function rpc(fn, args = {}, noAuth) {
   if (j && j.error) throw new Error({ INPUT: '입력값을 확인해 주세요', SELF: '본인 계정은 admin 해제·비활성화·삭제할 수 없어요', BADPIN: '비밀번호가 틀렸어요' }[j.error] || j.error);
   return j;
 }
-const M = id => MEMBERS.find(m => m.id === id) || { nick: '(삭제됨)', emoji: '👤', color: '#ddd' };
+const M = id => MEMBERS.find(m => m.id === id) || { nick: '(삭제됨)', color: '#cbd5e1' };
+const PH = {};
+const av = (m, size = 38) => `<span class="av" style="--c:${m.color || '#1b2a4a'};width:${size}px;height:${size}px;font-size:${Math.round(size * .4)}px">${PH[m.id] ? `<img src="${PH[m.id]}">` : esc((m.nick || m.name || '?').slice(0, 1))}</span>`;
+async function loadPhotos() { const ids = MEMBERS.filter(m => m.photo_v).map(m => m.id); if (!ids.length) return; try { Object.assign(PH, await rpc('fh_member_photos', { p_ids: ids })); } catch (e) {} }
+function cropSquare(file, size = 320) { return new Promise((res, rej) => { const url = URL.createObjectURL(file), img = new Image(); img.onload = () => { const m = Math.min(img.width, img.height), c = document.createElement('canvas'); c.width = c.height = size; c.getContext('2d').drawImage(img, (img.width - m) / 2, (img.height - m) / 2, m, m, 0, 0, size, size); URL.revokeObjectURL(url); res(c.toDataURL('image/jpeg', .85)); }; img.onerror = () => rej(new Error('사진을 읽을 수 없어요')); img.src = url; }); }
 function sheet(html, mount) { const m = document.createElement('div'); m.className = 'mask'; m.innerHTML = `<div class="sheet">${html}</div>`; const close = () => m.remove(); m.onclick = e => { if (e.target === m || e.target.closest('[data-close]')) close(); }; document.body.appendChild(m); mount && mount(m.querySelector('.sheet'), close); }
 
 async function renderLogin(msg) {
-  if (SB_URL.includes('YOUR-')) { $('#app').innerHTML = '<div class="login card">🔧 admin/index.html 의 SB_URL·SB_KEY 를 앱과 같은 값으로 바꿔 주세요.</div>'; return; }
-  let list = []; try { list = await rpc('fh_public_members', {}, true); } catch (e) { $('#app').innerHTML = `<div class="login card">⚠️ ${esc(e.message)}</div>`; return; }
+  if (SB_URL.includes('YOUR-')) { $('#app').innerHTML = '<div class="login card">admin/index.html 의 SB_URL·SB_KEY 를 앱과 같은 값으로 바꿔 주세요.</div>'; return; }
+  let list = []; try { list = await rpc('fh_public_members', {}, true); } catch (e) { $('#app').innerHTML = `<div class="login card">${esc(e.message)}</div>`; return; }
   let sel = null;
-  $('#app').innerHTML = `<div class="login"><h1 style="font-family:var(--hf);font-weight:400;font-size:32px;margin:0"><span style="color:var(--org)">Family</span> Hub admin</h1>
+  $('#app').innerHTML = `<div class="login"><h1 style="font-weight:800;font-size:28px;margin:0;color:var(--navy)">Family Hub <span style="color:var(--org)">admin</span></h1>
     ${msg ? `<p style="color:#e03131">${esc(msg)}</p>` : '<p class="muted">관리자 계정으로 로그인하세요</p>'}
-    <div class="who">${list.map(m => `<button data-id="${m.id}"><span class="av" style="background:${m.color}22">${m.emoji}</span>${esc(m.nick)}</button>`).join('')}</div>
+    <div class="who">${list.map(m => `<button data-id="${m.id}">${av(m, 44)}${esc(m.nick)}</button>`).join('')}</div>
     <input class="inp" id="pin" type="password" inputmode="numeric" placeholder="비밀번호" style="text-align:center;font-size:18px"><button class="btn p" id="go" style="margin-top:12px;width:100%;justify-content:center">들어가기</button>
-    <p class="hint"><a href="../">← Family Hub 앱으로</a></p></div>`;
+    <p class="hint"><a href="../">Family Hub 앱으로</a></p></div>`;
   $$('[data-id]').forEach(b => b.onclick = () => { sel = +b.dataset.id; $$('[data-id]').forEach(x => x.classList.toggle('on', x === b)); $('#pin').focus(); });
   const go = async () => { if (!sel) return toast('누구인지 골라 주세요', 1); try { const r = await rpc('fh_login', { p_member: sel, p_pin: $('#pin').value.trim(), p_ua: 'admin ' + navigator.userAgent }, true); if (r.error) throw new Error(r.error === 'LOCKED' ? `잠겼어요. ${r.minutes}분 뒤에 다시` : '비밀번호가 틀렸어요'); if (r.me.role !== 'admin') { await rpc('fh_logout', { p_token: r.token }, true); return toast('admin 권한이 없는 계정이에요', 1); } TOKEN = r.token; localStorage.setItem('fh_token', JSON.stringify(TOKEN)); boot(); } catch (e) { toast(e.message, 1); } };
   $('#go').onclick = go; $('#pin').onkeydown = e => { if (e.key === 'Enter') go(); };
@@ -109,22 +118,22 @@ async function boot() {
 }
 async function render() {
   let pend = 0; try { const rw = await rpc('fh_admin_rewards'); pend = rw.redemptions.filter(x => x.status === 'pending').length; } catch (e) { return; }
-  const T = [['members', '👨‍👩‍👧‍👦 가족 구성원'], ['rewards', '🎁 보상·승인', pend], ['points', '⭐ 포인트'], ['push', '📢 알림 보내기'], ['stats', '📊 현황·설정']];
-  $('#app').innerHTML = `<header class="top"><h1><span>Family</span> Hub admin</h1><a href="../">앱으로 ↗</a><button class="btn sm" id="out" style="background:transparent;color:#fff;border-color:#fff;box-shadow:none">로그아웃</button></header>
+  const T = [['members', '가족 구성원'], ['rewards', '보상·승인', pend], ['points', '포인트'], ['push', '알림 보내기'], ['stats', '현황·설정']];
+  $('#app').innerHTML = `<header class="top"><h1>Family Hub admin<i></i></h1><a href="../">앱으로 ↗</a><button class="btn sm" id="out" style="background:transparent;color:#fff;border-color:#475569">로그아웃</button></header>
     <nav class="tabs">${T.map(([k, t, b]) => `<button data-t="${k}" class="${TAB === k ? 'on' : ''}">${t}${b ? `<span class="bdg">${b}</span>` : ''}</button>`).join('')}</nav><main class="wrap" id="main">불러오는 중…</main>`;
   $$('[data-t]').forEach(b => b.onclick = () => { TAB = b.dataset.t; render(); });
   $('#out').onclick = async () => { await rpc('fh_logout').catch(() => {}); TOKEN = null; localStorage.removeItem('fh_token'); renderLogin(); };
-  try { await VIEWS[TAB]($('#main')); } catch (e) { $('#main').innerHTML = `<div class="card">⚠️ ${esc(e.message)}</div>`; }
+  try { await VIEWS[TAB]($('#main')); } catch (e) { $('#main').innerHTML = `<div class="card">${esc(e.message)}</div>`; }
 }
 
 const VIEWS = {
   async members(el) {
-    MEMBERS = await rpc('fh_admin_members');
-    el.innerHTML = `<div class="card"><h3>👨‍👩‍👧‍👦 가족 구성원 <small><button class="btn p sm" id="add">＋ 가족 추가</button></small></h3>
-      ${MEMBERS.map(m => `<div class="mrow" style="${m.active ? '' : 'opacity:.45'}"><span class="av" style="background:${m.color}22">${m.emoji}</span>
+    MEMBERS = await rpc('fh_admin_members'); await loadPhotos();
+    el.innerHTML = `<div class="card"><h3>가족 구성원 <small><button class="btn p sm" id="add">＋ 가족 추가</button></small></h3>
+      ${MEMBERS.map(m => `<div class="mrow" style="${m.active ? '' : 'opacity:.45'}">${av(m, 40)}
         <div class="mi"><b>${esc(m.nick)}</b> <small class="muted">${esc(m.name)} · ${m.birth.replace(/-/g, '.')}</small><br>
           ${m.role === 'admin' ? '<span class="tag adm">admin</span>' : '<span class="tag">가족</span>'}${m.must_change ? ' <span class="tag wait">초기 비번</span>' : ''}${m.locked ? ' <span class="tag no">잠김</span>' : ''}${m.active ? '' : ' <span class="tag no">비활성</span>'}
-          <small class="muted"> ⭐${fmtN(m.points.balance)} · 접속 ${ago(m.last_seen)} · 기기 ${m.sessions} · ${m.push ? '🔔' + m.push : '🔕'}</small></div>
+          <small class="muted"> ${fmtN(m.points.balance)}P · 접속 ${ago(m.last_seen)} · 기기 ${m.sessions} · 알림 ${m.push ? m.push + '대' : '꺼짐'}</small></div>
         <button class="btn sm" data-ed="${m.id}">관리</button></div>`).join('')}
       <p class="hint">· 새 가족의 처음 비밀번호는 <b>생일 6자리(YYMMDD)</b>예요. 처음 로그인할 때 바꾸도록 안내돼요.<br>· 비밀번호를 잊으면 [관리 → 비밀번호 초기화]를 누르면 생일 번호로 돌아가요.<br>· 비밀 메시지·타임캡슐 내용은 admin에서도 볼 수 없어요.</p></div>`;
     $('#add').onclick = () => memberForm(null);
@@ -133,10 +142,10 @@ const VIEWS = {
   async rewards(el) {
     const r = await rpc('fh_admin_rewards');
     const pend = r.redemptions.filter(x => x.status === 'pending');
-    el.innerHTML = `<div class="card"><h3>⏳ 승인 대기 <small>${pend.length}건</small></h3>${pend.length ? `<table>${pend.map(x => `<tr><td>${M(x.member_id).emoji} ${esc(M(x.member_id).nick)}</td><td>${esc(x.title)}</td><td>⭐${fmtN(x.cost)}</td><td>${hm(x.created_at)}</td><td style="white-space:nowrap"><button class="btn g sm" data-ok="${x.id}">승인</button> <button class="btn sm" data-no="${x.id}">반려</button></td></tr>`).join('')}</table>` : '<p class="muted">대기 중인 신청이 없어요</p>'}</div>
-      <div class="card"><h3>🎁 보상 목록 <small><button class="btn p sm" id="radd">＋ 보상 추가</button></small></h3><table><tr><th></th><th>보상</th><th>포인트</th><th>상태</th><th></th></tr>
-        ${r.rewards.map(w => `<tr style="${w.active ? '' : 'opacity:.45'}"><td style="font-size:24px">${w.emoji}</td><td>${esc(w.title)}</td><td>⭐${fmtN(w.cost)}</td><td>${w.active ? '<span class="tag ok">판매 중</span>' : '<span class="tag">숨김</span>'}</td><td><button class="btn sm" data-rw="${w.id}">수정</button></td></tr>`).join('')}</table></div>
-      <div class="card"><h3>📜 처리 내역</h3><table>${r.redemptions.filter(x => x.status !== 'pending').slice(0, 30).map(x => `<tr><td>${M(x.member_id).emoji} ${esc(M(x.member_id).nick)}</td><td>${esc(x.title)}</td><td>⭐${fmtN(x.cost)}</td><td><span class="tag ${x.status === 'approved' ? 'ok' : 'no'}">${x.status === 'approved' ? '승인' : '반려'}</span></td><td>${hm(x.decided_at || x.created_at)}</td></tr>`).join('') || '<tr><td class="muted">아직 없어요</td></tr>'}</table></div>`;
+    el.innerHTML = `<div class="card"><h3>승인 대기 <small>${pend.length}건</small></h3>${pend.length ? `<table>${pend.map(x => `<tr><td>${esc(M(x.member_id).nick)}</td><td>${esc(x.title)}</td><td>${fmtN(x.cost)}</td><td>${hm(x.created_at)}</td><td style="white-space:nowrap"><button class="btn g sm" data-ok="${x.id}">승인</button> <button class="btn sm" data-no="${x.id}">반려</button></td></tr>`).join('')}</table>` : '<p class="muted">대기 중인 신청이 없어요</p>'}</div>
+      <div class="card"><h3>보상 목록 <small><button class="btn p sm" id="radd">＋ 보상 추가</button></small></h3><table><tr><th></th><th>보상</th><th>포인트</th><th>상태</th><th></th></tr>
+        ${r.rewards.map(w => `<tr style="${w.active ? '' : 'opacity:.45'}"><td></td><td>${esc(w.title)}</td><td>${fmtN(w.cost)}</td><td>${w.active ? '<span class="tag ok">판매 중</span>' : '<span class="tag">숨김</span>'}</td><td><button class="btn sm" data-rw="${w.id}">수정</button></td></tr>`).join('')}</table></div>
+      <div class="card"><h3>처리 내역</h3><table>${r.redemptions.filter(x => x.status !== 'pending').slice(0, 30).map(x => `<tr><td>${esc(M(x.member_id).nick)}</td><td>${esc(x.title)}</td><td>${fmtN(x.cost)}</td><td><span class="tag ${x.status === 'approved' ? 'ok' : 'no'}">${x.status === 'approved' ? '승인' : '반려'}</span></td><td>${hm(x.decided_at || x.created_at)}</td></tr>`).join('') || '<tr><td class="muted">아직 없어요</td></tr>'}</table></div>`;
     $$('[data-ok]').forEach(b => b.onclick = async () => { await rpc('fh_admin_redeem_decide', { p_id: +b.dataset.ok, p_ok: true }); toast('승인했어요 ✅'); render(); });
     $$('[data-no]').forEach(b => b.onclick = async () => { await rpc('fh_admin_redeem_decide', { p_id: +b.dataset.no, p_ok: false }); toast('반려했어요 (포인트 돌려줌)'); render(); });
     $('#radd').onclick = () => rewardForm(null);
@@ -144,44 +153,47 @@ const VIEWS = {
   },
   async points(el) {
     const r = await rpc('fh_admin_rewards'); MEMBERS = await rpc('fh_admin_members'); const ru = r.rules;
-    el.innerHTML = `<div class="card"><h3>⭐ 가족 포인트</h3><table><tr><th></th><th>할 일</th><th>칭찬</th><th>미션</th><th>보너스</th><th>사용</th><th>잔액</th></tr>${MEMBERS.filter(m => m.active).map(m => `<tr><td>${m.emoji} ${esc(m.nick)}</td><td>${fmtN(m.points.todo)}</td><td>${fmtN(m.points.sticker)}</td><td>${fmtN(m.points.mission)}</td><td>${fmtN(m.points.adjust)}</td><td>-${fmtN(m.points.spent)}</td><td><b>${fmtN(m.points.balance)}</b></td></tr>`).join('')}</table></div>
-      <div class="card"><h3>🎉 보너스 주기·빼기</h3><div class="row"><select class="inp" id="aM" style="flex:0 0 130px">${MEMBERS.filter(m => m.active).map(m => `<option value="${m.id}">${m.emoji} ${esc(m.nick)}</option>`).join('')}</select><input class="inp" id="aA" type="number" placeholder="점수 (빼려면 -)" style="flex:0 0 130px"><input class="inp" id="aR" maxlength="80" placeholder="이유 (예: 받아쓰기 100점!)"><button class="btn p" id="aGo">적용</button></div>
-        ${r.adjust.length ? `<table style="margin-top:10px">${r.adjust.map(a => `<tr><td>${M(a.member_id).emoji} ${esc(M(a.member_id).nick)}</td><td>${a.amount > 0 ? '+' : ''}${a.amount}</td><td>${esc(a.reason || '')}</td><td>${hm(a.created_at)}</td></tr>`).join('')}</table>` : ''}</div>
-      <div class="card"><h3>📏 포인트 규칙</h3><div class="grid">
+    el.innerHTML = `<div class="card"><h3>가족 포인트</h3><table><tr><th></th><th>할 일</th><th>칭찬</th><th>미션</th><th>보너스</th><th>사용</th><th>잔액</th></tr>${MEMBERS.filter(m => m.active).map(m => `<tr><td>${esc(m.nick)}</td><td>${fmtN(m.points.todo)}</td><td>${fmtN(m.points.sticker)}</td><td>${fmtN(m.points.mission)}</td><td>${fmtN(m.points.adjust)}</td><td>-${fmtN(m.points.spent)}</td><td><b>${fmtN(m.points.balance)}</b></td></tr>`).join('')}</table></div>
+      <div class="card"><h3>보너스 주기·빼기</h3><div class="row"><select class="inp" id="aM" style="flex:0 0 130px">${MEMBERS.filter(m => m.active).map(m => `<option value="${m.id}">${esc(m.nick)}</option>`).join('')}</select><input class="inp" id="aA" type="number" placeholder="점수 (빼려면 -)" style="flex:0 0 130px"><input class="inp" id="aR" maxlength="80" placeholder="이유 (예: 받아쓰기 100점!)"><button class="btn p" id="aGo">적용</button></div>
+        ${r.adjust.length ? `<table style="margin-top:10px">${r.adjust.map(a => `<tr><td>${esc(M(a.member_id).nick)}</td><td>${a.amount > 0 ? '+' : ''}${a.amount}</td><td>${esc(a.reason || '')}</td><td>${hm(a.created_at)}</td></tr>`).join('')}</table>` : ''}</div>
+      <div class="card"><h3>포인트 규칙</h3><div class="grid">
         ${[['todo', '할 일 1개 완료'], ['todo_cap', '하루 점수 받는 할 일 최대 개수'], ['bonus', '모두 완료 보너스'], ['bonus_min', '보너스 받는 최소 할 일 개수'], ['sticker', '칭찬 스티커 1개'], ['sticker_per_day', '하루 줄 수 있는 스티커']].map(([k, t]) => `<label><span class="lbl">${t}</span><input class="inp" type="number" data-rule="${k}" value="${ru[k]}"></label>`).join('')}</div>
         <button class="btn p" id="ruS" style="margin-top:12px">규칙 저장</button><p class="hint">규칙을 바꾸면 지난 기록의 포인트도 새 규칙으로 다시 계산돼요.</p></div>`;
     $('#aGo').onclick = async () => { try { await rpc('fh_admin_points_adjust', { p_member: +$('#aM').value, p_amount: parseInt($('#aA').value), p_reason: $('#aR').value.trim() || null }); toast('적용했어요'); render(); } catch (e) { toast(e.message, 1); } };
     $('#ruS').onclick = async () => { const o = {}; $$('[data-rule]').forEach(i => o[i.dataset.rule] = Math.max(0, parseInt(i.value) || 0)); await rpc('fh_admin_rules_save', { p_rules: o }); toast('규칙을 저장했어요'); render(); };
   },
   async push(el) {
-    el.innerHTML = `<div class="card"><h3>📢 가족 모두에게 알림 보내기</h3><label class="lbl">제목</label><input class="inp" id="bT" maxlength="40" value="📢 Family Hub"><label class="lbl">내용</label><input class="inp" id="bB" maxlength="120" placeholder="예: 오늘 저녁은 외식! 6시까지 집으로 🍖"><button class="btn p" id="bGo" style="margin-top:12px">보내기</button>
+    el.innerHTML = `<div class="card"><h3>가족 모두에게 알림 보내기</h3><label class="lbl">제목</label><input class="inp" id="bT" maxlength="40" value="Family Hub"><label class="lbl">내용</label><input class="inp" id="bB" maxlength="120" placeholder="예: 오늘 저녁은 외식! 6시까지 집으로 🍖"><button class="btn p" id="bGo" style="margin-top:12px">보내기</button>
       <p class="hint">알림을 켠 가족의 휴대폰에 바로 떠요. (알림 서버 연결이 필요해요 → 설치 안내 5단계)</p></div>`;
-    $('#bGo').onclick = async () => { await rpc('fh_admin_broadcast', { p_title: $('#bT').value, p_body: $('#bB').value }); toast('보냈어요 📢'); };
+    $('#bGo').onclick = async () => { await rpc('fh_admin_broadcast', { p_title: $('#bT').value, p_body: $('#bB').value }); toast('보냈어요'); };
   },
   async stats(el) {
     const s = await rpc('fh_admin_stats'), mb = n => (n / 1048576).toFixed(1) + 'MB';
-    el.innerHTML = `<div class="card"><h3>📊 현황</h3><div class="grid">
+    el.innerHTML = `<div class="card"><h3>현황</h3><div class="grid">
       <div class="stat"><b>${mb(s.db_bytes)}</b><span>DB 사용량 / 무료 500MB</span></div><div class="stat"><b>${mb(s.photo_bytes)}</b><span>사진 용량</span></div>
       <div class="stat"><b>${fmtN(s.posts)}</b><span>게시글</span></div><div class="stat"><b>${fmtN(s.photos)}</b><span>사진</span></div>
       <div class="stat"><b>${fmtN(s.todos ?? 0)}</b><span>할 일</span></div><div class="stat"><b>${fmtN(s.events ?? 0)}</b><span>일정</span></div></div></div>
-      <div class="card"><h3>🔔 알림 서버</h3><p>${s.push_server ? '✅ 연결됨' : '❌ 아직 연결 안 됨 — 설치 안내 5단계를 진행해 주세요'}</p>
+      <div class="card"><h3>알림 서버</h3><p>${s.push_server ? '연결됨' : '아직 연결 안 됨 — 설치 안내 5단계를 진행해 주세요'}</p>
         <p>매일 자동 알림: ${s.cron.length ? s.cron.map(c => `<span class="tag ok">${c.name === 'fh-morning' ? '아침 8시' : '저녁 9시'}</span>`).join(' ') : '<span class="tag no">예약 안 됨</span>'}</p>
         <p class="hint">아침 8시: 오늘·다가오는 일정, 생일, 1,000일 단위 기념일, 열리는 타임캡슐 · 저녁 9시: 남은 할 일·하루 점수 알림</p></div>
-      <div class="card"><h3>💡 용량 팁</h3><p class="hint">사진은 올릴 때 자동으로 1280px로 줄여서 한 장에 약 150~300KB예요. 무료 500MB면 대략 2,000장 정도 올릴 수 있어요. 용량이 차면 오래된 글을 지우거나 Supabase 유료 요금제로 올리면 돼요.</p></div>`;
+      <div class="card"><h3>용량 팁</h3><p class="hint">사진은 올릴 때 자동으로 1280px로 줄여서 한 장에 약 150~300KB예요. 무료 500MB면 대략 2,000장 정도 올릴 수 있어요. 용량이 차면 오래된 글을 지우거나 Supabase 유료 요금제로 올리면 돼요.</p></div>`;
   }
 };
 function memberForm(m) {
-  const x = m || { name: '', nick: '', birth: '', role: 'member', emoji: '🙂', color: '#4dabf7', sort: MEMBERS.length + 1, active: true };
+  const x = m || { name: '', nick: '', birth: '', role: 'member', emoji: '', color: '#1b2a4a', sort: MEMBERS.length + 1, active: true };
   sheet(`<h2>${m ? '관리 · ' + esc(m.nick) : '＋ 가족 추가'}</h2>
     <div class="row"><label style="flex:1"><span class="lbl">이름</span><input class="inp" id="fN" value="${esc(x.name)}" placeholder="송진환"></label><label style="flex:1"><span class="lbl">부르는 이름</span><input class="inp" id="fK" value="${esc(x.nick)}" placeholder="진환"></label></div>
     <label><span class="lbl">생일 (처음 비밀번호 = YYMMDD)</span><input class="inp" type="date" id="fB" value="${x.birth}"></label>
-    <div class="row"><label style="flex:1"><span class="lbl">캐릭터 이모지</span><input class="inp" id="fE" value="${esc(x.emoji)}" maxlength="4"></label><label style="flex:1"><span class="lbl">색</span><input class="inp" type="color" id="fC" value="${x.color}" style="height:40px;padding:2px"></label><label style="flex:0 0 80px"><span class="lbl">순서</span><input class="inp" type="number" id="fS" value="${x.sort}"></label></div>
+    <div class="row"><label style="flex:1"><span class="lbl">프로필 사진</span>${m ? `<span class="row">${av(m, 40)}<button class="btn sm" type="button" id="fPh">사진 올리기</button>${PH[m.id] ? '<button class="btn sm" type="button" id="fPhD">지우기</button>' : ''}</span><input type="file" id="fPhF" accept="image/*" hidden>` : '<span class="hint">저장 후 올릴 수 있어요</span>'}</label><label style="flex:1"><span class="lbl">색</span><input class="inp" type="color" id="fC" value="${x.color}" style="height:40px;padding:2px"></label><label style="flex:0 0 80px"><span class="lbl">순서</span><input class="inp" type="number" id="fS" value="${x.sort}"></label></div>
     <div class="row" style="margin-top:10px"><label><input type="checkbox" id="fA" ${x.role === 'admin' ? 'checked' : ''}> admin 권한</label><label><input type="checkbox" id="fV" ${x.active ? 'checked' : ''}> 사용 중 (끄면 로그인 불가)</label></div>
-    ${m ? `<div class="row" style="margin-top:14px;padding-top:10px;border-top:1.5px dashed var(--line)"><button class="btn sm" id="fP">🔑 비밀번호 초기화</button><button class="btn sm" id="fL">📴 모든 기기 로그아웃</button><button class="btn r sm" id="fD">🗑 완전 삭제</button></div>` : ''}
+    ${m ? `<div class="row" style="margin-top:14px;padding-top:10px;border-top:1.5px dashed var(--line)"><button class="btn sm" id="fP">비밀번호 초기화</button><button class="btn sm" id="fL">모든 기기 로그아웃</button><button class="btn r sm" id="fD">완전 삭제</button></div>` : ''}
     <div class="foot"><button class="btn" data-close>취소</button><button class="btn p" id="fGo">저장</button></div>`, (s, close) => {
-    s.querySelector('#fGo').onclick = async () => { try { await rpc('fh_admin_member_save', { p_id: m ? m.id : null, p_name: s.querySelector('#fN').value, p_nick: s.querySelector('#fK').value, p_birth: s.querySelector('#fB').value || null, p_role: s.querySelector('#fA').checked ? 'admin' : 'member', p_emoji: s.querySelector('#fE').value, p_color: s.querySelector('#fC').value, p_sort: +s.querySelector('#fS').value, p_active: s.querySelector('#fV').checked });
+    s.querySelector('#fGo').onclick = async () => { try { await rpc('fh_admin_member_save', { p_id: m ? m.id : null, p_name: s.querySelector('#fN').value, p_nick: s.querySelector('#fK').value, p_birth: s.querySelector('#fB').value || null, p_role: s.querySelector('#fA').checked ? 'admin' : 'member', p_emoji: '', p_color: s.querySelector('#fC').value, p_sort: +s.querySelector('#fS').value, p_active: s.querySelector('#fV').checked });
       close(); toast(m ? '저장했어요' : `추가했어요 · 처음 비밀번호 ${s.querySelector('#fB').value.slice(2).replace(/-/g, '')}`); render(); } catch (e) { toast(e.message, 1); } };
     if (m) {
+      s.querySelector('#fPh').onclick = () => s.querySelector('#fPhF').click();
+      s.querySelector('#fPhF').onchange = async e => { const f = e.target.files[0]; if (!f) return; try { const d = await cropSquare(f); await rpc('fh_admin_member_photo', { p_id: m.id, p_data: d }); PH[m.id] = d; toast('사진을 바꿨어요'); close(); render(); } catch (er) { toast(er.message, 1); } };
+      if (s.querySelector('#fPhD')) s.querySelector('#fPhD').onclick = async () => { await rpc('fh_admin_member_photo', { p_id: m.id, p_data: null }); delete PH[m.id]; toast('사진을 지웠어요'); close(); render(); };
       s.querySelector('#fP').onclick = async () => { if (!confirm(`${m.nick}의 비밀번호를 생일 번호로 되돌릴까요?`)) return; const r = await rpc('fh_admin_reset_pin', { p_id: m.id }); toast(`초기화했어요 → ${r.pin}`); close(); render(); };
       s.querySelector('#fL').onclick = async () => { await rpc('fh_admin_logout_member', { p_id: m.id }); toast('모든 기기에서 로그아웃시켰어요'); close(); render(); };
       s.querySelector('#fD').onclick = async () => { if (!confirm(`${m.nick}을(를) 완전히 삭제할까요?\n할 일·메시지·기록이 모두 지워지고 되돌릴 수 없어요.\n(잠시 막아두려면 '사용 중'을 끄세요)`)) return; try { await rpc('fh_admin_member_delete', { p_id: m.id }); toast('삭제했어요'); close(); render(); } catch (e) { toast(e.message, 1); } };
@@ -189,13 +201,13 @@ function memberForm(m) {
   });
 }
 function rewardForm(w) {
-  const x = w || { title: '', emoji: '🎁', cost: 100, active: true, sort: 0 };
+  const x = w || { title: '', emoji: '', cost: 100, active: true, sort: 0 };
   sheet(`<h2>${w ? '보상 수정' : '＋ 보상 추가'}</h2>
-    <div class="row"><label style="flex:0 0 80px"><span class="lbl">이모지</span><input class="inp" id="wE" value="${esc(x.emoji)}" maxlength="4"></label><label style="flex:1"><span class="lbl">보상 이름</span><input class="inp" id="wT" value="${esc(x.title)}" placeholder="예: 놀이공원 가기"></label></div>
+    <div class="row"><label style="flex:1"><span class="lbl">보상 이름</span><input class="inp" id="wT" value="${esc(x.title)}" placeholder="예: 놀이공원 가기"></label></div>
     <div class="row"><label style="flex:1"><span class="lbl">필요 포인트</span><input class="inp" type="number" id="wC" value="${x.cost}"></label><label style="flex:1"><span class="lbl">순서</span><input class="inp" type="number" id="wS" value="${x.sort}"></label></div>
     <label style="display:block;margin-top:10px"><input type="checkbox" id="wA" ${x.active ? 'checked' : ''}> 상점에 보이기</label>
     <div class="foot">${w ? '<button class="btn r" id="wD">삭제</button>' : ''}<button class="btn" data-close>취소</button><button class="btn p" id="wGo">저장</button></div>`, (s, close) => {
-    s.querySelector('#wGo').onclick = async () => { try { await rpc('fh_admin_reward_save', { p_id: w ? w.id : null, p_title: s.querySelector('#wT').value, p_emoji: s.querySelector('#wE').value, p_cost: +s.querySelector('#wC').value, p_active: s.querySelector('#wA').checked, p_sort: +s.querySelector('#wS').value }); close(); toast('저장했어요'); render(); } catch (e) { toast(e.message, 1); } };
+    s.querySelector('#wGo').onclick = async () => { try { await rpc('fh_admin_reward_save', { p_id: w ? w.id : null, p_title: s.querySelector('#wT').value, p_emoji: '', p_cost: +s.querySelector('#wC').value, p_active: s.querySelector('#wA').checked, p_sort: +s.querySelector('#wS').value }); close(); toast('저장했어요'); render(); } catch (e) { toast(e.message, 1); } };
     if (w) s.querySelector('#wD').onclick = async () => { if (!confirm('이 보상을 삭제할까요?')) return; await rpc('fh_admin_reward_del', { p_id: w.id }); close(); render(); };
   });
 }
