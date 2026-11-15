@@ -439,6 +439,27 @@ textarea.inp{resize:vertical;min-height:84px;line-height:1.5}
 .ig-arrow{text-align:center;font-size:12.5px;color:var(--link);margin:4px 0 2px}
 .ig-benefit{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:12px}
 .ig-benefit span{font-size:12px;color:var(--gray);background:var(--soft);border-radius:980px;padding:4px 10px}
+.pf-h{font-size:12px;font-weight:600;color:var(--gray);margin:14px 0 2px}
+.pf-list li.pf{display:block;padding:14px 2px}
+.pf-top{display:flex;align-items:center;gap:12px}
+.pf-ck{color:var(--blue)!important}
+li.pf.done .pf-ck{background:var(--blue);border-color:var(--blue);color:#fff!important}
+.pf-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 0 36px}
+.pf-slot{position:relative;aspect-ratio:4/3;border-radius:12px;border:1.5px dashed var(--line);background:var(--soft) center/cover no-repeat;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--gray);font-size:12.5px}
+.pf-slot.has{border:none}
+.pf-slot em{position:absolute;left:6px;bottom:6px;font-style:normal;font-size:10.5px;font-weight:600;color:#fff;background:rgba(0,0,0,.5);padding:1px 7px;border-radius:980px;display:none}
+.pf-slot.has em{display:block}
+.pf-slot.busy{opacity:.5}
+.pf-slot[disabled]{opacity:.5}
+.pf-note{margin:10px 0 0 36px;font-size:13px;background:#ffecec;color:var(--red);border-radius:10px;padding:8px 12px}
+.pf-note.ok{background:var(--grn-soft);color:var(--grn)}
+.pf-send{margin:12px 0 0 36px;width:calc(100% - 36px)!important;font-size:14.5px!important;padding:11px!important}
+.pf-opt{margin-top:10px;font-size:13.5px;gap:8px;flex-wrap:wrap}
+.pf-opt input{width:18px;height:18px;accent-color:var(--blue)}
+.rv-ph{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.rv-ph figure{margin:0}
+.rv-img{aspect-ratio:3/4;border-radius:14px;background:var(--soft) center/cover no-repeat;display:grid;place-items:center;color:var(--gray);font-size:13px;cursor:zoom-in}
+.rv-ph figcaption{text-align:center;font-size:12px;font-weight:600;color:var(--gray);margin-top:6px}
 .setup-warn{background:#fff;border-radius:18px;padding:22px;margin:24px;line-height:1.6}
 .loader{display:grid;place-items:center;min-height:50vh}
 .spin{width:26px;height:26px;border-radius:50%;border:2.5px solid var(--line);border-top-color:var(--ink);animation:sp .8s linear infinite}
@@ -508,7 +529,7 @@ textarea.inp{resize:vertical;min-height:84px;line-height:1.5}
 const SB_URL = 'https://kcpymvsvczjjqptvtvxf.supabase.co';          // Project Settings → API → Project URL
 const SB_KEY = 'sb_publishable_I70vgd6mSVcflUH_NkzGAw_z0z2dWt7';                         // Project Settings → API Keys → anon(public) 또는 Publishable key
 const VAPID_PUBLIC_KEY = 'BORHql6j4hY0yWJlD1CXtbzeYXIF1dxkHLbD4SyYQqQn9riQjrM4j2w5gs2mhKcUHBvh_vkjFiVPOSnAA2W_IVw';
-const APP_VER = 'v2.3 · 2026.11';
+const APP_VER = 'v2.4 · 2026.11';
 
 /* ---------------- 기본 도구 ---------------- */
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -545,7 +566,7 @@ async function rpc(fn, args = {}, noAuth) {
   if (j && j.error) { const e = new Error(ERR[j.error] || j.error); e.code = j.error; e.data = j; throw e; }
   return j;
 }
-const ERR = { EMPTY: '내용을 입력해 주세요', PAST: '지난 날은 바꿀 수 없어요', NOTFOUND: '찾을 수 없어요', TO: '받는 사람을 골라 주세요', DATE: '열리는 날짜를 내일 이후로 골라 주세요', LIMIT: '오늘 줄 수 있는 스티커를 다 썼어요', POINTS: '포인트가 부족해요', CLOSED: '기간이 끝난 미션이에요', INPUT: '입력값을 확인해 주세요', DAY: '최근 3일까지만 남길 수 있어요', SIZE: '사진이 너무 커요', MAX: '사진은 10장까지예요', BADPIN: '비밀번호가 틀렸어요', SHORT: '비밀번호는 4자리 이상', SAME_BIRTH: '생일 번호는 쓸 수 없어요. 다른 번호로 바꿔 주세요', SELF: '본인 계정은 이렇게 바꿀 수 없어요', NOT_MEMBER: '함께 가는 가족만 볼 수 있어요', LONG: '여행 기간은 60일까지예요' };
+const ERR = { EMPTY: '내용을 입력해 주세요', PAST: '지난 날은 바꿀 수 없어요', NOTFOUND: '찾을 수 없어요', TO: '받는 사람을 골라 주세요', DATE: '열리는 날짜를 내일 이후로 골라 주세요', LIMIT: '오늘 줄 수 있는 스티커를 다 썼어요', POINTS: '포인트가 부족해요', CLOSED: '기간이 끝난 미션이에요', INPUT: '입력값을 확인해 주세요', DAY: '최근 3일까지만 남길 수 있어요', SIZE: '사진이 너무 커요', MAX: '사진은 10장까지예요', BADPIN: '비밀번호가 틀렸어요', SHORT: '비밀번호는 4자리 이상', SAME_BIRTH: '생일 번호는 쓸 수 없어요. 다른 번호로 바꿔 주세요', SELF: '본인 계정은 이렇게 바꿀 수 없어요', PROOF: '사진 인증 할 일이에요. Before·After 사진을 올려 주세요', NO_AFTER: 'After 사진을 먼저 올려 주세요', LOCKED_TODO: '이미 보낸 인증이에요', NOT_PARENT: '부모님만 할 수 있어요', SELF_REVIEW: '내 인증은 다른 부모님이 확인해요', NOT_MEMBER: '함께 가는 가족만 볼 수 있어요', LONG: '여행 기간은 60일까지예요' };
 const M = id => S.members.find(m => m.id === id) || { nick: '(삭제됨)', emoji: '', color: '#cbd5e1' };
 const av = (m, size = 40) => { const ph = phoGet(m); return `<span class="av" style="--c:${m.color || '#1e3a5f'};width:${size}px;height:${size}px;font-size:${Math.round(size * .42)}px">${ph ? `<img src="${ph}" alt="">` : esc(initial(m))}</span>`; };
 
@@ -608,7 +629,7 @@ function menuData() {
   const h = S.home || {}, trips = (h.trips || []).slice(0, 3), admin = S.me && S.me.role === 'admin';
   return [
     { id: 'home', t: '홈', to: '#/', paths: ['/'], big: [['홈', '#/'], ['오늘의 알림', '#/'], ['가족 한눈에 보기', '#/']], cols: [['바로가기', [['내 기분·점수 남기기', '#/'], ['주간 리포트', '#/report']]], ['그 외 항목', [['Family Hub 설치하기', '#/me'], ['알림 설정', '#/me']]]] },
-    { id: 'today', t: '오늘', to: '#/todo', paths: ['/todo', '/mission', '/points'], big: [['To do list', '#/todo'], ['하루 점수', '#/todo'], ['가족 미션', '#/mission'], ['포인트', '#/points']], cols: [['오늘 하기', [['할 일 추가하기', '#/todo'], ['칭찬 스티커 주기', '#/points'], ['포인트 상점', '#/points']]], ['가족의 오늘', S.members.map(m => [m.nick, '#/todo?m=' + m.id])]] },
+    { id: 'today', t: '오늘', to: '#/todo', paths: ['/todo', '/mission', '/points', '/review'], big: [['To do list', '#/todo'], ['하루 점수', '#/todo'], ['가족 미션', '#/mission'], ['포인트', '#/points']], cols: [['오늘 하기', [['할 일 추가하기', '#/todo'], ['칭찬 스티커 주기', '#/points'], ['포인트 상점', '#/points']].concat(S.me && (S.me.parent || S.me.role === 'admin') ? [['사진 인증 확인' + (h.reviews ? ` (${h.reviews})` : ''), '#/review']] : [])], ['가족의 오늘', S.members.map(m => [m.nick, '#/todo?m=' + m.id])]] },
     { id: 'family', t: '가족', to: '#/family', paths: ['/family', '/msg', '/growth'], big: [['가족 위치', '#/family'], ['비밀 메시지', '#/msg'], ['성장 기록', '#/growth']], cols: [['바로가기', [['도착 알림 보내기', '#/family'], ['비밀 메시지 쓰기', '#/msg'], ['타임캡슐 묻기', '#/capsule']]], ['가족 구성원', S.members.map(m => [m.nick, '#/growth?m=' + m.id])]] },
     { id: 'board', t: '게시판', to: '#/board', paths: ['/board', '/album', '/capsule'], big: [['가족 게시판', '#/board'], ['가족 앨범', '#/album'], ['타임캡슐', '#/capsule']], cols: [['바로가기', [['새 글 쓰기', '#/board'], ['1년 전 오늘', '#/album']]]] },
     { id: 'trip', t: '여행', to: '#/trip', paths: ['/trip'], big: [['여행 모두 보기', '#/trip']].concat(trips.map(t => [t.title, '#/trip?id=' + t.id])), cols: [['여행 준비하기', [['새 여행 만들기', '#/trip?new=1'], ['준비물 체크', trips[0] ? `#/trip?id=${trips[0].id}&tab=pack` : '#/trip'], ['여권·서류', trips[0] ? `#/trip?id=${trips[0].id}&tab=doc` : '#/trip'], ['여행 경비', trips[0] ? `#/trip?id=${trips[0].id}&tab=money` : '#/trip']]], ['그 외 여행 관련 항목', [['일정 공유하기', trips[0] ? `#/trip?id=${trips[0].id}&tab=share` : '#/trip'], ['가족 캘린더', '#/cal']]]] },
@@ -618,7 +639,7 @@ function menuData() {
   ];
 }
 const PAGE = {
-  '/todo': ['To do list', '오늘 할 일을 하나씩, 완료하면 포인트.'], '/family': ['가족 위치', '지금 우리 가족은 어디에.'], '/board': ['가족 게시판', '우리 가족의 이야기.'],
+  '/todo': ['To do list', '오늘 할 일을 하나씩, 완료하면 포인트.'], '/review': ['사진 인증 확인', 'Before·After를 보고 점수를 주세요.'], '/family': ['가족 위치', '지금 우리 가족은 어디에.'], '/board': ['가족 게시판', '우리 가족의 이야기.'],
   '/more': ['전체 메뉴', 'Family Hub의 모든 것.'], '/msg': ['비밀 메시지', '둘만 볼 수 있는 편지.'], '/capsule': ['타임캡슐', '정한 날에 열리는 편지.'], '/album': ['가족 앨범', '게시판에 올린 사진이 모이는 곳.'],
   '/cal': ['가족 캘린더', '일정·생일·기념일·여행을 한눈에.'], '/shop': ['장보기', '가족이 함께 쓰는 장보기 목록.'], '/mission': ['가족 미션', '함께 정하고 함께 이루는 목표.'],
   '/growth': ['성장 기록', '키·몸무게, 그리고 그날의 추억.'], '/points': ['포인트', '칭찬은 스티커로, 노력은 포인트로.'], '/report': ['주간 리포트', '이번 주 우리 가족.'],
@@ -794,6 +815,8 @@ function bindPinForm(first, close) {
 const MOODS = [['☀️', '최고'], ['🌤', '좋음'], ['☁️', '그냥'], ['🌧', '우울'], ['⛈', '화남'], ['🤒', '아픔']];
 function homeAlerts(h) {
   const td = h.today, out = [];
+  if (h.reviews) out.push({ cls: 'hot', i: '📸', t: `사진 인증 확인 요청 ${h.reviews}건`, s: 'Before·After를 보고 점수를 주세요', to: '#/review' });
+  if (h.my_proof && h.my_proof.todo) out.push({ cls: 'gold', i: '📸', t: `사진 인증할 일 ${h.my_proof.todo}개`, s: 'Before·After 사진을 찍어 보내 주세요', to: '#/todo' });
   if (h.unread) out.push({ cls: 'hot', i: '💌', t: `비밀 메시지 ${h.unread}개가 와 있어요`, s: '나만 열어볼 수 있어요', to: '#/msg' });
   if (h.capsules_open) out.push({ cls: 'gold', i: '⏳', t: '타임캡슐이 열렸어요!', s: '묻어둔 편지를 확인해 보세요', to: '#/capsule' });
   if (h.adminPending) out.push({ cls: 'gold', i: '🎁', t: `보상 신청 ${h.adminPending}건이 기다려요`, s: 'admin에서 승인해 주세요', to: 'admin/' });
@@ -810,7 +833,7 @@ function homeAlerts(h) {
   (h.events || []).forEach(e => { const k = nextEventDay(e, td), d = diffDays(k, td);
     if (d === 0) out.push({ cls: 'hot', e: e.category, i: '', t: `오늘 · ${e.title}`, s: e.memo || e.category, to: '#/cal' });
     else if (d > 0 && d <= Math.max(e.remind, 1)) out.push({ e: e.category, i: '', t: `D-${d} · ${e.title}`, s: `${md(k)} · ${e.category}`, to: '#/cal' }); });
-  const map = { '💌': 'mail', '⏳': 'hourglass', '🎁': 'gift', '🎂': 'cake', '✨': 'spark' };
+  const map = { '📸': 'camera', '💌': 'mail', '⏳': 'hourglass', '🎁': 'gift', '🎂': 'cake', '✨': 'spark' };
   out.forEach(a => { a.ic = map[a.i] || CATI[a.e] || (a.trip ? 'plane' : a.sticker ? 'star' : 'cal'); });
   return out;
 }
@@ -879,37 +902,104 @@ function memberSheet(m) {
 /* =====================================================================
    ✅ 할 일
    ===================================================================== */
+const CHORES = ['신발 정리', '방 청소', '장난감 정리', '책상 정리', '이불 개기', '책가방 챙기기', '양치하기', '분리수거 돕기'];
+const isParent = () => S.me && (S.me.parent || S.me.role === 'admin');
+function proofItem(x, mine, day, td) {
+  const st = x.status || 'todo', by = x.by ? M(x.by) : null;
+  const badge = st === 'approved' ? `<span class="tag ok">+${x.points}점 받음</span>` : st === 'review' ? '<span class="tag wait">확인 중</span>' : st === 'rejected' ? '<span class="tag no">다시 해 주세요</span>' : `<span class="tag">최대 ${x.max || 20}점</span>`;
+  const editable = mine && (st === 'todo' || st === 'rejected') && day >= addDays(td, -1);
+  const slot = k => `<button class="pf-slot ${x[k] ? 'has' : ''}" data-pf="${x.id}" data-kind="${k}" ${editable || x[k] ? '' : 'disabled'}>${x[k] ? '' : `${icon('camera', 20, 1.6)}<span>${k === 'before' ? 'Before' : 'After'}</span>`}<em>${k === 'before' ? 'Before' : 'After'}</em></button>`;
+  return `<li class="pf ${st === 'approved' ? 'done' : ''}"><div class="pf-top"><span class="ck pf-ck" style="${st === 'approved' ? '' : 'border-style:dashed'}">${st === 'approved' ? '✓' : icon('camera', 13, 2)}</span>
+      <span class="tt">${esc(x.text)}<small class="muted" style="display:block;font-size:12px">${by ? esc(by.nick) + '님이 준 할 일 · ' : ''}사진 인증</small></span>${badge}
+      ${(mine && st !== 'approved' && st !== 'review') || (x.by === S.me.id && st !== 'approved') ? `<button class="del" data-del="${x.id}">✕</button>` : ''}</div>
+    <div class="pf-row">${slot('before')}${slot('after')}</div>
+    ${st === 'rejected' && x.note ? `<div class="pf-note">${esc(x.note)}</div>` : st === 'approved' && x.note ? `<div class="pf-note ok">${esc(x.note)}</div>` : ''}
+    ${editable ? `<button class="btn p block pf-send" data-send="${x.id}" ${x.after ? '' : 'disabled'}>${x.after ? '부모님께 확인 요청 보내기' : 'After 사진을 올리면 보낼 수 있어요'}</button>` : ''}</li>`;
+}
 route('/todo', 'To do list', async (el, alive) => {
   const q = new URLSearchParams(location.hash.split('?')[1] || ''); const who = +(q.get('m') || S.me.id), mine = who === S.me.id;
   const day = q.get('d') || dayKey(), td = dayKey();
   const r = await rpc('fh_todos', { p_day: day, p_member: who }); if (!alive()) return;
   const n = r.items.filter(x => x.done).length, all = r.items.length && n === r.items.length, mm = M(who), rules = (S.home && S.home.rules) || { todo: 10, bonus: 20, bonus_min: 3 };
+  const canAssign = !mine && isParent() && day >= td, rv = (S.home && S.home.reviews) || 0;
   const strip = [...Array(22)].map((_, i) => { const k = addDays(td, i - 14), c = r.days[k]; return `<button data-d="${k}" class="${c ? (c.n === c.d ? 'ok' : 'part') : ''} ${k === td ? 'today' : ''} ${k === day ? 'sel' : ''}">${D(k).getDate()}<small>${WD[D(k).getDay()]}</small></button>`; }).join('');
+  const normal = r.items.filter(x => !x.proof), proofs = r.items.filter(x => x.proof);
   el.innerHTML = `
     <div class="who-chips">${S.members.map(m => `<button data-who="${m.id}" class="${m.id === who ? 'on' : ''}">${av(m, 26)}${esc(m.nick)}</button>`).join('')}</div>
+    ${isParent() && rv ? `<a class="alert hot" href="#/review" style="margin-bottom:12px"><span class="ai">${icon('camera', 17)}</span><span style="flex:1"><b>사진 인증 확인 요청 ${rv}건</b><small>Before·After를 보고 점수를 주세요</small></span></a>` : ''}
     <div class="card"><h3>${mine ? '나의' : av(mm, 26) + ' ' + esc(mm.nick) + '의'} 할 일 <small>${md(day)}${day === td ? ' · 오늘' : day < td ? ' · 지난 날' : ' · 미리 계획'}</small></h3>
       <div class="strip" id="strip">${strip}</div>
       ${r.items.length ? `<div class="row" style="margin-top:4px"><div class="bar" style="flex:1"><i style="width:${n / r.items.length * 100}%"></i></div><b style="font-weight:600">${n} / ${r.items.length}</b></div>` : ''}
       ${mine && r.carry.length ? `<div class="alert gold" style="margin-top:10px"><span class="ai">${icon('pin', 17)}</span><span style="flex:1"><b>${md(r.carry[0].day)}에 못 한 일 ${r.carry.length}개</b><small>오늘로 가져올까요?</small></span><button class="btn sm p" id="carry">가져오기</button></div>` : ''}
-      <ul class="tlist">${r.items.map(x => `<li class="${x.done ? 'done' : ''}"><button class="ck" data-ck="${x.id}" ${mine && day >= addDays(td, -1) ? '' : 'disabled'}>${x.done ? '✓' : ''}</button><span class="tt" data-ck="${x.id}">${esc(x.text)}</span>${mine && (!x.done || day >= td) ? `<button class="del" data-del="${x.id}">✕</button>` : ''}</li>`).join('') || `<li class="empty" style="display:block;border:none">${mine ? (day < td ? '이 날은 적어 둔 할 일이 없어요' : '아래에 할 일을 적어 보세요') : '아직 할 일이 없어요'}</li>`}</ul>
-      ${mine && day >= td ? `<div class="row" style="margin-top:10px"><input class="inp" id="tdIn" maxlength="100" placeholder="${day === td ? '오늘 꼭 할 일' : md(day) + ' 할 일'}" enterkeyhint="done" autocomplete="off"><button class="btn p" id="tdAdd">추가</button></div>` : ''}
+      ${proofs.length ? `<div class="pf-h">사진 인증 할 일</div><ul class="tlist pf-list">${proofs.map(x => proofItem(x, mine, day, td)).join('')}</ul>` : ''}
+      ${proofs.length && normal.length ? '<div class="pf-h">할 일</div>' : ''}
+      <ul class="tlist">${normal.map(x => `<li class="${x.done ? 'done' : ''}"><button class="ck" data-ck="${x.id}" ${mine && day >= addDays(td, -1) ? '' : 'disabled'}>${x.done ? '✓' : ''}</button><span class="tt" data-ck="${x.id}">${esc(x.text)}</span>${mine && (!x.done || day >= td) ? `<button class="del" data-del="${x.id}">✕</button>` : ''}</li>`).join('') || (proofs.length ? '' : `<li class="empty" style="display:block;border:none">${mine ? (day < td ? '이 날은 적어 둔 할 일이 없어요' : '아래에 할 일을 적어 보세요') : '아직 할 일이 없어요'}</li>`)}</ul>
+      ${mine && day >= td ? `<div class="row" style="margin-top:10px"><input class="inp" id="tdIn" maxlength="100" placeholder="${day === td ? '오늘 꼭 할 일' : md(day) + ' 할 일'}" enterkeyhint="done" autocomplete="off"><button class="btn p" id="tdAdd">추가</button></div>
+        <label class="row pf-opt"><input type="checkbox" id="tdProof"> 사진 인증으로 하기 <small class="muted">(Before·After 사진 → 부모님이 점수)</small></label>` : ''}
       ${all && day <= td ? `<div class="celebrate" style="font-weight:700">오늘 할 일을 모두 끝냈어요</div>` : ''}
     </div>
+    ${canAssign ? `<div class="card"><h3>${esc(mm.nick)}에게 할 일 주기 <small>사진 인증</small></h3>
+      <div class="chips" style="margin-bottom:10px">${CHORES.map(c => `<button class="chip" data-chore="${c}">${c}</button>`).join('')}</div>
+      <input class="inp" id="asIn" maxlength="100" placeholder="예: 신발 정리하기">
+      <label class="lbl">다 하면 줄 점수 (최대)</label><div class="chips" id="asPts">${[5, 10, 20, 30, 50].map(v => `<button class="chip ${v === 20 ? 'on' : ''}" data-pts="${v}">${v}점</button>`).join('')}</div>
+      <button class="btn p block" id="asGo" style="margin-top:14px">${esc(mm.nick)}에게 보내기</button>
+      <p class="hint">${esc(mm.nick)}가 Before·After 사진을 찍어 보내면 알림이 오고, 사진을 보고 점수를 줄 수 있어요.</p></div>` : ''}
     <div class="card"><h3>${mine ? '나의' : esc(mm.nick) + '의'} 포인트</h3>
       <div class="pts"><div><b>${fmtN(r.points.balance)}</b><span>지금 쓸 수 있는</span></div><div><b>${fmtN(r.points.todo)}</b><span>할 일로 모은</span></div><div><b>${fmtN(r.points.sticker)}</b><span>칭찬으로 받은</span></div></div>
-      <p class="hint">완료한 할 일 1개당 <b>${rules.todo}점</b> · 하루 할 일을 ${rules.bonus_min}개 이상 적고 <b>모두 완료</b>하면 보너스 <b>${rules.bonus}점</b>! 모은 포인트는 <a href="#/points">포인트 상점</a>에서 써요.</p></div>
+      <p class="hint">완료한 할 일 1개당 <b>${rules.todo}점</b> · 하루 할 일을 ${rules.bonus_min}개 이상 적고 <b>모두 완료</b>하면 보너스 <b>${rules.bonus}점</b> · <b>사진 인증 할 일</b>은 부모님이 준 점수만큼! 모은 포인트는 <a href="#/points">포인트 상점</a>에서 써요.</p></div>
     ${mine ? `<div class="card" id="dl"></div>` : ''}`;
   $$('[data-who]', el).forEach(b => b.onclick = () => go(`#/todo?m=${b.dataset.who}&d=${day}`));
   $$('#strip [data-d]', el).forEach(b => b.onclick = () => go(`#/todo?m=${who}&d=${b.dataset.d}`));
   const sel = $('#strip .sel'); if (sel) sel.scrollIntoView({ inline: 'center', block: 'nearest' });
-  if (!mine) return;
-  const add = async () => { const v = $('#tdIn').value.trim(); if (!v) return $('#tdIn').focus(); try { await rpc('fh_todo_add', { p_day: day, p_text: v }); await reTodo(); setTimeout(() => $('#tdIn') && $('#tdIn').focus(), 50); } catch (e) { toast(e.message, 1); } };
   const reTodo = () => ROUTES['/todo'](el, alive);
+  // 사진 슬롯: 사진 보기 / 올리기
+  $$('.pf-slot', el).forEach(async b => {
+    const id = +b.dataset.pf, kind = b.dataset.kind, item = r.items.find(x => x.id === id);
+    if (item[kind]) { const ph = await todoPhotos(id); if (ph[kind]) { b.style.backgroundImage = `url(${ph[kind]})`; } }
+    b.onclick = () => {
+      const editable = mine && (!item.status || item.status === 'todo' || item.status === 'rejected');
+      if (!editable) { todoPhotos(id).then(ph => ph[kind] && lightbox(ph[kind])); return; }
+      const f = document.createElement('input'); f.type = 'file'; f.accept = 'image/*'; f.setAttribute('capture', 'environment');
+      f.onchange = async () => { const file = f.files[0]; if (!file) return; try { b.classList.add('busy'); const c = await compressImage(file, 1280, .8); await rpc('fh_todo_photo', { p_id: id, p_kind: kind, p_data: c.data }); delete TPH[id]; toast(kind === 'before' ? 'Before 사진을 올렸어요' : 'After 사진을 올렸어요'); reTodo(); } catch (e) { b.classList.remove('busy'); toast(e.message, 1); } };
+      f.click();
+    };
+  });
+  $$('[data-send]', el).forEach(b => b.onclick = async () => { try { await rpc('fh_todo_submit', { p_id: +b.dataset.send }); toast('부모님께 확인 요청을 보냈어요'); reTodo(); } catch (e) { toast(e.message, 1); } });
+  $$('[data-del]', el).forEach(b => b.onclick = async () => { try { await rpc('fh_todo_del', { p_id: +b.dataset.del }); reTodo(); } catch (e) { toast(e.message, 1); } });
+  if (canAssign) {
+    let pts = 20;
+    $$('[data-chore]', el).forEach(b => b.onclick = () => { $('#asIn').value = b.dataset.chore; });
+    $$('#asPts [data-pts]', el).forEach(b => b.onclick = () => { pts = +b.dataset.pts; $$('#asPts [data-pts]', el).forEach(y => y.classList.toggle('on', y === b)); });
+    $('#asGo').onclick = async () => { const v = $('#asIn').value.trim(); if (!v) return toast('할 일을 적어 주세요', 1); try { await rpc('fh_todo_assign', { p_member: who, p_day: day, p_text: v, p_max: pts }); toast(`${mm.nick}에게 보냈어요`); reTodo(); } catch (e) { toast(e.message, 1); } };
+  }
+  if (!mine) return;
+  const add = async () => { const v = $('#tdIn').value.trim(); if (!v) return $('#tdIn').focus(); try { await rpc('fh_todo_add', { p_day: day, p_text: v, p_proof: $('#tdProof').checked }); await reTodo(); setTimeout(() => $('#tdIn') && $('#tdIn').focus(), 50); } catch (e) { toast(e.message, 1); } };
   if ($('#tdAdd')) { $('#tdAdd').onclick = add; $('#tdIn').onkeydown = e => { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); add(); } }; }
   $$('[data-ck]', el).forEach(b => b.onclick = async () => { if (b.disabled || $(`button.ck[data-ck="${b.dataset.ck}"]`).disabled) return; try { const x = await rpc('fh_todo_toggle', { p_id: +b.dataset.ck }); await reTodo(); if (x.all && x.n) celebrateTodo(x.n, rules); } catch (e) { toast(e.message, 1); } });
-  $$('[data-del]', el).forEach(b => b.onclick = async () => { try { await rpc('fh_todo_del', { p_id: +b.dataset.del }); reTodo(); } catch (e) { toast(e.message, 1); } });
   if ($('#carry')) $('#carry').onclick = async () => { try { await rpc('fh_todo_carry', { p_ids: r.carry.map(x => x.id) }); toast('오늘로 가져왔어요'); reTodo(); } catch (e) { toast(e.message, 1); } };
   dayLogCard($('#dl'), day <= td ? day : td);
+});
+const TPH = {};
+function todoPhotos(id) { if (!TPH[id]) TPH[id] = rpc('fh_todo_photos', { p_id: id }).catch(() => ({})); return TPH[id]; }
+
+/* ---------------- 부모: 사진 인증 확인 ---------------- */
+route('/review', '사진 인증 확인', async (el, alive) => {
+  if (!isParent()) { el.innerHTML = '<div class="empty">부모님만 볼 수 있는 화면이에요</div>'; return; }
+  const r = await rpc('fh_review_list'); if (!alive()) return;
+  el.innerHTML = `${r.pending.length ? r.pending.map(x => `<div class="card rv" data-rv="${x.id}"><div class="row">${av(M(x.member), 40)}<div style="flex:1;min-width:0"><b style="font-size:16px">${esc(x.text)}</b><div class="muted" style="font-size:13px">${esc(M(x.member).nick)} · ${md(x.day)} · ${ago(x.at)} 보냄</div></div><span class="tag">최대 ${x.max}점</span></div>
+      <div class="rv-ph"><figure><div class="rv-img" data-k="before"></div><figcaption>Before</figcaption></figure><figure><div class="rv-img" data-k="after"></div><figcaption>After</figcaption></figure></div>
+      <label class="lbl">점수</label><div class="chips rv-pts">${[...new Set([0, Math.round(x.max / 4), Math.round(x.max / 2), Math.round(x.max * .75), x.max])].map(v => `<button class="chip ${v === x.max ? 'on' : ''}" data-v="${v}">${v}점</button>`).join('')}</div>
+      <input class="inp rv-note" maxlength="200" placeholder="한마디 (선택) 예: 신발이 반듯해졌네! 최고" style="margin-top:12px">
+      <div class="row" style="margin-top:12px"><button class="btn rv-no" style="flex:1">다시 해 볼까?</button><button class="btn p rv-ok" style="flex:2">승인하고 점수 주기</button></div></div>`).join('')
+      : '<div class="card empty">확인할 사진이 없어요<br><small>아이에게 할 일을 주려면 To do list에서 아이 이름을 누르세요</small></div>'}
+    ${r.done.length ? `<div class="card"><h3>최근 확인한 인증 <small>14일</small></h3>${r.done.map(x => `<div class="ev"><span class="ei">${av(M(x.member), 30)}</span><span class="eb">${esc(x.text)}<small>${esc(M(x.member).nick)} · ${md(x.day)}${x.note ? ' · ' + esc(x.note) : ''}</small></span>${x.status === 'approved' ? `<span class="tag ok">+${x.points}점</span>` : '<span class="tag no">다시</span>'}</div>`).join('')}</div>` : ''}`;
+  $$('.rv', el).forEach(async c => {
+    const id = +c.dataset.rv, x = r.pending.find(y => y.id === id); let pts = x.max;
+    const ph = await todoPhotos(id); c.querySelectorAll('.rv-img').forEach(d => { const src = ph[d.dataset.k]; if (src) { d.style.backgroundImage = `url(${src})`; d.onclick = () => lightbox(src); } else d.textContent = '사진 없음'; });
+    c.querySelectorAll('.rv-pts [data-v]').forEach(b => b.onclick = () => { pts = +b.dataset.v; c.querySelectorAll('.rv-pts [data-v]').forEach(y => y.classList.toggle('on', y === b)); });
+    const send = async ok => { try { await rpc('fh_todo_review', { p_id: id, p_ok: ok, p_points: pts, p_note: c.querySelector('.rv-note').value.trim() || null }); toast(ok ? `${M(x.member).nick}에게 ${pts}점을 줬어요` : '다시 해 달라고 보냈어요'); delete TPH[id]; if (S.home) S.home.reviews = Math.max(0, (S.home.reviews || 1) - 1); render(); } catch (e) { toast(e.message, 1); } };
+    c.querySelector('.rv-ok').onclick = () => send(true); c.querySelector('.rv-no').onclick = () => send(false);
+  });
 });
 function celebrateTodo(n, rules) { const pts = n * rules.todo + (n >= rules.bonus_min ? rules.bonus : 0); toast(`오늘 할 일 ${n}개 모두 완료 · +${pts}점${n >= rules.bonus_min ? ` (보너스 ${rules.bonus}점 포함)` : ''}`); }
 async function dayLogCard(el, day) {
