@@ -521,6 +521,88 @@ li.pf.done .pf-ck{background:var(--blue);border-color:var(--blue);color:#fff!imp
   .fd-cols{grid-template-columns:1fr 1fr}
   .grid3{grid-template-columns:repeat(2,1fr)}
 }
+
+/* ===== 모바일 컴팩트 (약 80% 크기) ===== */
+.fam>*,.mcard,.mcard .mtop>div{min-width:0}
+@media(max-width:833px){
+  body{font-size:14px}
+  .gnav,.gn-in,.gn-logo{height:44px}
+  .gn-logo svg{width:20px;height:20px}
+  .gn-btn{width:34px;height:40px}
+  .gn-btn .av{width:22px!important;height:22px!important;font-size:10px!important}
+  .hero{padding:18px 16px 2px}
+  .hero h1{font-size:24px;line-height:1.15}
+  .hero p{font-size:14px;margin-top:6px}
+  .hero .date{font-size:12px;margin-top:2px}
+  .chapter{padding:10px 0 8px}
+  .chapter a{font-size:10.5px;gap:4px}
+  .chapter a i{width:34px;height:34px}
+  .chapter svg{width:22px;height:22px}
+  .phead{padding:14px 16px 0}
+  .phead h1{font-size:24px}
+  .phead p{font-size:13px;margin-top:3px}
+  .phead .back{font-size:13px;margin-bottom:2px}
+  .wrap{padding:10px 12px 20px}
+  .alerts{gap:6px;margin-bottom:10px}
+  .alert{padding:9px 12px;gap:10px;border-radius:12px}
+  .alert .ai{width:28px;height:28px;flex:0 0 28px}
+  .alert .ai svg{width:15px;height:15px}
+  .alert b{font-size:13.5px}
+  .alert small{font-size:11.5px}
+  .fam{grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+  .mcard{padding:12px 11px 11px;border-radius:14px}
+  .mcard .mtop{gap:8px}
+  .mcard .av{width:30px!important;height:30px!important;font-size:12.5px!important}
+  .mcard .mtop>div{padding-right:16px}
+  .mcard .nm{font-size:13px}
+  .mcard .pt{font-size:10.5px}
+  .mcard .mood{top:11px;right:10px;font-size:14px}
+  .mcard .days{font-size:19px;margin-top:9px}
+  .mcard .days small{font-size:11px}
+  .mcard .meta{font-size:10.5px;margin-top:3px;min-height:13px}
+  .mcard .bar{margin-top:7px;height:3px}
+  .mcard .st{font-size:10.5px;margin-top:4px}
+  .card{padding:14px;border-radius:14px;margin-bottom:10px}
+  .card h3{font-size:15.5px;margin-bottom:10px}
+  .card h3 small{font-size:12px}
+  .btn{font-size:13.5px;padding:8px 16px}
+  .btn.sm{font-size:12px;padding:4px 11px}
+  .btn.block{padding:11px 16px;font-size:15px}
+  .inp{padding:10px 12px;border-radius:10px}
+  .lbl{font-size:12.5px;margin:12px 0 5px}
+  .chip{font-size:12.5px;padding:6px 12px}
+  .who-chips{margin-bottom:10px}
+  .who-chips button{font-size:12.5px;padding:3px 11px 3px 3px}
+  .who-chips .av{width:22px!important;height:22px!important;font-size:10px!important}
+  .strip button{flex:0 0 40px;font-size:14px;padding:6px 0}
+  .tlist li{padding:10px 2px;gap:12px}
+  .tlist li .tt{font-size:14.5px}
+  .ck{width:22px;height:22px}
+  .pts b{font-size:22px}
+  .pts span{font-size:11px}
+  .moodpick button{font-size:19px;padding:7px 0 5px}
+  .moodpick button small{font-size:10px}
+  .score-big{font-size:22px;min-width:56px}
+  .trip-card{padding:10px 12px;gap:10px}
+  .trip-card .te{width:38px;height:38px;flex:0 0 38px;font-size:21px}
+  .trip-card .tb b{font-size:14.5px}
+  .trip-card .tb small{font-size:11.5px}
+  .tdd{font-size:14px}
+  .ev{padding:10px 0;gap:12px}
+  .ev .ei{width:30px;height:30px;flex:0 0 30px}
+  .ev .eb{font-size:14px}
+  .post .ph{padding:12px 14px}
+  .post .pb{padding:0 14px 12px;font-size:15px}
+  .tile{padding:16px 6px 14px;font-size:13.5px}
+  .tile small{font-size:11px}
+  .sheet h2{font-size:19px}
+  .tabbar{padding:5px 4px calc(3px + var(--safe-b))}
+  .tabbar svg{width:22px;height:22px}
+  .tabbar a,.tabbar button{font-size:9.5px}
+  #app{padding-bottom:calc(62px + var(--safe-b))}
+  .pf-row{margin-left:34px;gap:8px}
+  .pf-send,.pf-note{margin-left:34px}
+}
 </style>
 </head>
 <body>
@@ -534,7 +616,7 @@ li.pf.done .pf-ck{background:var(--blue);border-color:var(--blue);color:#fff!imp
 const SB_URL = 'https://kcpymvsvczjjqptvtvxf.supabase.co';          // Project Settings → API → Project URL
 const SB_KEY = 'sb_publishable_I70vgd6mSVcflUH_NkzGAw_z0z2dWt7';                         // Project Settings → API Keys → anon(public) 또는 Publishable key
 const VAPID_PUBLIC_KEY = 'BORHql6j4hY0yWJlD1CXtbzeYXIF1dxkHLbD4SyYQqQn9riQjrM4j2w5gs2mhKcUHBvh_vkjFiVPOSnAA2W_IVw';
-const APP_VER = 'v2.5 · 2026.11';
+const APP_VER = 'v2.6 · 2026.11';
 
 /* ---------------- 기본 도구 ---------------- */
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -724,7 +806,7 @@ function navBar(path) {
   return `<nav class="nav foot-dir"><div class="fd-in"><div class="fd-note">Family Hub는 가족만 사용하는 비공개 앱이에요. 비밀 메시지와 여행 서류는 정해진 가족만 볼 수 있어요.${np ? ` · 새 글 <a href="#/board">${np}개</a>` : ''}</div>
     <div class="fd-cols">${M_.map(it => `<div><h6>${esc(it.t)}</h6>${it.big.concat(it.cols.flatMap(c => c[1])).filter((x, i, a) => a.findIndex(y => y[0] === x[0]) === i).slice(0, 7).map(([t, to]) => `<a href="${to}">${esc(t)}</a>`).join('')}</div>`).join('')}</div>
     <div class="fd-bot"><span>Copyright © ${new Date().getFullYear()} Family Hub. 모든 권리 보유.</span><span>${esc(S.me.nick)} · <a href="#/me">설정</a> · ${APP_VER}</span></div></div></nav>
-    <div class="tabbar">${[['/todo', 'check', 'To do'], ['/', 'home', '홈'], ['/trip', 'plane', '여행'], ['/board', 'board', '게시판'], ['menu', 'grid', '메뉴']].map(([p, i, t]) => p === 'menu' ? `<button onclick="openMobileMenu()">${icon(i, 24, 1.6)}<span>${t}</span></button>` : `<a href="#${p}" class="${path === p || (p === '/todo' && ['/todo', '/mission', '/points', '/review'].includes(path)) || (p === '/board' && ['/board', '/album', '/capsule'].includes(path)) ? 'on' : ''}">${icon(i, 24, 1.6)}<span>${t}</span>${p === '/board' && np ? `<i class="tb-dot"></i>` : ''}</a>`).join('')}</div>`;
+    <div class="tabbar">${[['/', 'home', '홈'], ['/todo', 'check', 'To do'], ['/trip', 'plane', '여행'], ['/board', 'board', '게시판'], ['menu', 'grid', '메뉴']].map(([p, i, t]) => p === 'menu' ? `<button onclick="openMobileMenu()">${icon(i, 24, 1.6)}<span>${t}</span></button>` : `<a href="#${p}" class="${path === p || (p === '/todo' && ['/todo', '/mission', '/points', '/review'].includes(path)) || (p === '/board' && ['/board', '/album', '/capsule'].includes(path)) ? 'on' : ''}">${icon(i, 24, 1.6)}<span>${t}</span>${p === '/board' && np ? `<i class="tb-dot"></i>` : ''}</a>`).join('')}</div>`;
 }
 async function loadHome() {
   const h = await rpc('fh_home'); S.home = h; S.me = h.me; S.members = h.members;
@@ -782,7 +864,7 @@ async function renderLogin(pick) {
     if (busy || pin.length < 4) return; busy = true;
     try {
       const r = await rpc('fh_login', { p_member: sel.id, p_pin: pin, p_ua: navigator.userAgent }, true);
-      S.token = r.token; store.set('token', r.token); store.set('last_member', sel.id); S.me = null; busy = false; location.hash = isMobileView() ? '#/todo' : '#/'; store.set('ig_after_login', true); render(); pushSyncSilently();
+      S.token = r.token; store.set('token', r.token); store.set('last_member', sel.id); S.me = null; busy = false; location.hash = '#/'; store.set('ig_after_login', true); render(); pushSyncSilently();
     } catch (e) {
       busy = false; pin = ''; draw();
       if (e.code === 'BADPIN') toast(`비밀번호가 틀렸어요${e.data.left != null ? ` (남은 기회 ${e.data.left}번)` : ''}`, 1);
@@ -1884,7 +1966,6 @@ if ('serviceWorker' in navigator) { swReg(); navigator.serviceWorker.addEventLis
 if (navigator.clearAppBadge) document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { navigator.clearAppBadge().catch(() => {}); SWR && SWR.active && SWR.active.postMessage({ type: 'clear-badge' }); } });
 
 /* ---------------- 시작 ---------------- */
-if (!location.hash || location.hash === '#' || location.hash === '#/') { if (window.matchMedia('(max-width: 833px)').matches && !new URLSearchParams(location.search).has('share')) history.replaceState(null, '', location.pathname + location.search + '#/todo'); }
 setInterval(() => { if (document.visibilityState === 'visible' && S.me && (location.hash === '' || location.hash === '#/')) rpc('fh_home').then(h => { const before = S.home && S.home.unread; S.home = h; S.members = h.members; if (h.unread !== before && $('header.top')) refreshTop('/'); }).catch(() => {}); }, 60000);
 render();
 </script>
