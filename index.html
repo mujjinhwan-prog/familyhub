@@ -433,6 +433,36 @@ textarea.inp{resize:vertical;min-height:84px;line-height:1.5}
 .photo-edit{display:flex;align-items:center;gap:16px}
 .photo-edit .av{cursor:pointer}
 
+/* iOS 스타일 하단 탭바 (모바일) */
+.tabbar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:40;grid-template-columns:repeat(5,1fr);background:rgba(250,250,252,.92);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-top:.5px solid rgba(0,0,0,.18);padding:6px 4px calc(4px + var(--safe-b))}
+.tabbar a,.tabbar button{display:flex;flex-direction:column;align-items:center;gap:2px;color:#8e8e93;font-size:10px;font-weight:500;text-decoration:none!important;position:relative;padding:2px 0}
+.tabbar a.on{color:var(--blue)}
+.tabbar .tb-dot{position:absolute;top:2px;right:calc(50% - 16px);width:8px;height:8px;border-radius:50%;background:#ff3b30}
+@media(max-width:833px){
+  .tabbar{display:grid}
+  .nav.foot-dir{display:none}
+  #app{padding-bottom:calc(70px + var(--safe-b))}
+  .gn-burger{display:none!important}
+  .gnav{height:44px}.gn-in{height:44px}.gn-logo{height:44px}.gn-logo svg{width:22px;height:22px}
+  #toast{bottom:calc(84px + var(--safe-b))}
+  .phead{padding:18px 16px 2px}
+  .phead h1{font-size:30px}
+  .phead p{font-size:15px}
+  .wrap{padding:12px 12px 24px}
+  .card{padding:16px;border-radius:14px;margin-bottom:12px}
+  .card h3{font-size:17px}
+  .hero{padding:26px 16px 0;text-align:left}
+  .hero h1{font-size:30px}
+  .hero p{font-size:16px;color:var(--gray)}
+  .chapter{justify-content:flex-start;padding:16px 8px 14px}
+  .chapter a{width:66px;font-size:11px}
+  .mcard{border-radius:14px}
+  .fam{gap:10px}
+  .alert{border-radius:12px;padding:12px 14px}
+  .sheet{padding:18px 16px calc(18px + var(--safe-b))}
+  .btn.block{padding:13px 18px;font-size:16px}
+}
+
 @media(max-width:833px){
   .gn-list{display:none}
   .gn-burger{display:grid}
@@ -464,7 +494,7 @@ textarea.inp{resize:vertical;min-height:84px;line-height:1.5}
 const SB_URL = 'https://kcpymvsvczjjqptvtvxf.supabase.co';          // Project Settings → API → Project URL
 const SB_KEY = 'sb_publishable_I70vgd6mSVcflUH_NkzGAw_z0z2dWt7';                         // Project Settings → API Keys → anon(public) 또는 Publishable key
 const VAPID_PUBLIC_KEY = 'BORHql6j4hY0yWJlD1CXtbzeYXIF1dxkHLbD4SyYQqQn9riQjrM4j2w5gs2mhKcUHBvh_vkjFiVPOSnAA2W_IVw';
-const APP_VER = 'v2.0 · 2026.11';
+const APP_VER = 'v2.1 · 2026.11';
 
 /* ---------------- 기본 도구 ---------------- */
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -558,7 +588,7 @@ const IC = {
   phone: '<rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/>'
 };
 const icon = (n, s = 20, w = 1.8) => `<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round">${IC[n] || IC.info}</svg>`;
-const LOGO = `<svg viewBox="2 4 96 96" aria-label="Family Hub"><defs><mask id="wmk"><rect x="0" y="0" width="100" height="100" fill="#fff"/><path d="M17 41 A33 33 0 0 0 83 41" fill="none" stroke="#000" stroke-width="3.2" stroke-linecap="round"/><g fill="#000"><ellipse cx="34" cy="49" rx="2.6" ry="4.4" transform="rotate(-25 34 49)"/><ellipse cx="50" cy="53" rx="2.6" ry="4.4"/><ellipse cx="66" cy="49" rx="2.6" ry="4.4" transform="rotate(25 66 49)"/><ellipse cx="42" cy="63" rx="2.4" ry="4" transform="rotate(-12 42 63)"/><ellipse cx="58" cy="63" rx="2.4" ry="4" transform="rotate(12 58 63)"/></g></mask></defs><g mask="url(#wmk)" transform="rotate(-12 50 50)"><path d="M8 38 Q8 36 10 36 L90 36 Q92 36 92 38 A42 42 0 0 1 8 38 Z" fill="currentColor"/></g><path d="M60 30 C 62 18, 74 12, 82 14 C 80 24, 70 31, 60 30 Z" fill="currentColor" transform="rotate(-12 50 50)"/></svg>`;
+const LOGO = `<svg viewBox="-0.9 1.2 92.6 92.6" aria-label="Family Hub"><defs><mask id="wmk"><rect x="-10" y="-10" width="120" height="130" fill="#fff"/><path d="M14 40 A36 36 0 0 0 86 40" fill="none" stroke="#000" stroke-width="3.6" stroke-linecap="round"/></mask></defs><g transform="rotate(-20 50 50)"><path mask="url(#wmk)" d="M6 33 Q6 30 9 30 L91 30 Q94 30 94 33 A44 44 0 0 1 6 33 Z" fill="currentColor"/></g></svg>`;
 /* ---------------- 전체 메뉴 (apple.com 스타일) ---------------- */
 function menuData() {
   const h = S.home || {}, trips = (h.trips || []).slice(0, 3), admin = S.me && S.me.role === 'admin';
@@ -653,7 +683,8 @@ function navBar(path) {
   const M_ = menuData(), np = S.home && S.home.new_posts;
   return `<nav class="nav foot-dir"><div class="fd-in"><div class="fd-note">Family Hub는 가족만 사용하는 비공개 앱이에요. 비밀 메시지와 여행 서류는 정해진 가족만 볼 수 있어요.${np ? ` · 새 글 <a href="#/board">${np}개</a>` : ''}</div>
     <div class="fd-cols">${M_.map(it => `<div><h6>${esc(it.t)}</h6>${it.big.concat(it.cols.flatMap(c => c[1])).filter((x, i, a) => a.findIndex(y => y[0] === x[0]) === i).slice(0, 7).map(([t, to]) => `<a href="${to}">${esc(t)}</a>`).join('')}</div>`).join('')}</div>
-    <div class="fd-bot"><span>Copyright © ${new Date().getFullYear()} Family Hub. 모든 권리 보유.</span><span>${esc(S.me.nick)} · <a href="#/me">설정</a> · ${APP_VER}</span></div></div></nav>`;
+    <div class="fd-bot"><span>Copyright © ${new Date().getFullYear()} Family Hub. 모든 권리 보유.</span><span>${esc(S.me.nick)} · <a href="#/me">설정</a> · ${APP_VER}</span></div></div></nav>
+    <div class="tabbar">${[['/', 'home', '홈'], ['/todo', 'check', '오늘'], ['/trip', 'plane', '여행'], ['/board', 'board', '게시판'], ['menu', 'grid', '메뉴']].map(([p, i, t]) => p === 'menu' ? `<button onclick="openMobileMenu()">${icon(i, 24, 1.6)}<span>${t}</span></button>` : `<a href="#${p}" class="${path === p || (p === '/todo' && ['/todo', '/mission', '/points'].includes(path)) || (p === '/board' && ['/board', '/album', '/capsule'].includes(path)) ? 'on' : ''}">${icon(i, 24, 1.6)}<span>${t}</span>${p === '/board' && np ? `<i class="tb-dot"></i>` : ''}</a>`).join('')}</div>`;
 }
 async function loadHome() {
   const h = await rpc('fh_home'); S.home = h; S.me = h.me; S.members = h.members;

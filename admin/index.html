@@ -14,7 +14,7 @@ body{margin:0;background:var(--soft);color:var(--ink);font-family:var(--bf);font
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;font-size:inherit;padding:0}
 input,select{font-family:var(--bf);font-size:15px;color:var(--ink)}
 b{font-weight:600}
-.top{background:rgba(250,250,252,.85);backdrop-filter:blur(20px);color:var(--ink);border-bottom:1px solid rgba(0,0,0,.08);padding:12px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:5}
+.top{background:rgba(250,250,252,.85);position:sticky;top:0;z-index:5;backdrop-filter:blur(20px);color:var(--ink);border-bottom:1px solid rgba(0,0,0,.08);padding:12px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:5}
 .top h1{margin:0;font-weight:700;font-size:17px;flex:1;display:flex;align-items:center;gap:6px}
 .top h1 span{color:var(--ink)}
 
@@ -64,6 +64,44 @@ th{font-weight:500;color:var(--muted);font-size:12.5px}
 .mrow:last-of-type{border-bottom:none}
 .mrow .mi{flex:1;min-width:0;line-height:1.6}
 .mrow .mi b{font-size:15px;color:var(--navy)}
+
+/* ===== PC 최적화 레이아웃 ===== */
+body{background:#f5f5f7}
+.shell{display:grid;grid-template-columns:248px 1fr;min-height:calc(100vh - 52px)}
+.top{height:52px;padding:0 24px!important}
+.top h1{font-size:15px!important;font-weight:600!important;gap:10px!important}
+.side{background:rgba(250,250,252,.9);border-right:1px solid rgba(0,0,0,.08);padding:20px 12px;position:sticky;top:52px;height:calc(100vh - 52px);overflow:auto}
+.side h6{margin:6px 12px 10px;font-size:11px;font-weight:600;color:var(--gray);letter-spacing:.02em}
+.side button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:9px 12px;border-radius:9px;font-size:14px;color:var(--ink);margin-bottom:2px;position:relative}
+.side button:hover{background:rgba(0,0,0,.04)}
+.side button.on{background:rgba(0,0,0,.07);font-weight:600}
+.side button svg{color:var(--org);flex:0 0 18px}
+.side .bdg2{margin-left:auto;background:var(--org);color:#fff;border-radius:10px;font-size:11px;min-width:20px;height:20px;display:grid;place-items:center;padding:0 6px;font-weight:600}
+.side .me{display:flex;align-items:center;gap:10px;padding:14px 12px;margin-top:18px;border-top:1px solid rgba(0,0,0,.08);font-size:13px}
+.main{padding:36px 44px 60px;max-width:1180px;width:100%}
+.main .ttl{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px}
+.main .ttl h2{margin:0;font-size:34px;font-weight:700;letter-spacing:-.03em;line-height:1.1}
+.main .ttl p{margin:6px 0 0;color:var(--gray);font-size:15px}
+.wrap{max-width:none!important;padding:0!important}
+.card{padding:22px 24px!important}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+.kpi{background:#fff;border-radius:18px;padding:20px 22px}
+.kpi span{font-size:13px;color:var(--gray)}
+.kpi b{display:block;font-size:30px;font-weight:700;letter-spacing:-.03em;margin-top:4px}
+table.mt td,table.mt th{padding:12px 10px}
+table.mt tr:hover td{background:#fafafc}
+table.mt th{font-size:12px;text-transform:none}
+.grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;align-items:start}
+@media(max-width:960px){
+  .shell{grid-template-columns:1fr}
+  .side{position:static;height:auto;display:flex;gap:6px;overflow-x:auto;padding:10px 12px;border-right:none;border-bottom:1px solid rgba(0,0,0,.08)}
+  .side h6,.side .me{display:none}
+  .side button{width:auto;flex:0 0 auto;white-space:nowrap}
+  .main{padding:22px 16px 40px}
+  .kpis{grid-template-columns:1fr 1fr}
+  .grid2{grid-template-columns:1fr}
+  .scroll-x{overflow-x:auto}
+}
 </style>
 </head>
 <body>
@@ -100,7 +138,7 @@ async function renderLogin(msg) {
   if (SB_URL.includes('YOUR-')) { $('#app').innerHTML = '<div class="login card">admin/index.html 의 SB_URL·SB_KEY 를 앱과 같은 값으로 바꿔 주세요.</div>'; return; }
   let list = []; try { list = await rpc('fh_public_members', {}, true); } catch (e) { $('#app').innerHTML = `<div class="login card">${esc(e.message)}</div>`; return; }
   let sel = null;
-  $('#app').innerHTML = `<div class="login"><img src="../icons/logo.svg" width="52" height="52" alt=""><h1 style="font-weight:700;font-size:28px;letter-spacing:-.03em;margin:12px 0 0">Family Hub admin</h1>
+  $('#app').innerHTML = `<div class="login"><svg width="52" height="52" viewBox="-0.9 1.2 92.6 92.6"><defs><mask id="wmk2"><rect width="100" height="100" fill="#fff"/><path d="M14 40 A36 36 0 0 0 86 40" fill="none" stroke="#000" stroke-width="3.6" stroke-linecap="round"/></mask></defs><g transform="rotate(-20 50 50)"><path mask="url(#wmk2)" d="M6 33 Q6 30 9 30 L91 30 Q94 30 94 33 A44 44 0 0 1 6 33 Z" fill="currentColor"/></g></svg><h1 style="font-weight:700;font-size:28px;letter-spacing:-.03em;margin:12px 0 0">Family Hub admin</h1>
     ${msg ? `<p style="color:#e03131">${esc(msg)}</p>` : '<p class="muted">관리자 계정으로 로그인하세요</p>'}
     <div class="who">${list.map(m => `<button data-id="${m.id}">${av(m, 44)}${esc(m.nick)}</button>`).join('')}</div>
     <input class="inp" id="pin" type="password" inputmode="numeric" placeholder="비밀번호" style="text-align:center;font-size:18px"><button class="btn p" id="go" style="margin-top:12px;width:100%;justify-content:center">들어가기</button>
@@ -116,11 +154,17 @@ async function boot() {
   ME = MEMBERS.find(m => m.role === 'admin') || null;
   render();
 }
+const SVGI = {members: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.5a5 5 0 0 1 5.5 5"/>', rewards: '<rect x="3" y="8" width="18" height="5" rx="1"/><path d="M5 13v8h14v-8M12 8v13M12 8S10.5 3 8 4.5 9 8 12 8zM12 8s1.5-5 4-3.5S15 8 12 8z"/>', points: '<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>', push: '<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/>', stats: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'};
+const ico = k => `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${SVGI[k]}</svg>`;
+const TITLE = { members: ['가족 구성원', '가족을 추가·삭제하고 비밀번호와 사진을 관리해요.'], rewards: ['보상·승인', '포인트 상점의 보상과 가족의 신청을 관리해요.'], points: ['포인트', '가족 포인트 현황과 규칙.'], push: ['알림 보내기', '가족 모두의 휴대폰에 알림을 보내요.'], stats: ['현황·설정', '저장 용량과 자동 알림 상태.'] };
 async function render() {
   let pend = 0; try { const rw = await rpc('fh_admin_rewards'); pend = rw.redemptions.filter(x => x.status === 'pending').length; } catch (e) { return; }
+  const me = MEMBERS.find(m => m.role === 'admin') || {};
   const T = [['members', '가족 구성원'], ['rewards', '보상·승인', pend], ['points', '포인트'], ['push', '알림 보내기'], ['stats', '현황·설정']];
-  $('#app').innerHTML = `<header class="top"><h1><img src="../icons/logo.svg" width="22" height="22" alt=""> admin</h1><a href="../">Family Hub로 ›</a><button class="btn sm" id="out">로그아웃</button></header>
-    <nav class="tabs">${T.map(([k, t, b]) => `<button data-t="${k}" class="${TAB === k ? 'on' : ''}">${t}${b ? `<span class="bdg">${b}</span>` : ''}</button>`).join('')}</nav><main class="wrap" id="main">불러오는 중…</main>`;
+  $('#app').innerHTML = `<header class="top"><h1><svg width="22" height="22" viewBox="-0.9 1.2 92.6 92.6"><defs><mask id="wmk"><rect width="100" height="100" fill="#fff"/><path d="M14 40 A36 36 0 0 0 86 40" fill="none" stroke="#000" stroke-width="3.6" stroke-linecap="round"/></mask></defs><g transform="rotate(-20 50 50)"><path mask="url(#wmk)" d="M6 33 Q6 30 9 30 L91 30 Q94 30 94 33 A44 44 0 0 1 6 33 Z" fill="currentColor"/></g></svg>Family Hub admin</h1><a href="../">Family Hub 앱 열기 ›</a><button class="btn sm" id="out">로그아웃</button></header>
+    <div class="shell"><aside class="side"><h6>관리</h6>${T.map(([k, t, b]) => `<button data-t="${k}" class="${TAB === k ? 'on' : ''}">${ico(k)}${t}${b ? `<span class="bdg2">${b}</span>` : ''}</button>`).join('')}
+      <div class="me">${av(me, 30)}<div><b>${esc(me.nick || '')}</b><div class="muted" style="font-size:12px">관리자</div></div></div></aside>
+    <section class="main"><div class="ttl"><div><h2>${TITLE[TAB][0]}</h2><p>${TITLE[TAB][1]}</p></div><div id="ttlAct"></div></div><main class="wrap" id="main">불러오는 중…</main></section></div>`;
   $$('[data-t]').forEach(b => b.onclick = () => { TAB = b.dataset.t; render(); });
   $('#out').onclick = async () => { await rpc('fh_logout').catch(() => {}); TOKEN = null; localStorage.removeItem('fh_token'); renderLogin(); };
   try { await VIEWS[TAB]($('#main')); } catch (e) { $('#main').innerHTML = `<div class="card">${esc(e.message)}</div>`; }
@@ -129,13 +173,16 @@ async function render() {
 const VIEWS = {
   async members(el) {
     MEMBERS = await rpc('fh_admin_members'); await loadPhotos();
-    el.innerHTML = `<div class="card"><h3>가족 구성원 <small><button class="btn p sm" id="add">＋ 가족 추가</button></small></h3>
-      ${MEMBERS.map(m => `<div class="mrow" style="${m.active ? '' : 'opacity:.45'}">${av(m, 40)}
-        <div class="mi"><b>${esc(m.nick)}</b> <small class="muted">${esc(m.name)} · ${m.birth.replace(/-/g, '.')}</small><br>
-          ${m.role === 'admin' ? '<span class="tag adm">admin</span>' : '<span class="tag">가족</span>'}${m.must_change ? ' <span class="tag wait">초기 비번</span>' : ''}${m.locked ? ' <span class="tag no">잠김</span>' : ''}${m.active ? '' : ' <span class="tag no">비활성</span>'}
-          <small class="muted"> ${fmtN(m.points.balance)}P · 접속 ${ago(m.last_seen)} · 기기 ${m.sessions} · 알림 ${m.push ? m.push + '대' : '꺼짐'}</small></div>
-        <button class="btn sm" data-ed="${m.id}">관리</button></div>`).join('')}
-      <p class="hint">· 새 가족의 처음 비밀번호는 <b>생일 6자리(YYMMDD)</b>예요. 처음 로그인할 때 바꾸도록 안내돼요.<br>· 비밀번호를 잊으면 [관리 → 비밀번호 초기화]를 누르면 생일 번호로 돌아가요.<br>· 비밀 메시지·타임캡슐 내용은 admin에서도 볼 수 없어요.</p></div>`;
+    const act = MEMBERS.filter(m => m.active), init = act.filter(m => m.must_change).length, push = act.filter(m => m.push).length;
+    $('#ttlAct').innerHTML = '<button class="btn p" id="add">＋ 가족 추가</button>';
+    el.innerHTML = `<div class="kpis"><div class="kpi"><span>가족</span><b>${act.length}명</b></div><div class="kpi"><span>초기 비밀번호 사용</span><b>${init}명</b></div><div class="kpi"><span>알림 켠 가족</span><b>${push}명</b></div><div class="kpi"><span>포인트 합계</span><b>${fmtN(act.reduce((a, m) => a + m.points.balance, 0))}P</b></div></div>
+      <div class="card scroll-x"><table class="mt"><tr><th></th><th>이름</th><th>실명</th><th>생일</th><th>권한</th><th>상태</th><th style="text-align:right">포인트</th><th>최근 접속</th><th>기기</th><th>알림</th><th></th></tr>
+      ${MEMBERS.map(m => `<tr style="${m.active ? '' : 'opacity:.45'}"><td style="width:48px">${av(m, 36)}</td><td><b>${esc(m.nick)}</b></td><td class="muted">${esc(m.name)}</td><td>${m.birth.replace(/-/g, '.')}</td>
+        <td>${m.role === 'admin' ? '<span class="tag adm">admin</span>' : '<span class="tag">가족</span>'}</td>
+        <td>${m.must_change ? '<span class="tag wait">초기 비번</span> ' : '<span class="tag ok">정상</span> '}${m.locked ? '<span class="tag no">잠김</span>' : ''}${m.active ? '' : '<span class="tag no">비활성</span>'}</td>
+        <td style="text-align:right">${fmtN(m.points.balance)}P</td><td class="muted">${ago(m.last_seen)}</td><td>${m.sessions}</td><td>${m.push ? m.push + '대' : '<span class="muted">꺼짐</span>'}</td>
+        <td style="text-align:right"><button class="btn sm" data-ed="${m.id}">관리</button></td></tr>`).join('')}</table></div>
+      <p class="hint">· 새 가족의 처음 비밀번호는 <b>생일 6자리(YYMMDD)</b>예요. 처음 로그인할 때 바꾸도록 안내돼요.<br>· 비밀번호를 잊으면 [관리 → 비밀번호 초기화]를 누르면 생일 번호로 돌아가요.<br>· 비밀 메시지·타임캡슐 내용은 admin에서도 볼 수 없어요.</p>`;
     $('#add').onclick = () => memberForm(null);
     $$('[data-ed]').forEach(b => b.onclick = () => memberForm(MEMBERS.find(m => m.id === +b.dataset.ed)));
   },
