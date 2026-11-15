@@ -8,28 +8,28 @@
 <link rel="icon" href="../icons/favicon-32.png">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
-:root{--navy:#1b2a4a;--ink:#1f2937;--gray:#6b7280;--line:#e5e7eb;--soft:#f5f6f8;--muted:#6b7280;--org:#f57c20;--org-d:#d9650f;--org-soft:#fff4ea;--red:#dc2626;--grn:#16a34a;--bf:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif}
+:root{--navy:#1d1d1f;--ink:#1d1d1f;--gray:#6e6e73;--line:#d2d2d7;--soft:#f5f5f7;--muted:#6e6e73;--org:#0071e3;--org-d:#0077ed;--org-soft:#e8f2fd;--red:#e30000;--grn:#1d8a3a;--bf:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue','Apple SD Gothic Neo','Pretendard Variable',Pretendard,'Malgun Gothic',sans-serif}
 *{box-sizing:border-box}
 body{margin:0;background:var(--soft);color:var(--ink);font-family:var(--bf);font-size:14.5px;letter-spacing:-.2px;-webkit-font-smoothing:antialiased}
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;font-size:inherit;padding:0}
 input,select{font-family:var(--bf);font-size:15px;color:var(--ink)}
 b{font-weight:600}
-.top{background:var(--navy);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:5}
+.top{background:rgba(250,250,252,.85);backdrop-filter:blur(20px);color:var(--ink);border-bottom:1px solid rgba(0,0,0,.08);padding:12px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:5}
 .top h1{margin:0;font-weight:700;font-size:17px;flex:1;display:flex;align-items:center;gap:6px}
-.top h1 span{color:#fff}
-.top h1 i{width:7px;height:7px;border-radius:50%;background:var(--org);display:inline-block}
-.top a{color:#cbd5e1;font-size:13.5px;text-decoration:none}
+.top h1 span{color:var(--ink)}
+
+.top a{color:var(--org);font-size:13.5px;text-decoration:none}
 .tabs{display:flex;gap:6px;overflow-x:auto;padding:10px 14px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:48px;z-index:4}
-.tabs button{flex:0 0 auto;padding:7px 13px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:13.5px;position:relative}
+.tabs button{flex:0 0 auto;padding:7px 14px;border-radius:980px;border:1px solid var(--line);background:#fff;font-size:13.5px;position:relative}
 .tabs button.on{background:var(--navy);border-color:var(--navy);color:#fff}
 .tabs .bdg{position:absolute;top:-6px;right:-5px;background:var(--org);color:#fff;border-radius:9px;font-size:11px;min-width:18px;height:18px;display:grid;place-items:center;padding:0 4px}
 .wrap{max-width:860px;margin:0 auto;padding:14px}
-.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}
+.card{background:#fff;border:none;border-radius:18px;padding:16px;margin-bottom:12px}
 .card h3{margin:0 0 12px;font-weight:700;font-size:15.5px;color:var(--navy);display:flex;align-items:center;gap:8px}
 .card h3 small{font-weight:400;font-size:12.5px;color:var(--muted);margin-left:auto}
-.btn{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:9px;background:#fff;padding:8px 12px;font-size:13.5px;font-weight:600;color:var(--navy)}
+.btn{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--org);border-radius:980px;background:#fff;padding:7px 14px;font-size:13.5px;font-weight:400;color:var(--org)}
 .btn:active{background:var(--soft)}
-.btn.p{background:var(--org);border-color:var(--org);color:#fff}.btn.g{background:var(--navy);border-color:var(--navy);color:#fff}.btn.r{color:var(--red);border-color:#fecaca}
+.btn.p,.btn.g{background:var(--org);border-color:var(--org);color:#fff}.btn.r{color:var(--red);border-color:#fecaca}
 .btn.sm{padding:5px 10px;font-size:12.5px}
 .inp{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 11px;background:#fff;outline:none}
 .inp:focus{border-color:var(--navy)}
@@ -71,8 +71,8 @@ th{font-weight:500;color:var(--muted);font-size:12.5px}
 <div id="toast"></div>
 <script>
 /* ===== 설정: 앱(index.html)과 같은 값으로 바꿔 주세요 ===== */
-const SB_URL = 'https://YOUR-PROJECT-ID.supabase.co';
-const SB_KEY = 'YOUR-ANON-PUBLIC-KEY';
+const SB_URL = 'https://kcpymvsvczjjqptvtvxf.supabase.co';
+const SB_KEY = 'sb_publishable_I70vgd6mSVcflUH_NkzGAw_z0z2dWt7';
 
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -91,7 +91,7 @@ async function rpc(fn, args = {}, noAuth) {
 }
 const M = id => MEMBERS.find(m => m.id === id) || { nick: '(삭제됨)', color: '#cbd5e1' };
 const PH = {};
-const av = (m, size = 38) => `<span class="av" style="--c:${m.color || '#1b2a4a'};width:${size}px;height:${size}px;font-size:${Math.round(size * .4)}px">${PH[m.id] ? `<img src="${PH[m.id]}">` : esc((m.nick || m.name || '?').slice(0, 1))}</span>`;
+const av = (m, size = 38) => `<span class="av" style="--c:${m.color || '#1b2a4a'};width:${size}px;height:${size}px;font-size:${Math.round(size * .4)}px">${PH[m.id] ? `<img src="${PH[m.id]}">` : esc(((n => { const r = n.match(/^(song|kim|lee|park|choi|jung|jeong|kang|cho|yoon|jang|lim|han|oh|seo|shin|kwon|hwang|ahn|yang)(.+)$/i); return r ? r[2] : n; })((m.nick || m.name || '?').trim())).slice(0, 1).toUpperCase())}</span>`;
 async function loadPhotos() { const ids = MEMBERS.filter(m => m.photo_v).map(m => m.id); if (!ids.length) return; try { Object.assign(PH, await rpc('fh_member_photos', { p_ids: ids })); } catch (e) {} }
 function cropSquare(file, size = 320) { return new Promise((res, rej) => { const url = URL.createObjectURL(file), img = new Image(); img.onload = () => { const m = Math.min(img.width, img.height), c = document.createElement('canvas'); c.width = c.height = size; c.getContext('2d').drawImage(img, (img.width - m) / 2, (img.height - m) / 2, m, m, 0, 0, size, size); URL.revokeObjectURL(url); res(c.toDataURL('image/jpeg', .85)); }; img.onerror = () => rej(new Error('사진을 읽을 수 없어요')); img.src = url; }); }
 function sheet(html, mount) { const m = document.createElement('div'); m.className = 'mask'; m.innerHTML = `<div class="sheet">${html}</div>`; const close = () => m.remove(); m.onclick = e => { if (e.target === m || e.target.closest('[data-close]')) close(); }; document.body.appendChild(m); mount && mount(m.querySelector('.sheet'), close); }
@@ -100,7 +100,7 @@ async function renderLogin(msg) {
   if (SB_URL.includes('YOUR-')) { $('#app').innerHTML = '<div class="login card">admin/index.html 의 SB_URL·SB_KEY 를 앱과 같은 값으로 바꿔 주세요.</div>'; return; }
   let list = []; try { list = await rpc('fh_public_members', {}, true); } catch (e) { $('#app').innerHTML = `<div class="login card">${esc(e.message)}</div>`; return; }
   let sel = null;
-  $('#app').innerHTML = `<div class="login"><h1 style="font-weight:800;font-size:28px;margin:0;color:var(--navy)">Family Hub <span style="color:var(--org)">admin</span></h1>
+  $('#app').innerHTML = `<div class="login"><img src="../icons/logo.svg" width="52" height="52" alt=""><h1 style="font-weight:700;font-size:28px;letter-spacing:-.03em;margin:12px 0 0">Family Hub admin</h1>
     ${msg ? `<p style="color:#e03131">${esc(msg)}</p>` : '<p class="muted">관리자 계정으로 로그인하세요</p>'}
     <div class="who">${list.map(m => `<button data-id="${m.id}">${av(m, 44)}${esc(m.nick)}</button>`).join('')}</div>
     <input class="inp" id="pin" type="password" inputmode="numeric" placeholder="비밀번호" style="text-align:center;font-size:18px"><button class="btn p" id="go" style="margin-top:12px;width:100%;justify-content:center">들어가기</button>
@@ -119,7 +119,7 @@ async function boot() {
 async function render() {
   let pend = 0; try { const rw = await rpc('fh_admin_rewards'); pend = rw.redemptions.filter(x => x.status === 'pending').length; } catch (e) { return; }
   const T = [['members', '가족 구성원'], ['rewards', '보상·승인', pend], ['points', '포인트'], ['push', '알림 보내기'], ['stats', '현황·설정']];
-  $('#app').innerHTML = `<header class="top"><h1>Family Hub admin<i></i></h1><a href="../">앱으로 ↗</a><button class="btn sm" id="out" style="background:transparent;color:#fff;border-color:#475569">로그아웃</button></header>
+  $('#app').innerHTML = `<header class="top"><h1><img src="../icons/logo.svg" width="22" height="22" alt=""> admin</h1><a href="../">Family Hub로 ›</a><button class="btn sm" id="out">로그아웃</button></header>
     <nav class="tabs">${T.map(([k, t, b]) => `<button data-t="${k}" class="${TAB === k ? 'on' : ''}">${t}${b ? `<span class="bdg">${b}</span>` : ''}</button>`).join('')}</nav><main class="wrap" id="main">불러오는 중…</main>`;
   $$('[data-t]').forEach(b => b.onclick = () => { TAB = b.dataset.t; render(); });
   $('#out').onclick = async () => { await rpc('fh_logout').catch(() => {}); TOKEN = null; localStorage.removeItem('fh_token'); renderLogin(); };
