@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Family Hub</title>
+<meta name="theme-color" content="#fff4e6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Family Hub">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#2b2f3a; --cream:#fff4e6; --bg:#fffaf3; --line:#ecdcc6; --muted:#8a8f9a;
+  --org:#ff8a3d; --org-d:#e8681a; --red:#ff6b6b; --yel:#ffd43b; --blu:#4dabf7; --grn:#40c057; --pur:#9775fa;
+  --hf:'Black Han Sans','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  --bf:'Jua','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  --safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--bf);font-size:15px;min-height:100vh;overscroll-behavior-y:none}
+button{font-family:inherit;cursor:pointer;color:inherit;border:none;background:none;padding:0;font-size:inherit}
+input,textarea,select{font-family:var(--bf);font-size:16px;color:var(--ink)}
+a{color:#1c7ed6}
+.hide{display:none!important}
+.muted{color:var(--muted)}
+small{font-size:12px}
+
+/* ---------- layout ---------- */
+#app{max-width:520px;margin:0 auto;min-height:100vh;padding-bottom:calc(84px + var(--safe-b))}
+.top{position:sticky;top:0;z-index:20;background:var(--cream);border-bottom:3px solid var(--ink);padding:10px 14px;display:flex;align-items:center;gap:10px}
+.top h1{margin:0;flex:1;font-family:var(--hf);font-weight:400;font-size:24px;letter-spacing:-.5px;display:flex;align-items:center;gap:8px}
+.top h1 .f{color:var(--org)}
+.top .back{width:38px;height:38px;border-radius:12px;background:#fff;border:2.5px solid var(--ink);font-size:20px;display:grid;place-items:center}
+.tbtn{position:relative;width:40px;height:40px;border-radius:13px;background:#fff;border:2.5px solid var(--ink);display:grid;place-items:center;font-size:20px;box-shadow:0 3px 0 var(--ink)}
+.tbtn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.bdg{position:absolute;top:-7px;right:-7px;min-width:20px;height:20px;border-radius:10px;background:var(--red);color:#fff;font-size:12px;display:grid;place-items:center;padding:0 5px;border:2px solid #fff}
+.wrap{padding:14px}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:#fff;border-top:3px solid var(--ink);padding:6px 6px calc(6px + var(--safe-b))}
+.nav-in{max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+.nav a{display:flex;flex-direction:column;align-items:center;gap:1px;text-decoration:none;color:var(--muted);font-size:12px;padding:4px 0;border-radius:12px;position:relative}
+.nav a i{font-style:normal;font-size:23px;line-height:1.1;filter:grayscale(.85);opacity:.8}
+.nav a.on{color:var(--ink);background:var(--cream)}
+.nav a.on i{filter:none;opacity:1}
+.nav .bdg{top:-2px;right:calc(50% - 26px)}
+
+/* ---------- cards & ui ---------- */
+.card{background:#fff;border:3px solid var(--ink);border-radius:20px;padding:14px;margin-bottom:14px;box-shadow:0 5px 0 var(--line)}
+.card h3{margin:0 0 10px;font-family:var(--hf);font-weight:400;font-size:18px;display:flex;align-items:center;gap:6px}
+.card h3 small{font-family:var(--bf);color:var(--muted);font-size:12.5px;margin-left:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:2.5px solid var(--ink);border-radius:14px;background:#fff;padding:9px 14px;font-size:15px;box-shadow:0 3px 0 var(--ink);transition:transform .06s}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.btn.p{background:var(--org);color:#fff}
+.btn.y{background:var(--yel)}
+.btn.g{background:var(--grn);color:#fff}
+.btn.r{background:var(--red);color:#fff}
+.btn.sm{padding:6px 10px;font-size:13.5px;border-radius:11px;box-shadow:0 2px 0 var(--ink)}
+.btn.block{width:100%}
+a.btn,a.chip{text-decoration:none;color:inherit}
+a.btn.p{color:#fff}
+.btn[disabled]{opacity:.45}
+.inp{width:100%;border:2.5px solid var(--ink);border-radius:13px;padding:10px 12px;background:#fff;outline:none}
+.inp:focus{border-color:var(--org)}
+textarea.inp{resize:vertical;min-height:80px;line-height:1.5}
+.row{display:flex;gap:8px;align-items:center}
+.row>.inp{flex:1;min-width:0}
+.lbl{display:block;margin:12px 0 5px;font-size:13.5px;color:#555}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:2px solid var(--ink);border-radius:999px;padding:5px 11px;background:#fff;font-size:13.5px}
+.chip.on{background:var(--ink);color:#fff}
+.empty{text-align:center;color:var(--muted);padding:22px 8px;line-height:1.6}
+.av{display:inline-grid;place-items:center;border-radius:50%;background:var(--c,#eee);border:2.5px solid var(--ink);flex:0 0 auto;line-height:1}
+.bar{height:10px;border-radius:6px;background:#f1e6d6;overflow:hidden;border:2px solid var(--ink)}
+.bar i{display:block;height:100%;background:var(--grn);border-radius:4px;transition:width .3s}
+.hint{font-size:12.5px;color:var(--muted);line-height:1.55;margin:8px 0 0}
+.sep{height:1px;background:var(--line);margin:12px 0}
+
+/* ---------- toast & modal ---------- */
+#toast{position:fixed;left:50%;bottom:calc(96px + var(--safe-b));transform:translateX(-50%) translateY(20px);opacity:0;background:var(--ink);color:#fff;padding:10px 16px;border-radius:14px;z-index:200;transition:.25s;max-width:88vw;text-align:center;font-size:14px;pointer-events:none}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.err{background:#e03131}
+.mask{position:fixed;inset:0;background:rgba(30,30,40,.5);z-index:100;display:flex;align-items:flex-end;justify-content:center;animation:fade .15s}
+.sheet{background:#fff;width:100%;max-width:520px;max-height:92vh;overflow:auto;border-radius:24px 24px 0 0;border:3px solid var(--ink);border-bottom:none;padding:16px 16px calc(18px + var(--safe-b));animation:up .2s}
+.sheet h2{margin:0 0 12px;font-family:var(--hf);font-weight:400;font-size:21px;display:flex;align-items:center;gap:8px}
+.sheet h2 .x{margin-left:auto;font-size:22px;width:36px;height:36px;border-radius:12px;background:#f3f0ea}
+.sheet .foot{display:flex;gap:8px;margin-top:16px}
+.sheet .foot .btn{flex:1}
+@keyframes up{from{transform:translateY(40px);opacity:.4}}
+@keyframes fade{from{opacity:0}}
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:150;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.lightbox img{max-width:100%;max-height:82vh;object-fit:contain}
+.lightbox .lb-bar{display:flex;gap:10px;margin-top:14px}
+
+/* ---------- login ---------- */
+.login{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 18px;background:var(--cream)}
+.logo-big{font-family:var(--hf);font-size:44px;letter-spacing:-1px;margin:0;line-height:1}
+.logo-big .f{color:var(--org)}
+.login .sub{margin:8px 0 26px;color:#7b6a55}
+.who{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;width:100%;max-width:360px}
+.who button{background:#fff;border:3px solid var(--ink);border-radius:20px;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;box-shadow:0 5px 0 var(--ink);font-size:18px}
+.who button:active{transform:translateY(3px);box-shadow:0 2px 0 var(--ink)}
+.who .av{width:62px;height:62px;font-size:34px}
+.pin-dots{display:flex;gap:10px;justify-content:center;margin:14px 0 18px}
+.pin-dots i{width:16px;height:16px;border-radius:50%;border:2.5px solid var(--ink);background:#fff}
+.pin-dots i.on{background:var(--org)}
+.pad{display:grid;grid-template-columns:repeat(3,76px);gap:12px;justify-content:center}
+.pad button{height:62px;border-radius:18px;background:#fff;border:3px solid var(--ink);font-size:26px;font-family:var(--hf);box-shadow:0 4px 0 var(--ink)}
+.pad button:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.pad button.fn{font-size:16px;font-family:var(--bf);background:#f8f1e6}
+
+/* ---------- home ---------- */
+.alerts{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.alert{display:flex;align-items:center;gap:10px;background:#fff;border:2.5px solid var(--ink);border-radius:16px;padding:10px 12px;text-align:left;width:100%}
+.alert .ai{font-size:24px}
+.alert b{display:block;font-weight:400;font-size:15px}
+.alert small{color:var(--muted)}
+.alert.hot{background:#fff0f0}
+.alert.gold{background:#fff9db}
+.fam{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.mcard{background:#fff;border:3px solid var(--ink);border-radius:20px;padding:12px 10px 10px;text-align:center;box-shadow:0 5px 0 var(--c,#ddd);position:relative;width:100%}
+.mcard .av{width:56px;height:56px;font-size:31px}
+.mcard .nm{font-size:18px;margin-top:5px}
+.mcard .days{font-family:var(--hf);font-size:21px;color:var(--org-d);margin:2px 0 0;letter-spacing:-.3px}
+.mcard .days small{font-family:var(--bf);font-size:12px;color:var(--muted)}
+.mcard .meta{font-size:12px;color:var(--muted);margin-top:3px;min-height:16px}
+.mcard .bar{margin-top:7px;height:8px}
+.mcard .mood{position:absolute;top:8px;right:9px;font-size:20px}
+.mcard .pt{position:absolute;top:9px;left:9px;font-size:11.5px;background:var(--yel);border:2px solid var(--ink);border-radius:999px;padding:1px 6px}
+.mcard .st{font-size:12px;margin-top:4px;color:#1971c2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.moodpick{display:flex;justify-content:space-between;gap:4px}
+.moodpick button{flex:1;font-size:27px;padding:6px 0;border-radius:14px;border:2.5px solid transparent}
+.moodpick button.on{border-color:var(--ink);background:var(--cream)}
+.moodpick button small{display:block;font-size:11px;color:var(--muted)}
+.score-row{display:flex;align-items:center;gap:12px;margin-top:10px}
+.score-row input[type=range]{flex:1;accent-color:var(--org);height:30px}
+.score-big{font-family:var(--hf);font-size:30px;color:var(--org-d);min-width:64px;text-align:right}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.quick a,.quick button{display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:var(--ink);font-size:12.5px;background:#fff;border:2.5px solid var(--ink);border-radius:16px;padding:10px 2px;position:relative}
+.quick i{font-style:normal;font-size:26px}
+.otd{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.otd .ph{flex:0 0 96px;height:96px;border-radius:14px;border:2.5px solid var(--ink);background:#eee center/cover;position:relative}
+.otd .ph span{position:absolute;bottom:4px;left:4px;background:rgba(0,0,0,.6);color:#fff;font-size:11px;padding:1px 6px;border-radius:8px}
+
+/* ---------- todo ---------- */
+.strip{display:flex;gap:6px;overflow-x:auto;padding:2px 2px 8px;scrollbar-width:none}
+.strip::-webkit-scrollbar{display:none}
+.strip button{flex:0 0 44px;border:2px solid var(--line);border-radius:12px;padding:5px 0;background:#fff;font-size:15px;line-height:1.15}
+.strip button small{display:block;font-size:10.5px;color:var(--muted)}
+.strip button.part{border-color:var(--yel);background:#fff9db}
+.strip button.ok{border-color:var(--grn);background:#ebfbee}
+.strip button.today{box-shadow:inset 0 -3px 0 var(--org)}
+.strip button.sel{border-color:var(--ink);background:var(--ink);color:#fff}
+.strip button.sel small{color:#ddd}
+.tlist{list-style:none;margin:8px 0 0;padding:0}
+.tlist li{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1.5px dashed var(--line)}
+.tlist li:last-child{border-bottom:none}
+.ck{width:30px;height:30px;border-radius:10px;border:2.5px solid var(--ink);display:grid;place-items:center;font-size:18px;color:#fff;flex:0 0 auto;background:#fff}
+.tlist li.done .ck{background:var(--grn)}
+.tlist li .tt{flex:1;font-size:16px;word-break:break-all}
+.tlist li.done .tt{text-decoration:line-through;color:var(--muted)}
+.tlist li .del{color:#c9c2b8;font-size:18px;padding:4px}
+.who-chips{display:flex;gap:6px;overflow-x:auto;margin-bottom:10px}
+.who-chips button{display:flex;align-items:center;gap:5px;border:2px solid var(--ink);border-radius:999px;padding:4px 10px 4px 4px;background:#fff;font-size:14px;flex:0 0 auto}
+.who-chips button.on{background:var(--ink);color:#fff}
+.who-chips .av{width:26px;height:26px;font-size:15px;border-width:1.5px}
+.pts{display:flex;justify-content:space-around;text-align:center}
+.pts b{display:block;font-family:var(--hf);font-weight:400;font-size:26px;color:var(--org-d)}
+.pts span{font-size:12px;color:var(--muted)}
+.celebrate{text-align:center;padding:10px 0}
+.celebrate .e{font-size:72px;animation:pop .6s}
+.celebrate h2{justify-content:center;font-size:26px!important;color:var(--org-d)}
+@keyframes pop{0%{transform:scale(.2) rotate(-30deg)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:120;overflow:hidden}
+.confetti i{position:absolute;top:-20px;width:10px;height:14px;border-radius:2px;animation:fall 2.2s linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+
+/* ---------- family / map ---------- */
+#map{height:300px;border-radius:16px;border:3px solid var(--ink);overflow:hidden;background:#e9ecef;z-index:1}
+.loc-list{list-style:none;margin:0;padding:0}
+.loc-list li{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1.5px dashed var(--line)}
+.loc-list li:last-child{border:none}
+.loc-list .av{width:38px;height:38px;font-size:21px}
+.loc-list .info{flex:1;min-width:0}
+.loc-list .info small{display:block;color:var(--muted)}
+.arrive{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.arrive button{border:2.5px solid var(--ink);border-radius:14px;background:#fff;padding:10px 2px;font-size:13.5px;box-shadow:0 3px 0 var(--ink)}
+.arrive button i{display:block;font-style:normal;font-size:24px}
+.arrive button:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.pin-ic{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:3px solid #2b2f3a;font-size:22px;box-shadow:0 3px 6px rgba(0,0,0,.35)}
+.switch{position:relative;width:52px;height:30px;flex:0 0 auto}
+.switch input{opacity:0;width:0;height:0}
+.switch span{position:absolute;inset:0;border-radius:20px;background:#ccc;border:2.5px solid var(--ink);transition:.2s}
+.switch span::after{content:"";position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;border:2px solid var(--ink);top:2px;left:2px;transition:.2s}
+.switch input:checked+span{background:var(--grn)}
+.switch input:checked+span::after{left:24px}
+
+/* ---------- messages ---------- */
+.msg{display:flex;gap:10px;padding:11px 0;border-bottom:1.5px dashed var(--line)}
+.msg:last-child{border:none}
+.msg .av{width:40px;height:40px;font-size:22px}
+.msg .mb{flex:1;min-width:0}
+.msg .mh{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--muted)}
+.msg .mh b{color:var(--ink);font-weight:400;font-size:15px}
+.msg .mt{margin-top:4px;background:var(--cream);border-radius:4px 16px 16px 16px;padding:9px 12px;white-space:pre-wrap;word-break:break-word;line-height:1.5}
+.msg.out .mt{background:#e7f5ff}
+.sealed{margin-top:5px;background:linear-gradient(135deg,#ffe3e3,#fff0f6);border:2.5px dashed #e64980;border-radius:14px;padding:12px;text-align:center;width:100%;font-size:15px}
+.cap{border:3px solid var(--ink);border-radius:18px;padding:12px;margin-bottom:10px;background:#fff}
+.cap.locked{background:repeating-linear-gradient(45deg,#f8f0ff,#f8f0ff 10px,#fff 10px,#fff 20px)}
+.cap .ch{display:flex;align-items:center;gap:8px}
+.cap .dd{margin-left:auto;font-family:var(--hf);color:var(--pur);font-size:18px}
+.cap .cb{margin-top:8px;white-space:pre-wrap;line-height:1.6;background:#fffbea;border-radius:12px;padding:10px}
+
+/* ---------- board ---------- */
+.post{background:#fff;border:3px solid var(--ink);border-radius:20px;margin-bottom:14px;overflow:hidden;box-shadow:0 5px 0 var(--line)}
+.post .ph{display:flex;align-items:center;gap:9px;padding:11px 12px}
+.post .ph .av{width:38px;height:38px;font-size:21px}
+.post .ph small{display:block;color:var(--muted)}
+.post .ph .more{margin-left:auto;font-size:20px;color:var(--muted);padding:4px 6px}
+.post .pb{padding:0 13px 10px;white-space:pre-wrap;word-break:break-word;line-height:1.55;font-size:15.5px}
+.pics{display:grid;gap:2px;background:#eee}
+.pics.n1{grid-template-columns:1fr}
+.pics.n2,.pics.n4{grid-template-columns:1fr 1fr}
+.pics.n3,.pics.n5,.pics.n6{grid-template-columns:1fr 1fr 1fr}
+.pics .pic{aspect-ratio:1;background:#e9e4dc center/cover no-repeat}
+.pics.n1 .pic{aspect-ratio:auto;min-height:200px;max-height:480px}
+.pics.n1 .pic img{width:100%;display:block}
+.post .pa{display:flex;gap:14px;padding:9px 13px;border-top:1.5px dashed var(--line);font-size:14px;align-items:center}
+.post .pa .liked{color:#e03131}
+.post .cm{padding:2px 13px 10px;font-size:14px}
+.post .cm div{padding:4px 0;display:flex;gap:6px;align-items:flex-start}
+.post .cm div b{font-weight:400;color:var(--org-d);flex:0 0 auto}
+.post .cm div span{flex:1;word-break:break-word}
+.post .cm div button{color:#c9c2b8}
+.upl{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.upl .th{width:72px;height:72px;border-radius:12px;border:2px solid var(--ink);background:#eee center/cover;position:relative}
+.upl .th button{position:absolute;top:-8px;right:-8px;width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;font-size:12px}
+.upl .add{width:72px;height:72px;border-radius:12px;border:2.5px dashed var(--ink);font-size:24px;display:grid;place-items:center;background:#fff}
+.album{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.album .pic{aspect-ratio:1;background:#e9e4dc center/cover;border-radius:6px}
+
+/* ---------- more ---------- */
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.tile{background:#fff;border:3px solid var(--ink);border-radius:20px;padding:14px 4px 10px;display:flex;flex-direction:column;align-items:center;gap:5px;text-decoration:none;color:var(--ink);box-shadow:0 4px 0 var(--tc,var(--line));position:relative;font-size:14px}
+.tile i{font-style:normal;font-size:32px}
+.tile small{font-size:11px;color:var(--muted)}
+.tile:active{transform:translateY(3px);box-shadow:0 1px 0 var(--tc,var(--line))}
+
+/* ---------- calendar ---------- */
+.cal-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.cal-h b{font-family:var(--hf);font-weight:400;font-size:21px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center}
+.cal .wd{font-size:12px;color:var(--muted);padding:2px 0}
+.cal .wd:first-child{color:#e03131}.cal .wd:last-child{color:#1c7ed6}
+.cal button{aspect-ratio:1;border-radius:11px;font-size:14.5px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:5px;border:2px solid transparent}
+.cal button.out{color:#ccc}
+.cal button.td{background:var(--cream);border-color:var(--org)}
+.cal button.sel{border-color:var(--ink);background:#fff3bf}
+.cal button.sun{color:#e03131}.cal button.sat{color:#1c7ed6}
+.cal button .dots{display:flex;gap:2px;margin-top:3px;flex-wrap:wrap;justify-content:center;max-width:90%}
+.cal button .dots i{width:6px;height:6px;border-radius:50%;background:var(--org)}
+.ev{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1.5px dashed var(--line)}
+.ev:last-child{border:none}
+.ev .ei{font-size:22px;width:34px;text-align:center}
+.ev .eb{flex:1;min-width:0}
+.ev .eb small{display:block;color:var(--muted)}
+.ev .dd{font-family:var(--hf);font-size:16px;color:var(--org-d);white-space:nowrap}
+
+/* ---------- shop / mission / growth / report ---------- */
+.shop li{display:flex;align-items:center;gap:10px;padding:10px 2px;border-bottom:1.5px dashed var(--line)}
+.shop li.done .tt{text-decoration:line-through;color:var(--muted)}
+.shop li .tt{flex:1}
+.shop li .tt small{display:block;color:var(--muted)}
+.shop{list-style:none;margin:0;padding:0}
+.ms{border:3px solid var(--ink);border-radius:18px;padding:12px;margin-bottom:12px;background:#fff}
+.ms .mh{display:flex;align-items:center;gap:8px;font-size:17px}
+.ms .mh i{font-style:normal;font-size:28px}
+.ms .mh small{display:block;font-size:12px;color:var(--muted)}
+.ms .num{margin-left:auto;font-family:var(--hf);font-size:18px;color:var(--org-d);text-align:right}
+.ms .bar{margin:10px 0 8px;height:14px}
+.ms .per{display:flex;gap:10px;flex-wrap:wrap;font-size:13px;color:#555}
+.ms.done{background:#ebfbee}
+.gtable{width:100%;border-collapse:collapse;font-size:14px}
+.gtable th,.gtable td{padding:7px 4px;border-bottom:1.5px dashed var(--line);text-align:center}
+.gtable th{color:var(--muted);font-weight:400;font-size:12.5px}
+.gchart{width:100%;height:auto;display:block}
+.rep{border:3px solid var(--ink);border-radius:18px;padding:12px;margin-bottom:12px;background:#fff;position:relative}
+.rep .rh{display:flex;align-items:center;gap:10px}
+.rep .rh .av{width:44px;height:44px;font-size:24px}
+.rep .rh b{font-weight:400;font-size:18px}
+.rep .crown{position:absolute;top:-16px;left:18px;font-size:26px}
+.rep .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px;text-align:center}
+.rep .stats div{background:var(--bg);border-radius:12px;padding:7px 2px}
+.rep .stats b{display:block;font-family:var(--hf);font-weight:400;font-size:18px;color:var(--org-d)}
+.rep .stats span{font-size:11px;color:var(--muted)}
+.rep .moods{margin-top:8px;font-size:20px;letter-spacing:2px}
+.lead{list-style:none;margin:0;padding:0}
+.lead li{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1.5px dashed var(--line)}
+.lead li:last-child{border:none}
+.lead .rk{font-family:var(--hf);font-size:20px;width:26px;text-align:center}
+.lead .av{width:36px;height:36px;font-size:20px}
+.lead .pv{margin-left:auto;font-family:var(--hf);color:var(--org-d);font-size:19px}
+.rw{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1.5px dashed var(--line)}
+.rw:last-child{border:none}
+.rw i{font-style:normal;font-size:30px}
+.rw .rb{flex:1}
+.rw .rb small{display:block;color:var(--muted)}
+.stk{display:flex;gap:6px;flex-wrap:wrap}
+.stk button{font-size:28px;width:52px;height:52px;border-radius:14px;border:2.5px solid var(--line);background:#fff}
+.stk button.on{border-color:var(--ink);background:var(--cream)}
+.tag{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:8px;background:#f1f3f5;color:#555;margin-left:4px}
+.tag.ok{background:#d3f9d8;color:#2b8a3e}.tag.wait{background:#fff3bf;color:#a6730b}.tag.no{background:#ffe3e3;color:#c92a2a}
+
+/* ---------- digital hub ---------- */
+.hub-tools{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.hub-list{list-style:none;margin:0;padding:0}
+.hub-list li{border-bottom:1.5px dashed var(--line)}
+.hub-list .hm{display:flex;align-items:center;gap:10px;padding:10px 2px;width:100%;text-align:left}
+.hub-list .hi{width:34px;height:34px;flex:0 0 34px}
+.hub-list .ht{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:15.5px}
+.hub-list .hd{font-size:12px;color:var(--muted)}
+.hub-memo{padding:0 4px 12px 46px;white-space:pre-wrap;word-break:break-word;line-height:1.55;font-size:14.5px}
+.hub-memo img{width:88px;height:88px;object-fit:cover;border-radius:10px;margin:6px 6px 0 0;border:2px solid var(--ink)}
+.htypes{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.htypes button{border:2.5px solid var(--line);border-radius:14px;padding:8px 2px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:12px;background:#fff}
+.htypes button.on{border-color:var(--ink);background:var(--cream)}
+.htypes button i{width:30px;height:30px;display:block}
+.chips .chip i{width:16px;height:16px;display:inline-block;vertical-align:-3px;margin-right:3px}
+
+.trip-card{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:2.5px solid var(--ink);border-radius:16px;padding:10px 12px;margin-bottom:10px;background:#fff}
+.trip-card:last-child{margin-bottom:0}
+.trip-card .te{font-size:34px}
+.trip-card .tb{flex:1;min-width:0;display:flex;flex-direction:column}
+.trip-card .tb b{font-weight:400;font-size:16px}
+.trip-card .tb small{color:var(--muted);font-size:12.5px}
+.trip-card .tm{font-size:15px;margin-top:2px}
+.trip-card.other{opacity:.55}
+.trip-card.now{background:#e6fcf5}
+.trip-card.past{background:#f8f9fa}
+.tdd{font-family:var(--hf);color:#1098ad;font-size:17px;white-space:nowrap}
+.tdd.big{font-size:22px}
+.trip-head{background:linear-gradient(135deg,#e3fafc,#fff)}
+.ttabs{display:flex;gap:6px;overflow-x:auto;margin:-2px 0 12px;padding-bottom:4px;scrollbar-width:none}
+.ttabs::-webkit-scrollbar{display:none}
+.ttabs .chip{flex:0 0 auto;text-decoration:none}
+.ttabs .chip.on{color:#fff}
+.card.day.today{border-color:#1098ad;box-shadow:0 5px 0 #99e9f2}
+.plan{display:flex;gap:10px;padding:9px 0;border-bottom:1.5px dashed var(--line);cursor:pointer}
+.plan:last-child{border:none}
+.plan .pt{font-family:var(--hf);color:#1098ad;width:48px;flex:0 0 48px;font-size:15px}
+.plan .pb{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.plan .pb b{font-weight:400;font-size:15.5px}
+.plan .pb small{color:var(--muted);white-space:pre-wrap}
+.plan .pmap{font-size:13px;color:#1971c2;text-decoration:none}
+.docs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.doc{border:2px solid var(--ink);border-radius:14px;overflow:hidden;position:relative;background:#fff}
+.doc .dimg{aspect-ratio:4/3;background:#f1ece4 center/cover;cursor:pointer}
+.doc .dmeta{padding:6px 8px;font-size:13px;line-height:1.4}
+.doc .dmeta small{display:block;color:var(--muted)}
+.doc .del{position:absolute;top:4px;right:4px;background:rgba(255,255,255,.9);border-radius:8px;padding:2px 5px;font-size:14px}
+.setup-warn{background:#fff3bf;border:3px solid var(--ink);border-radius:18px;padding:16px;margin:20px;line-height:1.6}
+.loader{display:grid;place-items:center;min-height:50vh;font-size:40px;animation:bob 1s infinite alternate}
+@keyframes bob{to{transform:translateY(-10px)}}
+.leaflet-container{font-family:var(--bf)!important}
+</style>
+</head>
+<body>
+<div id="app"><div class="loader">🏡</div></div>
+<div id="toast"></div>
+
+<script>
+/* =====================================================================
+   Family Hub · 설정 (Supabase 프로젝트를 만든 뒤 아래 2줄만 바꾸면 됩니다)
+   ===================================================================== */
+const SB_URL = 'https://kcpymvsvczjjqptvtvxf.supabase.co';          // Project Settings → API → Project URL
+const SB_KEY = 'sb_publishable_I70vgd6mSVcflUH_NkzGAw_z0z2dWt7';                         // Project Settings → API Keys → anon(public) 또는 Publishable key
+const VAPID_PUBLIC_KEY = 'BORHql6j4hY0yWJlD1CXtbzeYXIF1dxkHLbD4SyYQqQn9riQjrM4j2w5gs2mhKcUHBvh_vkjFiVPOSnAA2W_IVw';
+const APP_VER = 'v1.1 · 2026.11';
+
+/* ---------------- 기본 도구 ---------------- */
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const linkify = s => esc(s).replace(/https?:\/\/[^\s<]+/g, u => `<a href="${u}" target="_blank" rel="noopener">${u}</a>`);
+const pad = n => String(n).padStart(2, '0');
+const dayKey = (t = new Date()) => `${t.getFullYear()}-${pad(t.getMonth() + 1)}-${pad(t.getDate())}`;
+const D = k => new Date(k + 'T00:00:00');
+const addDays = (k, n) => { const t = D(k); t.setDate(t.getDate() + n); return dayKey(t); };
+const diffDays = (a, b) => Math.round((D(a) - D(b)) / 864e5);   // a - b
+const WD = '일월화수목금토';
+const md = k => { const t = D(k); return `${t.getMonth() + 1}/${t.getDate()}(${WD[t.getDay()]})`; };
+const fmtN = n => Number(n || 0).toLocaleString('ko-KR');
+const ago = iso => { if (!iso) return ''; const s = (Date.now() - Date.parse(iso)) / 1000; if (s < 60) return '방금'; if (s < 3600) return Math.floor(s / 60) + '분 전'; if (s < 86400) return Math.floor(s / 3600) + '시간 전'; const t = new Date(iso); return s < 86400 * 7 ? Math.floor(s / 86400) + '일 전' : `${t.getMonth() + 1}/${t.getDate()}`; };
+const hm = iso => { const t = new Date(iso); return `${t.getMonth() + 1}/${t.getDate()} ${pad(t.getHours())}:${pad(t.getMinutes())}`; };
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+function toast(m, err) { const t = $('#toast'); t.textContent = m; t.className = 'on' + (err ? ' err' : ''); clearTimeout(toast.t); toast.t = setTimeout(() => t.className = '', 2600); }
+const store = { get(k, d) { try { const v = localStorage.getItem('fh_' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem('fh_' + k, JSON.stringify(v)); } catch (e) {} }, del(k) { try { localStorage.removeItem('fh_' + k); } catch (e) {} } };
+const CONFIGURED = !SB_URL.includes('YOUR-PROJECT') && !SB_KEY.includes('YOUR-');
+
+/* ---------------- 서버 호출 ---------------- */
+const S = { token: store.get('token', null), me: null, home: null, members: [] };
+async function rpc(fn, args = {}, noAuth) {
+  if (!noAuth) args = { p_token: S.token, ...args };
+  let r;
+  try { r = await fetch(`${SB_URL}/rest/v1/rpc/${fn}`, { method: 'POST', headers: { apikey: SB_KEY, ...(SB_KEY.startsWith('eyJ') ? { Authorization: 'Bearer ' + SB_KEY } : {}), 'Content-Type': 'application/json' }, body: JSON.stringify(args) }); }
+  catch (e) { throw new Error('인터넷 연결을 확인해 주세요'); }
+  const txt = await r.text(); let j = null; try { j = txt ? JSON.parse(txt) : null; } catch (e) {}
+  if (!r.ok) {
+    const msg = (j && (j.message || j.hint)) || txt || r.status;
+    if (/AUTH/.test(msg)) { logoutLocal(); throw new Error('다시 로그인해 주세요'); }
+    const k = Object.keys(ERR).find(k => String(msg).startsWith(k)); throw new Error(k ? ERR[k] : String(msg).slice(0, 120));
+  }
+  if (j && j.error) { const e = new Error(ERR[j.error] || j.error); e.code = j.error; e.data = j; throw e; }
+  return j;
+}
+const ERR = { EMPTY: '내용을 입력해 주세요', PAST: '지난 날은 바꿀 수 없어요', NOTFOUND: '찾을 수 없어요', TO: '받는 사람을 골라 주세요', DATE: '열리는 날짜를 내일 이후로 골라 주세요', LIMIT: '오늘 줄 수 있는 스티커를 다 썼어요', POINTS: '포인트가 부족해요', CLOSED: '기간이 끝난 미션이에요', INPUT: '입력값을 확인해 주세요', DAY: '최근 3일까지만 남길 수 있어요', SIZE: '사진이 너무 커요', MAX: '사진은 10장까지예요', BADPIN: '비밀번호가 틀렸어요', SHORT: '비밀번호는 4자리 이상', SAME_BIRTH: '생일 번호는 쓸 수 없어요. 다른 번호로 바꿔 주세요', SELF: '본인 계정은 이렇게 바꿀 수 없어요', NOT_MEMBER: '함께 가는 가족만 볼 수 있어요', LONG: '여행 기간은 60일까지예요' };
+const M = id => S.members.find(m => m.id === id) || { nick: '(삭제됨)', emoji: '👤', color: '#dee2e6' };
+const av = (m, size = 40) => `<span class="av" style="--c:${m.color}22;width:${size}px;height:${size}px;font-size:${Math.round(size * .55)}px">${m.emoji}</span>`;
+
+/* ---------------- 생일·살아온 날 ---------------- */
+const lived = m => diffDays(dayKey(), m.birth) + 1;          // 태어난 날 = 1일째
+function nextBirthday(m, from = dayKey()) {
+  const b = D(m.birth), y = D(from).getFullYear();
+  let k = `${y}-${pad(b.getMonth() + 1)}-${pad(b.getDate())}`; if (b.getMonth() === 1 && b.getDate() === 29 && new Date(y, 1, 29).getMonth() !== 1) k = `${y}-03-01`;
+  if (k < from) k = `${y + 1}-${pad(b.getMonth() + 1)}-${pad(b.getDate())}`;
+  return { day: k, d: diffDays(k, from), age: D(k).getFullYear() - b.getFullYear() };
+}
+const manAge = m => { const b = D(m.birth), t = new Date(); let a = t.getFullYear() - b.getFullYear(); if (t.getMonth() < b.getMonth() || (t.getMonth() === b.getMonth() && t.getDate() < b.getDate())) a--; return a; };
+function nextMilestone(m) { const n = lived(m), target = n % 1000 === 0 ? n : (Math.floor(n / 1000) + 1) * 1000; return { n: target, d: target - n, day: addDays(dayKey(), target - n) }; }
+function nextEventDay(e, from = dayKey()) {
+  if (!e.yearly) return e.day;
+  const t = D(e.day), y = D(from).getFullYear();
+  let k = `${y}-${pad(t.getMonth() + 1)}-${pad(t.getDate())}`; if (k < from) k = `${y + 1}-${pad(t.getMonth() + 1)}-${pad(t.getDate())}`; return k;
+}
+const CAT = { '일정': '📌', '기념일': '💝', '학교': '🏫', '병원': '🏥', '여행': '✈️', '생일': '🎂', '기타': '🗓' };
+
+/* ---------------- 라우터 ---------------- */
+const ROUTES = {}; const TITLES = {};
+function route(path, title, fn) { ROUTES[path] = fn; TITLES[path] = title; }
+function go(h) { if (location.hash === h) render(); else location.hash = h; }
+window.addEventListener('hashchange', () => render());
+let renderSeq = 0;
+async function render() {
+  if (!CONFIGURED) return renderSetup();
+  if (!S.token) return renderLogin();
+  if (!S.me) { try { await loadHome(); } catch (e) { if (!S.token) return renderLogin(); $('#app').innerHTML = `<div class="setup-warn">⚠️ ${esc(e.message)}<br><br><button class="btn" onclick="location.reload()">다시 시도</button></div>`; return; } }
+  if (S.me.must_change) return renderForcePin();
+  const path = (location.hash.slice(1) || '/').split('?')[0], fn = ROUTES[path] || ROUTES['/'];
+  const seq = ++renderSeq; const isTab = ['/', '/todo', '/family', '/board', '/more'].includes(path);
+  $('#app').innerHTML = `${topBar(path, isTab)}<main class="wrap" id="main"><div class="loader">🏡</div></main>${navBar(path)}`;
+  bindTop();
+  try { await fn($('#main'), () => seq === renderSeq); } catch (e) { if (seq === renderSeq) $('#main').innerHTML = `<div class="empty">⚠️ ${esc(e.message)}<br><br><button class="btn sm" onclick="render()">다시 불러오기</button></div>`; }
+  window.scrollTo(0, 0);
+}
+function topBar(path, isTab) {
+  const unread = (S.home && S.home.unread) || 0;
+  return `<header class="top">${isTab ? '' : `<button class="back" onclick="history.length>1?history.back():go('#/')">‹</button>`}
+    <h1>${isTab && path === '/' ? '<span><span class="f">Family</span> Hub</span>' : esc(TITLES[path] || 'Family Hub')}</h1>
+    <a class="tbtn" href="#/msg" title="비밀 메시지">🔒${unread ? `<span class="bdg">${unread}</span>` : ''}</a>
+    <a class="tbtn" href="#/me" title="내 설정" style="text-decoration:none">${S.me.emoji}</a></header>`;
+}
+function bindTop() {}
+function navBar(path) {
+  const it = [['/', '🏠', '홈'], ['/todo', '✅', '할 일'], ['/family', '📍', '위치'], ['/board', '📝', '게시판'], ['/more', '🧩', '더보기']];
+  const more = ['/more', '/trip', '/cal', '/shop', '/mission', '/growth', '/album', '/capsule', '/report', '/points', '/hub', '/me', '/msg'].includes(path);
+  return `<nav class="nav"><div class="nav-in">${it.map(([p, i, t]) => `<a href="#${p}" class="${path === p || (p === '/more' && more && path !== '/msg') ? 'on' : ''}"><i>${i}</i>${t}${p === '/board' && S.home && S.home.new_posts ? `<span class="bdg">${S.home.new_posts}</span>` : ''}</a>`).join('')}</div></nav>`;
+}
+async function loadHome() {
+  const h = await rpc('fh_home'); S.home = h; S.me = h.me; S.members = h.members;
+  if (S.me.role === 'admin' && h.pending) S.home.adminPending = h.pending;
+  locAuto();
+  return h;
+}
+
+/* ---------------- 모달 ---------------- */
+function sheet(html, onMount) {
+  const m = document.createElement('div'); m.className = 'mask'; m.innerHTML = `<div class="sheet">${html}</div>`;
+  const close = () => m.remove();
+  m.addEventListener('click', e => { if (e.target === m || e.target.closest('[data-close]')) close(); });
+  document.body.appendChild(m); if (onMount) onMount(m.querySelector('.sheet'), close); return close;
+}
+function confirmBox(msg, yes = '확인') { return new Promise(res => { sheet(`<h2>${esc(msg)}</h2><div class="foot"><button class="btn" data-close>취소</button><button class="btn p" id="cfY">${yes}</button></div>`, (s, close) => { s.querySelector('#cfY').onclick = () => { close(); res(true); }; s.parentElement.addEventListener('click', e => { if (e.target === s.parentElement || e.target.closest('[data-close]')) res(false); }); }); }); }
+function lightbox(src, name) {
+  const m = document.createElement('div'); m.className = 'lightbox';
+  m.innerHTML = `<img src="${src}" alt=""><div class="lb-bar"><a class="btn sm" href="${src}" download="${name || 'familyhub.jpg'}">⬇ 저장</a><button class="btn sm" data-x>닫기</button></div>`;
+  m.onclick = e => { if (e.target === m || e.target.dataset.x !== undefined) m.remove(); }; document.body.appendChild(m);
+}
+function confetti() { const c = document.createElement('div'); c.className = 'confetti'; c.innerHTML = [...Array(60)].map(() => `<i style="left:${Math.random() * 100}%;background:${['#ff6b6b', '#ffd43b', '#51cf66', '#339af0', '#cc5de8', '#ff922b'][Math.floor(Math.random() * 6)]};animation-delay:${Math.random() * .8}s;animation-duration:${1.6 + Math.random()}s"></i>`).join(''); document.body.appendChild(c); setTimeout(() => c.remove(), 3500); }
+
+/* ---------------- 처음 설정 안내 ---------------- */
+function renderSetup() {
+  $('#app').innerHTML = `<div class="setup-warn"><b style="font-size:18px">🔧 처음 설정이 필요해요</b><br>index.html 맨 아래쪽 설정의 <b>SB_URL</b>과 <b>SB_KEY</b>를 내 Supabase 프로젝트 값으로 바꿔 주세요.<br><small>(admin/index.html 도 같은 값으로 바꿉니다)</small></div>`;
+}
+
+/* ---------------- 로그인 ---------------- */
+async function renderLogin(pick) {
+  $('#app').innerHTML = `<div class="login"><h1 class="logo-big"><span class="f">Family</span> Hub</h1><div class="sub">우리 가족의 하루가 모이는 곳 🏡</div><div id="lg" style="width:100%;display:flex;flex-direction:column;align-items:center"><div class="loader" style="min-height:120px">🏡</div></div></div>`;
+  let list = [];
+  try { list = await rpc('fh_public_members', {}, true); } catch (e) { $('#lg').innerHTML = `<div class="setup-warn">⚠️ ${esc(e.message)}<br><small>Supabase 주소·키와 SQL 실행 여부를 확인해 주세요.</small></div>`; return; }
+  const last = store.get('last_member', null), sel = pick || null;
+  if (!sel) {
+    $('#lg').innerHTML = `<div style="margin-bottom:12px">누구세요? 👋</div><div class="who">${list.map(m => `<button data-id="${m.id}" style="${m.id === last ? 'box-shadow:0 5px 0 var(--org)' : ''}">${av(m, 62)}${esc(m.nick)}</button>`).join('')}</div>`;
+    $$('#lg [data-id]').forEach(b => b.onclick = () => renderLogin(list.find(m => m.id === +b.dataset.id)));
+    return;
+  }
+  let pin = '';
+  const draw = () => {
+    $('#lg').innerHTML = `${av(sel, 72)}<div style="font-size:20px;margin-top:6px">${esc(sel.nick)}</div><div class="muted" style="font-size:13px;margin-top:4px">비밀번호 (처음엔 생일 6자리 · 예: 800826)</div>
+      <div class="pin-dots">${[...Array(Math.max(6, pin.length))].map((_, i) => `<i class="${i < pin.length ? 'on' : ''}"></i>`).join('')}</div>
+      <div class="pad">${[1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => `<button data-n="${n}">${n}</button>`).join('')}<button class="fn" data-b="back">다른 사람</button><button data-n="0">0</button><button class="fn" data-b="del">지우기</button></div>
+      <button class="btn p" id="lgGo" style="margin-top:18px;min-width:200px" ${pin.length < 4 ? 'disabled' : ''}>들어가기</button>`;
+    $$('#lg [data-n]').forEach(b => b.onclick = () => { if (pin.length < 12) { pin += b.dataset.n; draw(); if (pin.length === 6) setTimeout(tryLogin, 120); } });
+    $('#lg [data-b=del]').onclick = () => { pin = pin.slice(0, -1); draw(); };
+    $('#lg [data-b=back]').onclick = () => renderLogin();
+    $('#lgGo').onclick = tryLogin;
+  };
+  let busy = false;
+  const tryLogin = async () => {
+    if (busy || pin.length < 4) return; busy = true;
+    try {
+      const r = await rpc('fh_login', { p_member: sel.id, p_pin: pin, p_ua: navigator.userAgent }, true);
+      S.token = r.token; store.set('token', r.token); store.set('last_member', sel.id); S.me = null; busy = false; location.hash = '#/'; render(); pushSyncSilently();
+    } catch (e) {
+      busy = false; pin = ''; draw();
+      if (e.code === 'BADPIN') toast(`비밀번호가 틀렸어요${e.data.left != null ? ` (남은 기회 ${e.data.left}번)` : ''}`, 1);
+      else if (e.code === 'LOCKED') toast(`5번 틀려서 잠겼어요. ${e.data.minutes}분 뒤에 다시 해 주세요`, 1);
+      else toast(e.message, 1);
+    }
+  };
+  draw();
+}
+function logoutLocal() { S.token = null; S.me = null; S.home = null; store.del('token'); }
+function renderForcePin() {
+  $('#app').innerHTML = `<div class="login"><div style="font-size:54px">🔑</div><h2 style="font-family:var(--hf);font-weight:400;margin:8px 0">${esc(S.me.nick)}, 비밀번호를 바꿔 주세요</h2>
+    <div class="sub" style="margin-bottom:16px;text-align:center">처음 비밀번호(생일)는 가족 모두 알고 있어요.<br>나만 아는 번호로 바꿔야 비밀 메시지가 지켜져요.</div>
+    <div style="width:100%;max-width:340px">${pinForm(true)}</div></div>`;
+  bindPinForm(true);
+}
+function pinForm(first) {
+  return `<label class="lbl">지금 비밀번호${first ? ' (생일 6자리)' : ''}</label><input class="inp" id="pOld" type="password" inputmode="numeric" autocomplete="current-password">
+    <label class="lbl">새 비밀번호 (숫자 4자리 이상)</label><input class="inp" id="pNew" type="password" inputmode="numeric" autocomplete="new-password">
+    <label class="lbl">새 비밀번호 한 번 더</label><input class="inp" id="pNew2" type="password" inputmode="numeric" autocomplete="new-password">
+    <button class="btn p block" id="pSave" style="margin-top:16px">비밀번호 바꾸기</button>${first ? `<button class="btn block" style="margin-top:10px" onclick="logoutLocal();render()">로그아웃</button>` : ''}`;
+}
+function bindPinForm(first, close) {
+  $('#pSave').onclick = async () => {
+    const o = $('#pOld').value.trim(), n = $('#pNew').value.trim(), n2 = $('#pNew2').value.trim();
+    if (n !== n2) return toast('새 비밀번호가 서로 달라요', 1);
+    try { await rpc('fh_change_pin', { p_old: o, p_new: n }); toast('비밀번호를 바꿨어요 🔐'); S.me.must_change = false; if (close) close(); if (first) { S.me = null; render(); } }
+    catch (e) { toast(e.message, 1); }
+  };
+}
+
+/* =====================================================================
+   🏠 홈
+   ===================================================================== */
+const MOODS = [['☀️', '최고'], ['🌤', '좋음'], ['☁️', '그냥'], ['🌧', '우울'], ['⛈', '화남'], ['🤒', '아픔']];
+function homeAlerts(h) {
+  const td = h.today, out = [];
+  if (h.unread) out.push({ cls: 'hot', i: '💌', t: `비밀 메시지 ${h.unread}개가 와 있어요`, s: '나만 열어볼 수 있어요', to: '#/msg' });
+  if (h.capsules_open) out.push({ cls: 'gold', i: '⏳', t: '타임캡슐이 열렸어요!', s: '묻어둔 편지를 확인해 보세요', to: '#/capsule' });
+  if (h.adminPending) out.push({ cls: 'gold', i: '🎁', t: `보상 신청 ${h.adminPending}건이 기다려요`, s: 'admin에서 승인해 주세요', to: 'admin/' });
+  (h.stickers_today || []).slice(0, 3).forEach(s => out.push({ cls: 'gold', i: s.emoji, t: `${s.from}님이 칭찬 스티커를 줬어요`, s: s.reason || '최고야!', to: '#/points' }));
+  S.members.forEach(m => {
+    const nb = nextBirthday(m, td);
+    if (nb.d === 0) out.push({ cls: 'hot', i: '🎂', t: `오늘은 ${m.nick}의 ${nb.age}번째 생일!`, s: '축하 글을 남겨 주세요', to: '#/board' });
+    else if (nb.d <= 7 && (m.id !== S.me.id)) out.push({ i: '🎁', t: `${m.nick} 생일 D-${nb.d}`, s: `${md(nb.day)} · ${nb.age}번째 생일`, to: '#/cal' });
+    const ms = nextMilestone(m);
+    if (ms.d === 0) out.push({ cls: 'gold', i: '✨', t: `${m.nick} 살아온 지 ${fmtN(ms.n)}일!`, s: '오늘은 특별한 날', to: '#/' });
+    else if (ms.d <= 7) out.push({ i: '✨', t: `${m.nick} ${fmtN(ms.n)}일 D-${ms.d}`, s: md(ms.day), to: '#/cal' });
+  });
+  (h.trips || []).forEach(t => { const d = diffDays(t.start_on, td); if (d === 0) out.push({ cls: 'hot', i: t.emoji, t: `오늘 출발! ${t.title}`, s: '즐거운 여행 되세요 🧳', to: '#/trip?id=' + t.id }); else if (d > 0 && d <= 7) out.push({ cls: d <= 1 ? 'gold' : '', i: t.emoji, t: `여행 D-${d} · ${t.title}`, s: t.pack_left ? `못 챙긴 준비물 ${t.pack_left}개` : '준비물 모두 챙겼어요 👍', to: '#/trip?id=' + t.id + '&tab=pack' }); });
+  (h.events || []).forEach(e => { const k = nextEventDay(e, td), d = diffDays(k, td);
+    if (d === 0) out.push({ cls: 'hot', i: CAT[e.category] || '📌', t: `오늘 · ${e.title}`, s: e.memo || e.category, to: '#/cal' });
+    else if (d > 0 && d <= Math.max(e.remind, 1)) out.push({ i: CAT[e.category] || '📌', t: `D-${d} · ${e.title}`, s: `${md(k)} · ${e.category}`, to: '#/cal' }); });
+  return out;
+}
+route('/', '홈', async (el, alive) => {
+  const h = await loadHome(); if (!alive()) return;
+  $('header.top').outerHTML = topBar('/', true);
+  const td = h.today, myLog = h.logs[S.me.id] || {}, al = homeAlerts(h);
+  notifyLocal(al);
+  el.innerHTML = `
+    ${al.length ? `<div class="alerts">${al.slice(0, 6).map(a => `<a class="alert ${a.cls || ''}" href="${a.to}" style="text-decoration:none;color:inherit"><span class="ai">${a.i}</span><span><b>${esc(a.t)}</b><small>${esc(a.s)}</small></span></a>`).join('')}</div>` : ''}
+    <div class="fam">${S.members.map(m => { const p = h.progress[m.id], lg = h.logs[m.id] || {}, loc = h.locations.find(l => l.id === m.id), nb = nextBirthday(m, td);
+      return `<button class="mcard" data-mem="${m.id}" style="--c:${m.color}">
+        <span class="pt">⭐${fmtN(m.points.balance)}</span>${lg.mood ? `<span class="mood">${lg.mood}</span>` : ''}
+        ${av(m, 56)}<div class="nm">${esc(m.nick)}${m.id === S.me.id ? ' <small class="muted">(나)</small>' : ''}</div>
+        <div class="days">${fmtN(lived(m))}<small>일째</small></div>
+        <div class="meta">만 ${manAge(m)}세 · 🎂 ${nb.d === 0 ? '오늘!' : 'D-' + nb.d}${lg.score != null ? ` · ${lg.score}점` : ''}</div>
+        ${p ? `<div class="bar"><i style="width:${p.n ? p.d / p.n * 100 : 0}%"></i></div><div class="meta">할 일 ${p.d}/${p.n}${p.n && p.d === p.n ? ' 🎉' : ''}</div>` : `<div class="meta">할 일 아직 없음</div>`}
+        ${loc && loc.status && Date.now() - Date.parse(loc.status_at) < 864e5 ? `<div class="st">📍 ${esc(loc.status)} · ${ago(loc.status_at)}</div>` : ''}
+      </button>`; }).join('')}</div>
+
+    <div class="card"><h3>🌈 오늘 나의 기분과 점수 <small>${md(td)}</small></h3>
+      <div class="moodpick">${MOODS.map(([e, t]) => `<button data-mood="${e}" class="${myLog.mood === e ? 'on' : ''}">${e}<small>${t}</small></button>`).join('')}</div>
+      <div class="score-row"><input type="range" id="scR" min="0" max="100" step="5" value="${myLog.score ?? 70}"><div class="score-big" id="scV">${myLog.score ?? '–'}${myLog.score != null ? '점' : ''}</div></div>
+      <div class="row" style="margin-top:8px"><input class="inp" id="scN" maxlength="120" placeholder="오늘 한 줄 (선택)" value="${esc(myLog.note || '')}"><button class="btn p sm" id="scSave">저장</button></div>
+      <p class="hint">하루 점수는 나에게 주는 점수예요. 자유롭게 매겨요 😊</p></div>
+
+    ${(h.trips || []).length ? `<div class="card"><h3>✈️ 다가오는 여행 <small><a href="#/trip">전체</a></small></h3>${h.trips.map(t => `<a href="#/trip?id=${t.id}" class="trip-card" style="text-decoration:none;color:inherit"><span class="te">${t.emoji}</span><span class="tb"><b>${esc(t.title)}</b><small>${esc(t.place || '')} · ${md(t.start_on)} ~ ${md(t.end_on)}${t.pack_left ? ` · 준비물 ${t.pack_left}개 남음` : ''}</small></span><span class="tdd">${tripDD(t).txt}</span></a>`).join('')}</div>` : ''}
+    ${h.missions.length ? `<div class="card"><h3>🚩 진행 중인 가족 미션 <small><a href="#/mission">전체</a></small></h3>${h.missions.map(x => { const pc = Math.min(100, x.sum / x.target * 100);
+      return `<a href="#/mission" style="text-decoration:none;color:inherit;display:block;margin-bottom:10px"><div class="row" style="justify-content:space-between"><span>${x.emoji} ${esc(x.title)}</span><small class="muted">${fmtN(x.sum)} / ${fmtN(x.target)}${esc(x.unit)} · ~${md(x.end_on)}</small></div><div class="bar" style="margin-top:5px"><i style="width:${pc}%;background:${pc >= 100 ? 'var(--grn)' : 'var(--org)'}"></i></div></a>`; }).join('')}</div>` : ''}
+
+    ${h.onthisday.length ? `<div class="card"><h3>📸 ○년 전 오늘</h3><div class="otd">${h.onthisday.map(p => `<div class="ph" data-photo="${p.photo}"><span>${D(td).getFullYear() - p.year}년 전</span></div>`).join('')}</div></div>` : ''}
+
+    <div class="card"><h3>⚡ 바로가기</h3><div class="quick">
+      <a href="#/cal"><i>📅</i>캘린더</a><a href="#/points"><i>⭐</i>포인트</a><a href="#/shop"><i>🛒</i>장보기${h.shopping ? `<span class="bdg">${h.shopping}</span>` : ''}</a><a href="games/"><i>🎲</i>게임</a>
+      <a href="#/capsule"><i>⏳</i>타임캡슐</a><a href="#/album"><i>🖼</i>앨범</a><a href="#/report"><i>📊</i>주간 리포트</a><a href="#/hub"><i>📦</i>Digital Hub</a></div></div>
+    <p class="hint" style="text-align:center">Family Hub ${APP_VER}</p>`;
+  // 기분·점수
+  let mood = myLog.mood || null, scoreTouched = myLog.score != null;
+  $$('[data-mood]', el).forEach(b => b.onclick = async () => { mood = b.dataset.mood; $$('[data-mood]', el).forEach(x => x.classList.toggle('on', x === b));
+    try { await rpc('fh_daylog_save', { p_day: td, p_score: null, p_mood: mood, p_note: null }); toast(`오늘 기분 ${mood} 저장`); } catch (e) { toast(e.message, 1); } });
+  $('#scR').oninput = () => { scoreTouched = true; $('#scV').textContent = $('#scR').value + '점'; };
+  $('#scSave').onclick = async () => { try { await rpc('fh_daylog_save', { p_day: td, p_score: scoreTouched ? +$('#scR').value : null, p_mood: mood, p_note: $('#scN').value.trim() || null }); toast('오늘 하루를 기록했어요 ✍️'); } catch (e) { toast(e.message, 1); } };
+  $$('[data-mem]', el).forEach(b => b.onclick = () => memberSheet(M(+b.dataset.mem)));
+  $$('[data-photo]', el).forEach(async d => { const src = await photoSrc(+d.dataset.photo); if (src) { d.style.backgroundImage = `url(${src})`; d.onclick = () => lightbox(src); } });
+});
+
+function memberSheet(m) {
+  const td = dayKey(), nb = nextBirthday(m, td), ms = nextMilestone(m), lv = lived(m), isMe = m.id === S.me.id;
+  const marks = [1000, 3000, 5000, 7000, 10000, 15000, 20000, 25000, 30000].map(n => ({ n, day: addDays(m.birth, n - 1) }));
+  sheet(`<h2>${av(m, 44)} ${esc(m.nick)} <small class="muted" style="font-size:14px">${esc(m.name)}</small><button class="x" data-close>✕</button></h2>
+    <div style="text-align:center;background:var(--cream);border-radius:18px;padding:14px;border:2.5px solid var(--ink)">
+      <div class="muted" style="font-size:13px">${D(m.birth).getFullYear()}년 ${D(m.birth).getMonth() + 1}월 ${D(m.birth).getDate()}일에 태어나</div>
+      <div style="font-family:var(--hf);font-size:40px;color:var(--org-d);line-height:1.2">${fmtN(lv)}일째</div>
+      <div class="muted" style="font-size:13px">약 ${fmtN(Math.floor(lv / 7))}주 · ${fmtN(Math.floor(lv * 24))}시간 · 만 ${manAge(m)}세</div></div>
+    <div class="ev"><span class="ei">🎂</span><span class="eb">${nb.age}번째 생일<small>${md(nb.day)}</small></span><span class="dd">${nb.d === 0 ? '오늘!' : 'D-' + nb.d}</span></div>
+    <div class="ev"><span class="ei">✨</span><span class="eb">${fmtN(ms.n)}일 되는 날<small>${md(ms.day)}</small></span><span class="dd">${ms.d === 0 ? '오늘!' : 'D-' + ms.d}</span></div>
+    <details style="margin-top:6px"><summary class="muted" style="font-size:13px">기념일 더 보기</summary>${marks.map(x => `<div class="ev" style="padding:6px 0"><span class="ei" style="font-size:16px">${x.day < td ? '✔️' : '🗓'}</span><span class="eb">${fmtN(x.n)}일<small>${x.day.replace(/-/g, '.')}</small></span><span class="dd" style="font-size:14px">${x.day < td ? '지남' : 'D-' + diffDays(x.day, td)}</span></div>`).join('')}</details>
+    <div class="foot">${isMe ? `<a class="btn block" href="#/me" data-close>내 설정</a>` : `<button class="btn" id="msS">⭐ 칭찬 스티커</button><button class="btn p" id="msM">🔒 비밀 메시지</button>`}</div>
+    <div class="foot" style="margin-top:8px"><a class="btn sm" href="#/todo?m=${m.id}" data-close>✅ 할 일 보기</a><a class="btn sm" href="#/growth?m=${m.id}" data-close>📏 성장 기록</a></div>`, (s, close) => {
+    if (!isMe) { s.querySelector('#msS').onclick = () => { close(); stickerSheet(m.id); }; s.querySelector('#msM').onclick = () => { close(); msgCompose(m.id); }; }
+  });
+}
+
+/* =====================================================================
+   ✅ 할 일
+   ===================================================================== */
+route('/todo', 'To do list', async (el, alive) => {
+  const q = new URLSearchParams(location.hash.split('?')[1] || ''); const who = +(q.get('m') || S.me.id), mine = who === S.me.id;
+  const day = q.get('d') || dayKey(), td = dayKey();
+  const r = await rpc('fh_todos', { p_day: day, p_member: who }); if (!alive()) return;
+  const n = r.items.filter(x => x.done).length, all = r.items.length && n === r.items.length, mm = M(who), rules = (S.home && S.home.rules) || { todo: 10, bonus: 20, bonus_min: 3 };
+  const strip = [...Array(22)].map((_, i) => { const k = addDays(td, i - 14), c = r.days[k]; return `<button data-d="${k}" class="${c ? (c.n === c.d ? 'ok' : 'part') : ''} ${k === td ? 'today' : ''} ${k === day ? 'sel' : ''}">${D(k).getDate()}<small>${WD[D(k).getDay()]}</small></button>`; }).join('');
+  el.innerHTML = `
+    <div class="who-chips">${S.members.map(m => `<button data-who="${m.id}" class="${m.id === who ? 'on' : ''}">${av(m, 26)}${esc(m.nick)}</button>`).join('')}</div>
+    <div class="card"><h3>${mine ? '✅ 나의' : av(mm, 26) + ' ' + esc(mm.nick) + '의'} 할 일 <small>${md(day)}${day === td ? ' · 오늘' : day < td ? ' · 지난 날' : ' · 미리 계획'}</small></h3>
+      <div class="strip" id="strip">${strip}</div>
+      ${r.items.length ? `<div class="row" style="margin-top:4px"><div class="bar" style="flex:1"><i style="width:${n / r.items.length * 100}%"></i></div><b style="font-weight:400">${n} / ${r.items.length}</b></div>` : ''}
+      ${mine && r.carry.length ? `<div class="alert gold" style="margin-top:10px"><span class="ai">📌</span><span style="flex:1"><b>${md(r.carry[0].day)}에 못 한 일 ${r.carry.length}개</b><small>오늘로 가져올까요?</small></span><button class="btn sm p" id="carry">가져오기</button></div>` : ''}
+      <ul class="tlist">${r.items.map(x => `<li class="${x.done ? 'done' : ''}"><button class="ck" data-ck="${x.id}" ${mine && day >= addDays(td, -1) ? '' : 'disabled'}>${x.done ? '✓' : ''}</button><span class="tt" data-ck="${x.id}">${esc(x.text)}</span>${mine && (!x.done || day >= td) ? `<button class="del" data-del="${x.id}">✕</button>` : ''}</li>`).join('') || `<li class="empty" style="display:block;border:none">${mine ? (day < td ? '이 날은 적어 둔 할 일이 없어요' : '아래에 할 일을 적어 보세요 ✏️') : '아직 할 일이 없어요'}</li>`}</ul>
+      ${mine && day >= td ? `<div class="row" style="margin-top:10px"><input class="inp" id="tdIn" maxlength="100" placeholder="${day === td ? '오늘 꼭 할 일' : md(day) + ' 할 일'}" enterkeyhint="done" autocomplete="off"><button class="btn p" id="tdAdd">추가</button></div>` : ''}
+      ${all && day <= td ? `<div class="celebrate"><div class="e">🏆</div><b style="color:var(--org-d);font-size:18px">모두 완료! 정말 대단해요</b></div>` : ''}
+    </div>
+    <div class="card"><h3>⭐ ${mine ? '나의' : esc(mm.nick) + '의'} 포인트</h3>
+      <div class="pts"><div><b>${fmtN(r.points.balance)}</b><span>지금 쓸 수 있는</span></div><div><b>${fmtN(r.points.todo)}</b><span>할 일로 모은</span></div><div><b>${fmtN(r.points.sticker)}</b><span>칭찬으로 받은</span></div></div>
+      <p class="hint">완료한 할 일 1개당 <b>${rules.todo}점</b> · 하루 할 일을 ${rules.bonus_min}개 이상 적고 <b>모두 완료</b>하면 보너스 <b>${rules.bonus}점</b>! 모은 포인트는 <a href="#/points">포인트 상점</a>에서 써요.</p></div>
+    ${mine ? `<div class="card" id="dl"></div>` : ''}`;
+  $$('[data-who]', el).forEach(b => b.onclick = () => go(`#/todo?m=${b.dataset.who}&d=${day}`));
+  $$('#strip [data-d]', el).forEach(b => b.onclick = () => go(`#/todo?m=${who}&d=${b.dataset.d}`));
+  const sel = $('#strip .sel'); if (sel) sel.scrollIntoView({ inline: 'center', block: 'nearest' });
+  if (!mine) return;
+  const add = async () => { const v = $('#tdIn').value.trim(); if (!v) return $('#tdIn').focus(); try { await rpc('fh_todo_add', { p_day: day, p_text: v }); await reTodo(); setTimeout(() => $('#tdIn') && $('#tdIn').focus(), 50); } catch (e) { toast(e.message, 1); } };
+  const reTodo = () => ROUTES['/todo'](el, alive);
+  if ($('#tdAdd')) { $('#tdAdd').onclick = add; $('#tdIn').onkeydown = e => { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); add(); } }; }
+  $$('[data-ck]', el).forEach(b => b.onclick = async () => { if (b.disabled || $(`button.ck[data-ck="${b.dataset.ck}"]`).disabled) return; try { const x = await rpc('fh_todo_toggle', { p_id: +b.dataset.ck }); await reTodo(); if (x.all && x.n) celebrateTodo(x.n, rules); } catch (e) { toast(e.message, 1); } });
+  $$('[data-del]', el).forEach(b => b.onclick = async () => { try { await rpc('fh_todo_del', { p_id: +b.dataset.del }); reTodo(); } catch (e) { toast(e.message, 1); } });
+  if ($('#carry')) $('#carry').onclick = async () => { try { await rpc('fh_todo_carry', { p_ids: r.carry.map(x => x.id) }); toast('오늘로 가져왔어요'); reTodo(); } catch (e) { toast(e.message, 1); } };
+  dayLogCard($('#dl'), day <= td ? day : td);
+});
+function celebrateTodo(n, rules) {
+  confetti(); const pts = n * rules.todo + (n >= rules.bonus_min ? rules.bonus : 0);
+  sheet(`<div class="celebrate"><div class="e">🏆</div><h2>MISSION COMPLETE!</h2><p>할 일 <b>${n}개</b>를 모두 끝냈어요!<br><b style="color:var(--org-d);font-size:22px">+${pts}점</b>${n >= rules.bonus_min ? ` <small>(보너스 ${rules.bonus}점 포함)</small>` : `<br><small class="muted">${rules.bonus_min}개 이상 적고 다 하면 보너스 ${rules.bonus}점!</small>`}</p></div><button class="btn p block" data-close>오늘도 해냈다! 🎉</button>`);
+}
+async function dayLogCard(el, day) {
+  const logs = await rpc('fh_daylogs', { p_from: day, p_to: day }); const lg = logs.find(l => l.member === S.me.id) || {};
+  el.innerHTML = `<h3>📝 ${day === dayKey() ? '오늘' : md(day)} 나에게 주는 점수</h3>
+    <div class="moodpick">${MOODS.map(([e, t]) => `<button data-mood="${e}" class="${lg.mood === e ? 'on' : ''}">${e}<small>${t}</small></button>`).join('')}</div>
+    <div class="score-row"><input type="range" id="dlR" min="0" max="100" step="5" value="${lg.score ?? 70}"><div class="score-big" id="dlV">${lg.score != null ? lg.score + '점' : '–'}</div></div>
+    <textarea class="inp" id="dlN" maxlength="300" placeholder="오늘 하루 한 줄 일기 (선택)" style="min-height:64px;margin-top:8px">${esc(lg.note || '')}</textarea>
+    <button class="btn p block" id="dlS" style="margin-top:10px">기록하기</button>`;
+  let mood = lg.mood || null, touched = lg.score != null;
+  $$('[data-mood]', el).forEach(b => b.onclick = () => { mood = b.dataset.mood; $$('[data-mood]', el).forEach(x => x.classList.toggle('on', x === b)); });
+  $('#dlR').oninput = () => { touched = true; $('#dlV').textContent = $('#dlR').value + '점'; };
+  $('#dlS').onclick = async () => { try { await rpc('fh_daylog_save', { p_day: day, p_score: touched ? +$('#dlR').value : null, p_mood: mood, p_note: $('#dlN').value.trim() || null }); toast('기록했어요 ✍️'); } catch (e) { toast(e.message, 1); } };
+}
+
+/* =====================================================================
+   📍 위치·도착 알림
+   ===================================================================== */
+const LOC = { lastSent: 0, watch: null };
+function locAuto() {   // 앱을 열어둔 동안만 위치를 보냄 (2분 간격)
+  if (!('geolocation' in navigator) || !store.get('loc_on', false) || document.visibilityState !== 'visible') return;
+  if (Date.now() - LOC.lastSent < 120000) return;
+  LOC.lastSent = Date.now();
+  navigator.geolocation.getCurrentPosition(p => rpc('fh_loc_update', { p_lat: p.coords.latitude, p_lng: p.coords.longitude, p_acc: Math.round(p.coords.accuracy) }).catch(() => {}), () => {}, { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 });
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && S.me) { locAuto(); const p = (location.hash.slice(1) || '/').split('?')[0]; if (p === '/' || p === '/family' || p === '/msg') render(); } });
+function getPos() { return new Promise(res => { if (!('geolocation' in navigator)) return res(null); navigator.geolocation.getCurrentPosition(p => res(p.coords), () => res(null), { enableHighAccuracy: true, timeout: 12000, maximumAge: 30000 }); }); }
+function loadLeaflet() {
+  if (window.L) return Promise.resolve();
+  return new Promise((res, rej) => { const c = document.createElement('link'); c.rel = 'stylesheet'; c.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'; document.head.appendChild(c);
+    const s = document.createElement('script'); s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
+}
+const ARRIVE = [['🏫', '학교 도착'], ['🏠', '집 도착'], ['🏢', '회사 도착'], ['📚', '학원 도착'], ['🚗', '출발했어요'], ['✍️', '직접 쓰기']];
+route('/family', '가족 위치', async (el, alive) => {
+  const [h, ck] = await Promise.all([loadHome(), rpc('fh_checkins')]); if (!alive()) return;
+  const on = store.get('loc_on', false), myLoc = h.locations.find(l => l.id === S.me.id);
+  el.innerHTML = `
+    <div class="card"><h3>📍 도착 알림 <small>누르면 가족에게 알림이 가요</small></h3><div class="arrive">${ARRIVE.map(([i, t]) => `<button data-arr="${t}"><i>${i}</i>${t}</button>`).join('')}</div></div>
+    <div class="card"><h3>🗺 지금 가족은 어디? <small><button class="btn sm" id="locNow">📡 내 위치 보내기</button></small></h3>
+      <div id="map"></div>
+      <ul class="loc-list" style="margin-top:8px">${S.members.map(m => { const l = h.locations.find(x => x.id === m.id);
+        return `<li data-fly="${m.id}">${av(m, 38)}<div class="info">${esc(m.nick)}${l && l.status ? ` <span class="tag">${esc(l.status)} · ${ago(l.status_at)}</span>` : ''}<small>${!l ? '아직 위치를 보낸 적 없어요' : !l.sharing ? '🙈 위치 공유를 꺼 두었어요' : l.lat ? `마지막 확인 ${ago(l.at)} (${hm(l.at)})${l.acc ? ` · 오차 ${Math.round(l.acc)}m` : ''}` : '위치 정보 없음'}</small></div>${l && l.lat ? '<span>🔎</span>' : ''}</li>`; }).join('')}</ul>
+      <div class="sep"></div>
+      <div class="row"><span style="flex:1">내 위치 공유<small class="muted" style="display:block">앱을 열 때마다 내 위치를 가족에게 보내요</small></span><label class="switch"><input type="checkbox" id="locOn" ${on && (!myLoc || myLoc.sharing) ? 'checked' : ''}><span></span></label></div>
+      <p class="hint">⚠️ 웹앱이라 <b>앱을 열어둔 동안에만</b> 위치를 보낼 수 있어요. 그래서 지도에는 "마지막으로 확인된 위치와 시간"이 보여요. 앱을 닫아도 계속 보고 싶으면 구글 지도의 위치 공유를 함께 쓰세요.</p></div>
+    <div class="card"><h3>🕘 최근 도착 알림</h3>${ck.length ? ck.slice(0, 15).map(c => `<div class="ev"><span class="ei">${(ARRIVE.find(a => a[1] === c.label) || ['📍'])[0]}</span><span class="eb">${esc(M(c.member).nick)} · ${esc(c.label)}<small>${hm(c.at)}</small></span><span class="muted" style="font-size:12px">${ago(c.at)}</span></div>`).join('') : '<div class="empty">아직 기록이 없어요</div>'}</div>`;
+  $$('[data-arr]', el).forEach(b => b.onclick = async () => {
+    let label = b.dataset.arr; if (label === '직접 쓰기') { label = prompt('가족에게 알릴 말 (예: 도서관 도착)'); if (!label) return; }
+    b.disabled = true; const c = store.get('loc_on', false) ? await getPos() : null;
+    try { await rpc('fh_checkin', { p_label: label, p_lat: c ? c.latitude : null, p_lng: c ? c.longitude : null }); toast(`📍 "${label}" 가족에게 알렸어요`); render(); } catch (e) { toast(e.message, 1); b.disabled = false; }
+  });
+  $('#locNow').onclick = async () => { toast('위치를 확인하는 중…'); const c = await getPos(); if (!c) return toast('위치 권한을 허용해 주세요 (브라우저·폰 설정)', 1);
+    store.set('loc_on', true); await rpc('fh_loc_sharing', { p_on: true }).catch(() => {}); await rpc('fh_loc_update', { p_lat: c.latitude, p_lng: c.longitude, p_acc: Math.round(c.accuracy) }); toast('내 위치를 보냈어요 📡'); render(); };
+  $('#locOn').onchange = async e => { const v = e.target.checked; store.set('loc_on', v); await rpc('fh_loc_sharing', { p_on: v }).catch(() => {}); if (v) { LOC.lastSent = 0; const c = await getPos(); if (!c) { toast('위치 권한을 허용해 주세요', 1); } else { await rpc('fh_loc_update', { p_lat: c.latitude, p_lng: c.longitude, p_acc: Math.round(c.accuracy) }); } } toast(v ? '위치 공유를 켰어요' : '위치 공유를 껐어요'); render(); };
+  // 지도
+  try { await loadLeaflet(); } catch (e) { $('#map').innerHTML = '<div class="empty">지도를 불러오지 못했어요</div>'; return; }
+  if (!alive() || !$('#map')) return;
+  const pts = h.locations.filter(l => l.lat && l.lng);
+  const map = L.map('map', { zoomControl: true, attributionControl: true }).setView(pts.length ? [pts[0].lat, pts[0].lng] : [37.5665, 126.978], pts.length ? 14 : 11);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
+  const mk = {};
+  pts.forEach(l => { const m = M(l.id); mk[l.id] = L.marker([l.lat, l.lng], { icon: L.divIcon({ className: '', html: `<div class="pin-ic" style="background:${m.color}">${m.emoji}</div>`, iconSize: [40, 40], iconAnchor: [20, 20] }) }).addTo(map).bindPopup(`<b>${esc(m.nick)}</b><br>${ago(l.at)}${l.status ? '<br>' + esc(l.status) : ''}`); });
+  if (pts.length > 1) map.fitBounds(L.latLngBounds(pts.map(l => [l.lat, l.lng])).pad(.3));
+  $$('[data-fly]', el).forEach(li => li.onclick = () => { const l = pts.find(x => x.id === +li.dataset.fly); if (l) { map.flyTo([l.lat, l.lng], 16); mk[l.id].openPopup(); $('#map').scrollIntoView({ behavior: 'smooth', block: 'center' }); } });
+});
+
+/* =====================================================================
+   🔒 비밀 메시지
+   ===================================================================== */
+route('/msg', '🔒 비밀 메시지', async (el, alive) => {
+  const r = await rpc('fh_msg_list'); if (!alive()) return;
+  const tab = new URLSearchParams(location.hash.split('?')[1] || '').get('t') || 'in';
+  const list = r.secret.filter(x => tab === 'in' ? x.to === S.me.id : x.from === S.me.id);
+  el.innerHTML = `<div class="card" style="background:#fff0f6"><div class="row"><span style="font-size:30px">🤫</span><span style="flex:1;font-size:14px;line-height:1.5">보낸 사람과 받는 사람 <b>둘만</b> 볼 수 있어요.<br><small class="muted">admin 화면에서도 내용은 보이지 않아요.</small></span></div><button class="btn p block" id="mNew" style="margin-top:10px">💌 비밀 메시지 쓰기</button></div>
+    <div class="chips" style="margin-bottom:12px"><a class="chip ${tab === 'in' ? 'on' : ''}" href="#/msg?t=in" style="text-decoration:none">받은 메시지 ${r.secret.filter(x => x.to === S.me.id && !x.read).length ? `(${r.secret.filter(x => x.to === S.me.id && !x.read).length})` : ''}</a><a class="chip ${tab === 'out' ? 'on' : ''}" href="#/msg?t=out" style="text-decoration:none">보낸 메시지</a><a class="chip" href="#/capsule" style="text-decoration:none">⏳ 타임캡슐</a></div>
+    <div class="card">${list.length ? list.map(x => { const o = M(tab === 'in' ? x.from : x.to);
+      return `<div class="msg ${tab === 'out' ? 'out' : ''}">${av(o, 40)}<div class="mb"><div class="mh"><b>${tab === 'in' ? esc(o.nick) + ' → 나' : '나 → ' + esc(o.nick)}</b>${ago(x.at)}${tab === 'out' ? (x.read ? ' · ✔ 읽음' : ' · 안 읽음') : ''}<button style="margin-left:auto;color:#c9c2b8" data-mdel="${x.id}">🗑</button></div>
+        ${tab === 'in' && !x.read ? `<button class="sealed" data-open="${x.id}">💌 눌러서 열어 보기</button><div class="mt hide" id="mb${x.id}">${linkify(x.body)}</div>` : `<div class="mt">${linkify(x.body)}</div>`}
+        ${tab === 'in' ? `<button class="btn sm" style="margin-top:6px" data-reply="${x.from}">↩ 답장</button>` : ''}</div></div>`; }).join('') : `<div class="empty">${tab === 'in' ? '아직 받은 비밀 메시지가 없어요' : '아직 보낸 메시지가 없어요'}</div>`}</div>`;
+  $('#mNew').onclick = () => msgCompose();
+  $$('[data-open]', el).forEach(b => b.onclick = async () => { b.remove(); $('#mb' + b.dataset.open).classList.remove('hide'); confetti(); await rpc('fh_msg_read', { p_id: +b.dataset.open }).catch(() => {}); if (S.home) S.home.unread = Math.max(0, (S.home.unread || 1) - 1); $('header.top').outerHTML = topBar('/msg', false); });
+  $$('[data-reply]', el).forEach(b => b.onclick = () => msgCompose(+b.dataset.reply));
+  $$('[data-mdel]', el).forEach(b => b.onclick = async () => { if (!(await confirmBox('이 메시지를 지울까요?', '지우기'))) return; await rpc('fh_msg_del', { p_id: +b.dataset.mdel }); render(); });
+});
+function msgCompose(to) {
+  const others = S.members.filter(m => m.id !== S.me.id); let sel = to || null;
+  sheet(`<h2>💌 비밀 메시지<button class="x" data-close>✕</button></h2>
+    <label class="lbl">누구에게?</label><div class="who-chips">${others.map(m => `<button data-to="${m.id}" class="${m.id === sel ? 'on' : ''}">${av(m, 26)}${esc(m.nick)}</button>`).join('')}</div>
+    <textarea class="inp" id="mBody" maxlength="2000" placeholder="둘만 아는 이야기를 적어요 🤫" style="min-height:120px"></textarea>
+    <div class="foot"><button class="btn" data-close>취소</button><button class="btn p" id="mSend">보내기</button></div>`, (s, close) => {
+    s.querySelectorAll('[data-to]').forEach(b => b.onclick = () => { sel = +b.dataset.to; s.querySelectorAll('[data-to]').forEach(x => x.classList.toggle('on', x === b)); });
+    s.querySelector('#mSend').onclick = async () => { try { await rpc('fh_msg_send', { p_to: sel, p_body: s.querySelector('#mBody').value.trim(), p_kind: 'secret', p_open_on: null }); close(); toast(`🔒 ${M(sel).nick}에게 보냈어요`); if (location.hash.startsWith('#/msg')) go('#/msg?t=out'); } catch (e) { toast(e.message, 1); } };
+    setTimeout(() => s.querySelector('#mBody').focus(), 80);
+  });
+}
+
+/* =====================================================================
+   ⏳ 타임캡슐
+   ===================================================================== */
+route('/capsule', '⏳ 타임캡슐', async (el, alive) => {
+  const r = await rpc('fh_msg_list'); if (!alive()) return; const td = dayKey();
+  const list = r.capsule.sort((a, b) => (a.opened === b.opened ? (a.opened ? b.open_on.localeCompare(a.open_on) : a.open_on.localeCompare(b.open_on)) : a.opened ? -1 : 1));
+  el.innerHTML = `<div class="card" style="background:#f3f0ff"><div class="row"><span style="font-size:34px">⏳</span><span style="flex:1;font-size:14px;line-height:1.5">정한 날짜가 되어야 열 수 있는 편지예요.<br><small class="muted">예) 민하가 20살 되는 날 열리는 편지</small></span></div><button class="btn p block" id="cNew" style="margin-top:10px">✉️ 타임캡슐 묻기</button></div>
+    ${list.length ? list.map(x => { const f = M(x.from), to = x.to ? M(x.to) : null, dd = diffDays(x.open_on, td);
+      return `<div class="cap ${x.opened ? '' : 'locked'}"><div class="ch">${av(f, 34)}<span><b style="font-weight:400">${esc(f.nick)} → ${to ? esc(to.nick) : '가족 모두'}</b><small class="muted" style="display:block">${hm(x.at).split(' ')[0]} 묻음 · ${x.open_on.replace(/-/g, '.')} 열림</small></span><span class="dd">${x.opened ? '🔓 열림' : 'D-' + fmtN(dd)}</span></div>
+        ${x.body != null ? `<div class="cb">${x.opened ? '' : '<small class="muted">🔒 내가 쓴 편지라 미리 볼 수 있어요</small><br>'}${linkify(x.body)}</div>` : `<div class="cb" style="text-align:center;background:transparent">🔒 ${x.open_on.replace(/-/g, '.')} 에 열려요</div>`}
+        ${x.mine ? `<div style="text-align:right;margin-top:6px"><button class="btn sm" data-cdel="${x.id}">🗑 지우기</button></div>` : ''}</div>`; }).join('') : '<div class="empty">아직 묻어 둔 타임캡슐이 없어요</div>'}`;
+  $('#cNew').onclick = capsuleCompose;
+  $$('[data-cdel]', el).forEach(b => b.onclick = async () => { if (!(await confirmBox('이 타임캡슐을 지울까요?', '지우기'))) return; await rpc('fh_msg_del', { p_id: +b.dataset.cdel }); render(); });
+});
+function capsuleCompose() {
+  const td = dayKey(), others = S.members.filter(m => m.id !== S.me.id); let to = null;
+  const presets = [['1년 뒤', addDays(td, 365)], ['3년 뒤', addDays(td, 365 * 3 + 1)], ...S.members.filter(m => manAge(m) < 20).map(m => [`${m.nick} 20살 생일`, `${D(m.birth).getFullYear() + 20}-${m.birth.slice(5)}`])];
+  sheet(`<h2>✉️ 타임캡슐 묻기<button class="x" data-close>✕</button></h2>
+    <label class="lbl">누구에게?</label><div class="who-chips"><button data-to="" class="on">👨‍👩‍👧‍👦 가족 모두</button>${others.map(m => `<button data-to="${m.id}">${av(m, 26)}${esc(m.nick)}</button>`).join('')}</div>
+    <label class="lbl">언제 열까요?</label><div class="chips" style="margin-bottom:8px">${presets.map(([t, d]) => `<button class="chip" data-pd="${d}">${esc(t)}</button>`).join('')}</div>
+    <input class="inp" type="date" id="cDay" min="${addDays(td, 1)}" value="${addDays(td, 365)}">
+    <label class="lbl">편지</label><textarea class="inp" id="cBody" maxlength="4000" placeholder="미래의 우리에게…" style="min-height:140px"></textarea>
+    <div class="foot"><button class="btn" data-close>취소</button><button class="btn p" id="cSave">묻기 ⏳</button></div>`, (s, close) => {
+    s.querySelectorAll('[data-to]').forEach(b => b.onclick = () => { to = b.dataset.to ? +b.dataset.to : null; s.querySelectorAll('[data-to]').forEach(x => x.classList.toggle('on', x === b)); });
+    s.querySelectorAll('[data-pd]').forEach(b => b.onclick = () => { s.querySelector('#cDay').value = b.dataset.pd; s.querySelectorAll('[data-pd]').forEach(x => x.classList.toggle('on', x === b)); });
+    s.querySelector('#cSave').onclick = async () => { try { await rpc('fh_msg_send', { p_to: to, p_body: s.querySelector('#cBody').value.trim(), p_kind: 'capsule', p_open_on: s.querySelector('#cDay').value }); close(); toast('⏳ 타임캡슐을 묻었어요'); render(); } catch (e) { toast(e.message, 1); } };
+  });
+}
+
+/* =====================================================================
+   📝 게시판·앨범 (사진은 서버에서 한 장씩 받아 이 기기에 캐시)
+   ===================================================================== */
+const PH = { mem: new Map(), db: null };
+function phDB() { return PH.db || (PH.db = new Promise(res => { try { const r = indexedDB.open('fh_photos', 1); r.onupgradeneeded = () => r.result.createObjectStore('p'); r.onsuccess = () => res(r.result); r.onerror = () => res(null); } catch (e) { res(null); } })); }
+async function phGet(id) { const db = await phDB(); if (!db) return null; return new Promise(res => { try { const q = db.transaction('p').objectStore('p').get(id); q.onsuccess = () => res(q.result || null); q.onerror = () => res(null); } catch (e) { res(null); } }); }
+async function phPut(id, v) { const db = await phDB(); if (!db) return; try { db.transaction('p', 'readwrite').objectStore('p').put(v, id); } catch (e) {} }
+async function photoSrc(id) {
+  if (PH.mem.has(id)) return PH.mem.get(id);
+  const p = (async () => { let v = await phGet(id); if (!v) { try { const r = await rpc('fh_photo', { p_id: id }); v = r && r.data; if (v) phPut(id, v); } catch (e) {} } return v; })();
+  PH.mem.set(id, p); return p;
+}
+function compressImage(file, max = 1280, q = .8) {
+  return new Promise((res, rej) => { const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => { let { width: w, height: h } = img; const k = Math.min(1, max / Math.max(w, h)); w = Math.round(w * k); h = Math.round(h * k);
+      const c = document.createElement('canvas'); c.width = w; c.height = h; c.getContext('2d').drawImage(img, 0, 0, w, h); URL.revokeObjectURL(url); res({ data: c.toDataURL('image/jpeg', q), w, h }); };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('사진을 읽을 수 없어요')); }; img.src = url; });
+}
+function postHTML(p) {
+  const m = M(p.member), liked = p.likes.includes(S.me.id), n = Math.min(p.photos.length, 6);
+  return `<article class="post" data-post="${p.id}"><div class="ph">${av(m, 38)}<div>${esc(m.nick)}<small>${ago(p.at)} · ${hm(p.at)}</small></div>${p.member === S.me.id || S.me.role === 'admin' ? `<button class="more" data-pdel="${p.id}">🗑</button>` : ''}</div>
+    ${p.body ? `<div class="pb">${linkify(p.body)}</div>` : ''}
+    ${n ? `<div class="pics n${n}">${p.photos.slice(0, 6).map((ph, i) => `<div class="pic" data-pid="${ph.id}" ${n === 1 && ph.w ? `style="aspect-ratio:${ph.w}/${ph.h}"` : ''}>${i === 5 && p.photos.length > 6 ? `<span style="display:grid;place-items:center;height:100%;background:rgba(0,0,0,.45);color:#fff;font-size:22px">+${p.photos.length - 6}</span>` : ''}</div>`).join('')}</div>` : ''}
+    <div class="pa"><button data-like="${p.id}" class="${liked ? 'liked' : ''}">${liked ? '❤️' : '🤍'} ${p.likes.length || ''}</button><span class="muted" style="font-size:12.5px">${p.likes.map(id => M(id).emoji).join('')}</span><span style="margin-left:auto" class="muted">💬 ${p.comments.length}</span></div>
+    <div class="cm">${p.comments.map(c => `<div><b>${esc(M(c.member).nick)}</b><span>${linkify(c.body)}</span>${c.member === S.me.id || S.me.role === 'admin' ? `<button data-cdel="${c.id}">✕</button>` : ''}</div>`).join('')}
+      <div class="row" style="padding-top:6px"><input class="inp" style="padding:7px 10px;font-size:14px" maxlength="500" placeholder="댓글 달기" data-cin="${p.id}" enterkeyhint="send"><button class="btn sm" data-csend="${p.id}">등록</button></div></div></article>`;
+}
+function bindPosts(root, reload) {
+  $$('.pic[data-pid]', root).forEach(async d => { const id = +d.dataset.pid, src = await photoSrc(id); if (!src) return; d.style.backgroundImage = `url(${src})`; d.onclick = () => lightbox(src, `familyhub_${id}.jpg`); d.removeAttribute('data-pid'); });
+  $$('[data-like]', root).forEach(b => b.onclick = async () => { try { await rpc('fh_like', { p_post: +b.dataset.like }); reload(); } catch (e) { toast(e.message, 1); } });
+  $$('[data-pdel]', root).forEach(b => b.onclick = async () => { if (!(await confirmBox('이 글을 지울까요? (사진·댓글도 같이 지워져요)', '지우기'))) return; await rpc('fh_post_del', { p_id: +b.dataset.pdel }); reload(); });
+  $$('[data-cdel]', root).forEach(b => b.onclick = async () => { await rpc('fh_comment_del', { p_id: +b.dataset.cdel }); reload(); });
+  const send = async id => { const i = $(`[data-cin="${id}"]`, root); const v = i.value.trim(); if (!v) return; try { await rpc('fh_comment_add', { p_post: id, p_body: v }); reload(); } catch (e) { toast(e.message, 1); } };
+  $$('[data-csend]', root).forEach(b => b.onclick = () => send(+b.dataset.csend));
+  $$('[data-cin]', root).forEach(i => i.onkeydown = e => { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); send(+i.dataset.cin); } });
+}
+route('/board', '가족 게시판', async (el, alive) => {
+  let posts = await rpc('fh_posts', { p_before: null, p_limit: 15 }); if (!alive()) return;
+  if (S.home) S.home.new_posts = 0; $('nav.nav').outerHTML = navBar('/board');
+  const paint = () => {
+    el.innerHTML = `<button class="card" id="bNew" style="width:100%;display:flex;align-items:center;gap:10px;text-align:left">${av(S.me, 40)}<span class="muted" style="flex:1">오늘 우리 가족 이야기를 남겨요 📷</span><span class="btn p sm">글쓰기</span></button>
+      <div id="plist">${posts.map(postHTML).join('') || '<div class="empty">첫 글을 남겨 보세요! 🎉</div>'}</div>
+      ${posts.length >= 15 ? '<button class="btn block" id="bMore">더 보기</button>' : ''}`;
+    $('#bNew').onclick = () => postCompose(() => render());
+    bindPosts(el, async () => { const keep = window.scrollY; posts = await rpc('fh_posts', { p_before: null, p_limit: Math.max(15, posts.length) }); paint(); window.scrollTo(0, keep); });
+    if ($('#bMore')) $('#bMore').onclick = async () => { const more = await rpc('fh_posts', { p_before: posts[posts.length - 1].id, p_limit: 15 }); const keep = window.scrollY; posts = posts.concat(more); paint(); window.scrollTo(0, keep); if (!more.length) toast('마지막 글이에요'); };
+  };
+  paint();
+});
+function postCompose(done) {
+  const files = [];
+  sheet(`<h2>📝 글쓰기<button class="x" data-close>✕</button></h2>
+    <textarea class="inp" id="pBody" maxlength="3000" placeholder="무슨 일이 있었나요?" style="min-height:120px"></textarea>
+    <div class="upl" id="pUp"></div><input type="file" id="pFile" accept="image/*" multiple hidden>
+    <p class="hint">사진은 최대 10장 · 자동으로 줄여서 올려요</p>
+    <div class="foot"><button class="btn" data-close>취소</button><button class="btn p" id="pSave">올리기</button></div>`, (s, close) => {
+    const up = s.querySelector('#pUp'), fi = s.querySelector('#pFile');
+    const paint = () => { up.innerHTML = files.map((f, i) => `<div class="th" style="background-image:url(${f.data})"><button data-rm="${i}">✕</button></div>`).join('') + (files.length < 10 ? '<button class="add" id="pAdd">📷</button>' : '');
+      up.querySelectorAll('[data-rm]').forEach(b => b.onclick = () => { files.splice(+b.dataset.rm, 1); paint(); }); const a = up.querySelector('#pAdd'); if (a) a.onclick = () => fi.click(); };
+    fi.onchange = async () => { for (const f of [...fi.files].slice(0, 10 - files.length)) { try { files.push(await compressImage(f)); } catch (e) { toast(e.message, 1); } } fi.value = ''; paint(); };
+    paint();
+    s.querySelector('#pSave').onclick = async () => {
+      const body = s.querySelector('#pBody').value.trim(); if (!body && !files.length) return toast('글이나 사진을 넣어 주세요', 1);
+      const btn = s.querySelector('#pSave'); btn.disabled = true;
+      try { const { id } = await rpc('fh_post_add', { p_body: body });
+        for (let i = 0; i < files.length; i++) { btn.textContent = `사진 올리는 중 ${i + 1}/${files.length}`; await rpc('fh_photo_add', { p_post: id, p_data: files[i].data, p_w: files[i].w, p_h: files[i].h, p_sort: i }); }
+        await rpc('fh_post_done', { p_post: id }); close(); toast('올렸어요 🎉'); done && done(); }
+      catch (e) { toast(e.message, 1); btn.disabled = false; btn.textContent = '올리기'; }
+    };
+  });
+}
+route('/album', '🖼 가족 앨범', async (el, alive) => {
+  let list = await rpc('fh_album', { p_before: null }); if (!alive()) return;
+  const paint = () => {
+    const by = {}; list.forEach(p => { const t = new Date(p.at), k = `${t.getFullYear()}년 ${t.getMonth() + 1}월`; (by[k] = by[k] || []).push(p); });
+    el.innerHTML = list.length ? Object.entries(by).map(([k, l]) => `<div class="card"><h3>${k} <small>${l.length}장</small></h3><div class="album">${l.map(p => `<div class="pic" data-pid="${p.id}" data-post="${p.post}"></div>`).join('')}</div></div>`).join('') + (list.length % 36 === 0 ? '<button class="btn block" id="aMore">더 보기</button>' : '')
+      : '<div class="empty">게시판에 사진을 올리면 여기에 모여요 📷</div>';
+    $$('.pic[data-pid]', el).forEach(async d => { const id = +d.dataset.pid, src = await photoSrc(id); if (src) { d.style.backgroundImage = `url(${src})`; d.onclick = () => lightbox(src, `familyhub_${id}.jpg`); } });
+    if ($('#aMore')) $('#aMore').onclick = async () => { const more = await rpc('fh_album', { p_before: list[list.length - 1].id }); list = list.concat(more); paint(); if (!more.length) toast('마지막 사진이에요'); };
+  };
+  paint();
+});
+
+/* =====================================================================
+   🧩 더보기
+   ===================================================================== */
+route('/more', '더보기', async el => {
+  const h = S.home || {};
+  const T = [['#/trip', '✈️', '가족 여행', (h.trips || []).length ? `${h.trips[0].emoji} ${tripDD(h.trips[0]).txt}` : '일정·준비물·서류', '#66d9e8'], ['#/cal', '📅', '가족 캘린더', '일정·기념일', '#74c0fc'], ['#/points', '⭐', '포인트·칭찬', '스티커·상점', '#ffd43b'], ['#/mission', '🚩', '가족 미션', '같이 도전', '#ff8787'],
+    ['#/shop', '🛒', '장보기', `${h.shopping || 0}개 남음`, '#8ce99a'], ['#/album', '🖼', '가족 앨범', '1년 전 오늘', '#e599f7'], ['#/capsule', '⏳', '타임캡슐', '미래에 열리는 편지', '#b197fc'],
+    ['#/growth', '📏', '성장 기록', '키·몸무게·추억', '#63e6be'], ['#/report', '📊', '주간 리포트', '이번 주 우리 가족', '#ffa94d'], ['#/msg', '🔒', '비밀 메시지', '둘만 보는 편지', '#faa2c1'],
+    ['games/', '🎲', '가족 게임', '룰렛·사다리 외', '#4dabf7'], ['#/hub', '📦', 'Digital Hub', '내 폰에 보관', '#ffc078'], ['#/me', '⚙️', '내 설정', '비번·알림', '#ced4da']];
+  if (S.me.role === 'admin') T.push(['admin/', '🛠', 'admin', h.adminPending ? `승인 대기 ${h.adminPending}` : '관리자', '#495057']);
+  el.innerHTML = `<div class="grid3">${T.map(([to, i, t, s, c]) => `<a class="tile" href="${to}" style="--tc:${c}"><i>${i}</i>${t}<small>${s}</small></a>`).join('')}</div>`;
+});
+
+/* =====================================================================
+   📅 캘린더
+   ===================================================================== */
+route('/cal', '📅 가족 캘린더', async (el, alive) => {
+  const h = await loadHome(); if (!alive()) return;
+  const q = new URLSearchParams(location.hash.split('?')[1] || ''), td = dayKey();
+  const ym = q.get('ym') || td.slice(0, 7), sel = q.get('d') || (ym === td.slice(0, 7) ? td : ym + '-01');
+  const [Y, Mo] = ym.split('-').map(Number), first = new Date(Y, Mo - 1, 1), start = addDays(dayKey(first), -first.getDay());
+  const items = k => {   // 그날의 일정·생일·기념일
+    const out = [];
+    h.events.forEach(e => { const hit = e.yearly ? e.day.slice(5) === k.slice(5) && k >= e.day : e.day === k; if (hit) out.push({ i: CAT[e.category] || '📌', t: e.title + (e.yearly && k > e.day ? ` (${D(k).getFullYear() - D(e.day).getFullYear()}주년)` : ''), s: `${e.category}${e.memo ? ' · ' + e.memo : ''} · ${e.by || ''}`, e }); });
+    (h.trips || []).forEach(t => { if (k >= t.start_on && k <= t.end_on) out.push({ i: t.emoji, t: `${t.title} (Day ${diffDays(k, t.start_on) + 1})`, s: '가족 여행', trip: t.id }); });
+    S.members.forEach(m => { if (m.birth.slice(5) === k.slice(5) && k >= m.birth) out.push({ i: '🎂', t: `${m.nick} ${D(k).getFullYear() - D(m.birth).getFullYear()}번째 생일`, s: '자동 표시' });
+      const n = diffDays(k, m.birth) + 1; if (n > 0 && n % 1000 === 0) out.push({ i: '✨', t: `${m.nick} ${fmtN(n)}일`, s: '살아온 날 기념' }); });
+    return out;
+  };
+  const prevYm = dayKey(new Date(Y, Mo - 2, 1)).slice(0, 7), nextYm = dayKey(new Date(Y, Mo, 1)).slice(0, 7);
+  const cells = [...Array(42)].map((_, i) => { const k = addDays(start, i), it = items(k), w = D(k).getDay();
+    return `<button data-day="${k}" class="${k.slice(0, 7) !== ym ? 'out' : ''} ${k === td ? 'td' : ''} ${k === sel ? 'sel' : ''} ${w === 0 ? 'sun' : w === 6 ? 'sat' : ''}">${D(k).getDate()}<span class="dots">${it.slice(0, 3).map(x => `<i style="background:${x.i === '🎂' ? '#f06595' : x.i === '✨' ? '#fab005' : 'var(--org)'}"></i>`).join('')}</span></button>`; }).join('');
+  // 다가오는 60일
+  const up = []; for (let i = 0; i <= 60; i++) { const k = addDays(td, i); items(k).forEach(x => { if (x.trip) { const t = h.trips.find(y => y.id === x.trip); if (k !== t.start_on && i !== 0) return; x = { ...x, t: k === t.start_on ? `${t.title} 출발 (${nights(t)})` : x.t }; } up.push({ ...x, k, d: i }); }); }
+  el.innerHTML = `<div class="card"><div class="cal-h"><a class="btn sm" href="#/cal?ym=${prevYm}">‹</a><b>${Y}년 ${Mo}월</b><a class="btn sm" href="#/cal?ym=${nextYm}">›</a></div>
+      <div class="cal">${WD.split('').map(w => `<div class="wd">${w}</div>`).join('')}${cells}</div></div>
+    <div class="card"><h3>${md(sel)} <small><button class="btn p sm" id="evAdd">＋ 일정 추가</button></small></h3>${items(sel).map(x => evRow(x, sel)).join('') || '<div class="empty" style="padding:10px">일정이 없어요</div>'}</div>
+    <div class="card"><h3>🔜 다가오는 일정 <small>60일</small></h3>${up.length ? up.map(x => evRow(x, x.k, true)).join('') : '<div class="empty" style="padding:10px">다가오는 일정이 없어요</div>'}</div>`;
+  $$('[data-day]', el).forEach(b => b.onclick = () => go(`#/cal?ym=${b.dataset.day.slice(0, 7)}&d=${b.dataset.day}`));
+  $('#evAdd').onclick = () => eventForm(null, sel);
+  $$('[data-ev]', el).forEach(b => b.onclick = () => eventForm(h.events.find(e => e.id === +b.dataset.ev)));
+});
+function evRow(x, k, showD) { const d = diffDays(k, dayKey()); return `<div class="ev" ${x.e ? `data-ev="${x.e.id}" style="cursor:pointer"` : x.trip ? `onclick="go('#/trip?id=${x.trip}')" style="cursor:pointer"` : ''}><span class="ei">${x.i}</span><span class="eb">${esc(x.t)}<small>${showD ? md(k) + ' · ' : ''}${esc(x.s)}</small></span>${showD ? `<span class="dd">${d === 0 ? '오늘' : 'D-' + d}</span>` : x.e ? '<span class="muted">✏️</span>' : ''}</div>`; }
+function eventForm(e, day) {
+  const x = e || { title: '', day: day || dayKey(), yearly: false, category: '일정', remind: 1, memo: '' };
+  sheet(`<h2>${e ? '✏️ 일정 고치기' : '📅 일정 추가'}<button class="x" data-close>✕</button></h2>
+    <label class="lbl">제목</label><input class="inp" id="eT" maxlength="60" value="${esc(x.title)}" placeholder="예: 민하 학교 발표회">
+    <label class="lbl">날짜</label><input class="inp" type="date" id="eD" value="${x.day}">
+    <label class="lbl">종류</label><div class="chips" id="eC">${Object.entries(CAT).filter(([k]) => k !== '생일').map(([k, i]) => `<button class="chip ${x.category === k ? 'on' : ''}" data-c="${k}">${i} ${k}</button>`).join('')}</div>
+    <label class="row" style="margin-top:12px"><input type="checkbox" id="eY" ${x.yearly ? 'checked' : ''} style="width:20px;height:20px"> 매년 반복 (기념일)</label>
+    <label class="lbl">미리 알림</label><div class="chips" id="eR">${[[0, '당일만'], [1, '1일 전'], [3, '3일 전'], [7, '7일 전']].map(([v, t]) => `<button class="chip ${x.remind === v ? 'on' : ''}" data-r="${v}">${t}</button>`).join('')}</div>
+    <label class="lbl">메모</label><input class="inp" id="eM" maxlength="300" value="${esc(x.memo || '')}" placeholder="장소, 준비물 등">
+    <div class="foot">${e ? '<button class="btn r" id="eDel">지우기</button>' : '<button class="btn" data-close>취소</button>'}<button class="btn p" id="eSave">저장</button></div>`, (s, close) => {
+    let cat = x.category, rem = x.remind;
+    s.querySelectorAll('[data-c]').forEach(b => b.onclick = () => { cat = b.dataset.c; s.querySelectorAll('[data-c]').forEach(y => y.classList.toggle('on', y === b)); if (cat === '기념일') s.querySelector('#eY').checked = true; });
+    s.querySelectorAll('[data-r]').forEach(b => b.onclick = () => { rem = +b.dataset.r; s.querySelectorAll('[data-r]').forEach(y => y.classList.toggle('on', y === b)); });
+    s.querySelector('#eSave').onclick = async () => { try { await rpc('fh_event_save', { p_id: e ? e.id : null, p_title: s.querySelector('#eT').value, p_day: s.querySelector('#eD').value, p_yearly: s.querySelector('#eY').checked, p_category: cat, p_remind: rem, p_memo: s.querySelector('#eM').value.trim() || null }); close(); toast('저장했어요 📅'); render(); } catch (er) { toast(er.message, 1); } };
+    if (e) s.querySelector('#eDel').onclick = async () => { if (!(await confirmBox('이 일정을 지울까요?', '지우기'))) return; await rpc('fh_event_del', { p_id: e.id }); close(); render(); };
+  });
+}
+
+/* =====================================================================
+   🛒 장보기
+   ===================================================================== */
+route('/shop', '🛒 장보기 목록', async (el, alive) => {
+  const l = await rpc('fh_shop_list'); if (!alive()) return;
+  const left = l.filter(x => !x.done), done = l.filter(x => x.done);
+  el.innerHTML = `<div class="card"><div class="row"><input class="inp" id="sT" maxlength="60" placeholder="살 것 (예: 우유)" enterkeyhint="done"><input class="inp" id="sQ" maxlength="20" placeholder="수량" style="flex:0 0 72px"><button class="btn p" id="sAdd">추가</button></div>
+      <div class="chips" style="margin-top:10px">${['우유', '계란', '두부', '휴지', '과일', '라면', '간식'].map(t => `<button class="chip" data-qt="${t}">＋${t}</button>`).join('')}</div></div>
+    <div class="card"><h3>🧺 살 것 <small>${left.length}개</small></h3><ul class="shop">${left.map(x => shopLi(x)).join('') || `<li class="empty" style="display:block">${done.length ? '다 샀어요! 👍' : '살 것을 적어 두면 가족 모두 같이 봐요 🛒'}</li>`}</ul></div>
+    ${done.length ? `<div class="card"><h3>✅ 산 것 <small><button class="btn sm" id="sClr">비우기</button></small></h3><ul class="shop">${done.map(x => shopLi(x)).join('')}</ul></div>` : ''}`;
+  const add = async t => { const v = (t || $('#sT').value).trim(); if (!v) return; try { await rpc('fh_shop_add', { p_text: v, p_qty: t ? null : $('#sQ').value }); render(); } catch (e) { toast(e.message, 1); } };
+  $('#sAdd').onclick = () => add(); $('#sT').onkeydown = e => { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); add(); } };
+  $$('[data-qt]', el).forEach(b => b.onclick = () => add(b.dataset.qt));
+  $$('[data-st]', el).forEach(b => b.onclick = async () => { await rpc('fh_shop_toggle', { p_id: +b.dataset.st }); render(); });
+  $$('[data-sd]', el).forEach(b => b.onclick = async () => { await rpc('fh_shop_del', { p_id: +b.dataset.sd }); render(); });
+  if ($('#sClr')) $('#sClr').onclick = async () => { await rpc('fh_shop_del', { p_id: null }); render(); };
+});
+const shopLi = x => `<li class="${x.done ? 'done' : ''}"><button class="ck" data-st="${x.id}" style="${x.done ? 'background:var(--grn)' : ''}">${x.done ? '✓' : ''}</button><span class="tt" data-st="${x.id}">${esc(x.text)}${x.qty ? ` <span class="tag">${esc(x.qty)}</span>` : ''}<small>${x.done ? `${esc(M(x.done_by).nick)}가 샀어요 · ${ago(x.done_at)}` : `${esc(M(x.by).nick)} · ${ago(x.at)}`}</small></span><button class="del" style="color:#c9c2b8" data-sd="${x.id}">✕</button></li>`;
+
+/* =====================================================================
+   🚩 가족 미션
+   ===================================================================== */
+route('/mission', '🚩 가족 미션', async (el, alive) => {
+  const l = await rpc('fh_missions'); if (!alive()) return; const td = dayKey();
+  el.innerHTML = `<button class="btn p block" id="msNew" style="margin-bottom:14px">＋ 새 가족 미션 만들기</button>
+    ${l.length ? l.map(x => { const pc = Math.min(100, x.sum / x.target * 100), done = x.sum >= x.target, open = td >= x.start_on && td <= x.end_on;
+      return `<div class="ms ${done ? 'done' : ''}"><div class="mh"><i>${x.emoji}</i><span>${esc(x.title)}<small>${md(x.start_on)} ~ ${md(x.end_on)} ${open ? `· D-${diffDays(x.end_on, td)}` : td < x.start_on ? '· 시작 전' : '· 끝남'}${x.reward ? ` · 달성 보상 ⭐${x.reward}` : ''}</small></span><span class="num">${fmtN(x.sum)}<small style="font-family:var(--bf);font-size:12px;color:var(--muted)"> / ${fmtN(x.target)}${esc(x.unit)}</small></span></div>
+        <div class="bar"><i style="width:${pc}%;background:${done ? 'var(--grn)' : 'var(--org)'}"></i></div>
+        <div class="per">${S.members.map(m => `<span>${m.emoji} ${fmtN(x.per[m.id] || 0)}</span>`).join('')}${done ? '<b style="margin-left:auto;font-weight:400;color:#2b8a3e">🎉 달성!</b>' : ''}</div>
+        ${open ? `<div class="row" style="margin-top:10px"><input class="inp" type="number" inputmode="decimal" placeholder="오늘 한 만큼 (${esc(x.unit)})" data-amt="${x.id}"><button class="btn p sm" data-log="${x.id}">기록</button></div>` : ''}
+        ${x.logs.length ? `<details style="margin-top:8px"><summary class="muted" style="font-size:13px">기록 보기</summary>${x.logs.map(g => `<div class="row" style="font-size:13px;padding:4px 0">${M(g.member).emoji} ${esc(M(g.member).nick)} <span class="muted">${md(g.day)}</span><b style="font-weight:400;margin-left:auto">${fmtN(g.amount)}${esc(x.unit)}</b>${g.member === S.me.id || S.me.role === 'admin' ? `<button data-lgdel="${g.id}" style="color:#c9c2b8">✕</button>` : ''}</div>`).join('')}</details>` : ''}
+        ${x.by === S.me.id || S.me.role === 'admin' ? `<div style="text-align:right;margin-top:6px"><button class="btn sm" data-msdel="${x.id}">🗑 미션 지우기</button></div>` : ''}</div>`; }).join('') : '<div class="empty">가족이 함께할 미션을 만들어 보세요!<br><small>예) 이번 주 같이 걷기 50,000보 · 책 10권 읽기</small></div>'}`;
+  $('#msNew').onclick = missionForm;
+  $$('[data-log]', el).forEach(b => b.onclick = async () => { const v = parseFloat($(`[data-amt="${b.dataset.log}"]`).value); if (!v) return toast('숫자를 넣어 주세요', 1);
+    try { const r = await rpc('fh_mission_log', { p_mission: +b.dataset.log, p_amount: v }); if (r.done) confetti(); toast(r.done ? '🎉 미션 달성!' : '기록했어요 💪'); render(); } catch (e) { toast(e.message, 1); } });
+  $$('[data-lgdel]', el).forEach(b => b.onclick = async () => { await rpc('fh_mission_log_del', { p_id: +b.dataset.lgdel }); render(); });
+  $$('[data-msdel]', el).forEach(b => b.onclick = async () => { if (!(await confirmBox('이 미션을 지울까요?', '지우기'))) return; await rpc('fh_mission_del', { p_id: +b.dataset.msdel }); render(); });
+});
+function missionForm() {
+  const td = dayKey(), sun = addDays(td, (7 - D(td).getDay()) % 7 || 7);
+  const ex = [['👟', '같이 걷기', '보', 50000], ['📚', '책 읽기', '권', 10], ['🧹', '집안일 돕기', '회', 20], ['🙏', '고맙다고 말하기', '번', 30], ['📵', '폰 없는 저녁', '일', 5]];
+  sheet(`<h2>🚩 새 가족 미션<button class="x" data-close>✕</button></h2>
+    <div class="chips">${ex.map((x, i) => `<button class="chip" data-ex="${i}">${x[0]} ${x[1]}</button>`).join('')}</div>
+    <label class="lbl">미션 이름</label><div class="row"><input class="inp" id="xE" maxlength="4" value="🚩" style="flex:0 0 58px;text-align:center"><input class="inp" id="xT" maxlength="60" placeholder="예: 같이 걷기"></div>
+    <label class="lbl">목표</label><div class="row"><input class="inp" id="xG" type="number" inputmode="decimal" placeholder="숫자"><input class="inp" id="xU" maxlength="6" placeholder="단위" value="회" style="flex:0 0 80px"></div>
+    <label class="lbl">기간</label><div class="row"><input class="inp" type="date" id="xS" value="${td}"><span>~</span><input class="inp" type="date" id="xD" value="${sun}"></div>
+    ${S.me.role === 'admin' ? `<label class="lbl">달성하면 참여한 가족에게 주는 포인트 (admin)</label><input class="inp" id="xR" type="number" value="50">` : ''}
+    <div class="foot"><button class="btn" data-close>취소</button><button class="btn p" id="xSave">만들기</button></div>`, (s, close) => {
+    s.querySelectorAll('[data-ex]').forEach(b => b.onclick = () => { const x = ex[+b.dataset.ex]; s.querySelector('#xE').value = x[0]; s.querySelector('#xT').value = x[1]; s.querySelector('#xU').value = x[2]; s.querySelector('#xG').value = x[3]; });
+    s.querySelector('#xSave').onclick = async () => { try { await rpc('fh_mission_save', { p_title: s.querySelector('#xT').value, p_emoji: s.querySelector('#xE').value, p_unit: s.querySelector('#xU').value, p_target: parseFloat(s.querySelector('#xG').value), p_start: s.querySelector('#xS').value, p_end: s.querySelector('#xD').value, p_reward: s.querySelector('#xR') ? +s.querySelector('#xR').value : 0 }); close(); toast('미션을 만들었어요 🚩'); render(); } catch (e) { toast(e.message, 1); } };
+  });
+}
+
+/* =====================================================================
+   📏 성장 기록
+   ===================================================================== */
+route('/growth', '📏 성장 기록', async (el, alive) => {
+  const q = new URLSearchParams(location.hash.split('?')[1] || ''); const kids = S.members.filter(m => manAge(m) < 20);
+  const who = +(q.get('m') || (kids[0] || S.me).id), m = M(who);
+  const l = await rpc('fh_growth', { p_member: who }); if (!alive()) return;
+  const hs = l.filter(x => x.height != null), ws = l.filter(x => x.weight != null);
+  el.innerHTML = `<div class="who-chips">${S.members.map(x => `<button data-g="${x.id}" class="${x.id === who ? 'on' : ''}">${av(x, 26)}${esc(x.nick)}</button>`).join('')}</div>
+    <div class="card"><h3>${av(m, 30)} ${esc(m.nick)}의 성장 <small>만 ${manAge(m)}세</small></h3>
+      <div class="pts"><div><b>${hs.length ? hs[hs.length - 1].height : '–'}</b><span>키 (cm)</span></div><div><b>${ws.length ? ws[ws.length - 1].weight : '–'}</b><span>몸무게 (kg)</span></div><div><b>${l.length}</b><span>기록</span></div></div>
+      ${hs.length > 1 ? `<div class="sep"></div><div class="muted" style="font-size:13px">📈 키</div>${lineChart(hs.map(x => [x.day, +x.height]), '#339af0', 'cm')}` : ''}
+      ${ws.length > 1 ? `<div class="muted" style="font-size:13px;margin-top:6px">📈 몸무게</div>${lineChart(ws.map(x => [x.day, +x.weight]), '#f76707', 'kg')}` : ''}
+      <button class="btn p block" id="gAdd" style="margin-top:12px">＋ 오늘 기록하기</button></div>
+    <div class="card"><h3>📒 기록 <small>키·몸무게·그날의 추억</small></h3>${l.length ? `<table class="gtable"><tr><th>날짜</th><th>키</th><th>몸무게</th><th>메모</th><th></th></tr>${l.slice().reverse().map(x => `<tr><td>${x.day.slice(2).replace(/-/g, '.')}</td><td>${x.height ?? ''}</td><td>${x.weight ?? ''}</td><td style="text-align:left;font-size:13px">${esc(x.note || '')}</td><td><button data-gdel="${x.id}" style="color:#c9c2b8">✕</button></td></tr>`).join('')}</table>` : '<div class="empty">첫 기록을 남겨 보세요 📏<br><small>키·몸무게뿐 아니라 "오늘 처음 자전거 탔어요" 같은 추억도 좋아요</small></div>'}</div>`;
+  $$('[data-g]', el).forEach(b => b.onclick = () => go('#/growth?m=' + b.dataset.g));
+  $$('[data-gdel]', el).forEach(b => b.onclick = async () => { if (!(await confirmBox('이 기록을 지울까요?', '지우기'))) return; await rpc('fh_growth_del', { p_id: +b.dataset.gdel }); render(); });
+  $('#gAdd').onclick = () => sheet(`<h2>📏 ${esc(m.nick)} 기록<button class="x" data-close>✕</button></h2>
+    <label class="lbl">날짜</label><input class="inp" type="date" id="gD" value="${dayKey()}">
+    <div class="row" style="margin-top:6px"><div style="flex:1"><label class="lbl">키 (cm)</label><input class="inp" id="gH" type="number" step="0.1" inputmode="decimal"></div><div style="flex:1"><label class="lbl">몸무게 (kg)</label><input class="inp" id="gW" type="number" step="0.1" inputmode="decimal"></div></div>
+    <label class="lbl">메모·추억</label><textarea class="inp" id="gN" maxlength="500" placeholder="예: 처음으로 두발자전거 성공!"></textarea>
+    <div class="foot"><button class="btn" data-close>취소</button><button class="btn p" id="gS">저장</button></div>`, (s, close) => {
+    s.querySelector('#gS').onclick = async () => { const n = v => v === '' ? null : parseFloat(v); try { await rpc('fh_growth_add', { p_member: who, p_day: s.querySelector('#gD').value, p_height: n(s.querySelector('#gH').value), p_weight: n(s.querySelector('#gW').value), p_note: s.querySelector('#gN').value.trim() || null }); close(); toast('기록했어요 📏'); render(); } catch (e) { toast(e.message, 1); } };
+  });
+});
+function lineChart(pts, color, unit) {
+  const W = 340, H = 140, P = 26, xs = pts.map(p => D(p[0]).getTime()), ys = pts.map(p => p[1]);
+  const x0 = Math.min(...xs), x1 = Math.max(...xs) || x0 + 1, y0 = Math.min(...ys), y1 = Math.max(...ys), yp = (y1 - y0) * .15 || 1;
+  const X = t => P + (t - x0) / ((x1 - x0) || 1) * (W - P * 2), Y = v => H - P + 8 - (v - (y0 - yp)) / ((y1 + yp) - (y0 - yp)) * (H - P * 1.6);
+  const d = pts.map((p, i) => `${i ? 'L' : 'M'}${X(xs[i]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join(' ');
+  return `<svg class="gchart" viewBox="0 0 ${W} ${H}"><line x1="${P}" y1="${H - P + 8}" x2="${W - P}" y2="${H - P + 8}" stroke="#ecdcc6" stroke-width="1.5"/><path d="${d}" fill="none" stroke="${color}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+    ${pts.map((p, i) => `<circle cx="${X(xs[i]).toFixed(1)}" cy="${Y(p[1]).toFixed(1)}" r="4" fill="#fff" stroke="${color}" stroke-width="2.5"/>${i === 0 || i === pts.length - 1 ? `<text x="${X(xs[i]).toFixed(1)}" y="${(Y(p[1]) - 9).toFixed(1)}" text-anchor="${i === 0 ? 'start' : 'end'}" font-size="12" fill="#2b2f3a">${p[1]}${unit}</text><text x="${X(xs[i]).toFixed(1)}" y="${H - 4}" text-anchor="${i === 0 ? 'start' : 'end'}" font-size="10.5" fill="#8a8f9a">${p[0].slice(2).replace(/-/g, '.')}</text>` : ''}`).join('')}</svg>`;
+}
+
+/* =====================================================================
+   ⭐ 포인트·칭찬 스티커·상점
+   ===================================================================== */
+const STK = ['⭐', '👍', '💖', '🏅', '🌈', '🦸'];
+route('/points', '⭐ 포인트·칭찬', async (el, alive) => {
+  const r = await rpc('fh_shop'); if (!alive()) return;
+  const board = r.board.slice().sort((a, b) => b.week.earned - a.week.earned), medal = ['🥇', '🥈', '🥉', '4'];
+  el.innerHTML = `<div class="card" style="text-align:center;background:#fff9db"><div class="muted">${S.me.emoji} ${esc(S.me.nick)}의 포인트</div><div style="font-family:var(--hf);font-size:46px;color:var(--org-d);line-height:1.2">⭐ ${fmtN(r.points.balance)}</div>
+      <div class="muted" style="font-size:13px">할 일 ${fmtN(r.points.todo)} + 칭찬 ${fmtN(r.points.sticker)} + 미션 ${fmtN(r.points.mission)}${r.points.adjust ? ` + 보너스 ${fmtN(r.points.adjust)}` : ''} − 사용 ${fmtN(r.points.spent)}</div></div>
+    <div class="card"><h3>🏆 이번 주 포인트 순위 <small>월요일부터</small></h3><ul class="lead">${board.map((b, i) => { const m = M(b.id); return `<li><span class="rk">${medal[i] || i + 1}</span>${av(m, 36)}<span>${esc(m.nick)}<small class="muted" style="display:block">전체 ${fmtN(b.points.balance)}점</small></span><span class="pv">+${fmtN(b.week.earned)}</span></li>`; }).join('')}</ul></div>
+    <div class="card"><h3>💝 칭찬 스티커 주기 <small>오늘 ${Math.max(0, r.rules.sticker_per_day - r.given_today)}개 남음</small></h3>
+      <p class="hint" style="margin:0 0 10px">스티커 1개 = 받는 사람에게 <b>${r.rules.sticker}점</b>! 하루 ${r.rules.sticker_per_day}개까지 줄 수 있어요.</p>
+      <button class="btn p block" id="stGive">⭐ 스티커 주기</button>
+      ${r.stickers.length ? `<div class="sep"></div>${r.stickers.slice(0, 10).map(s => `<div class="ev"><span class="ei">${s.emoji}</span><span class="eb">${esc(M(s.from).nick)} → ${esc(M(s.to).nick)}<small>${esc(s.reason || '최고야!')} · ${ago(s.at)}</small></span></div>`).join('')}` : ''}</div>
+    <div class="card"><h3>🎁 포인트 상점 <small>신청하면 admin이 승인해요</small></h3>${r.rewards.map(w => `<div class="rw"><i>${w.emoji}</i><span class="rb">${esc(w.title)}<small>⭐ ${fmtN(w.cost)}점</small></span><button class="btn sm ${r.points.balance >= w.cost ? 'y' : ''}" data-rd="${w.id}" ${r.points.balance >= w.cost ? '' : 'disabled'}>신청</button></div>`).join('') || '<div class="empty">admin이 보상을 등록하면 보여요</div>'}
+      ${r.mine.length ? `<div class="sep"></div><div class="muted" style="font-size:13px;margin-bottom:4px">내 신청 내역</div>${r.mine.map(x => `<div class="row" style="font-size:14px;padding:4px 0">${esc(x.title)} <span class="muted">${ago(x.at)}</span><span style="margin-left:auto">-${fmtN(x.cost)}</span><span class="tag ${x.status === 'approved' ? 'ok' : x.status === 'pending' ? 'wait' : 'no'}">${x.status === 'approved' ? '승인' : x.status === 'pending' ? '대기' : '반려'}</span></div>`).join('')}` : ''}</div>
+    <div class="card"><h3>📏 포인트 규칙</h3><p class="hint" style="margin:0;font-size:13.5px">✅ 할 일 완료 1개 = ${r.rules.todo}점 (하루 ${r.rules.todo_cap}개까지)<br>🏆 하루 할 일 ${r.rules.bonus_min}개 이상 모두 완료 = 보너스 ${r.rules.bonus}점<br>💝 칭찬 스티커 1개 받기 = ${r.rules.sticker}점<br>🚩 가족 미션 달성 = 미션마다 정한 점수 (참여한 사람 모두)</p></div>`;
+  $('#stGive').onclick = () => stickerSheet();
+  $$('[data-rd]', el).forEach(b => b.onclick = async () => { const w = r.rewards.find(x => x.id === +b.dataset.rd); if (!(await confirmBox(`${w.emoji} ${w.title} (${w.cost}점)을 신청할까요?`, '신청'))) return; try { await rpc('fh_redeem', { p_reward: w.id }); confetti(); toast('신청했어요! admin 승인을 기다려요'); render(); } catch (e) { toast(e.message, 1); } });
+});
+function stickerSheet(to) {
+  const others = S.members.filter(m => m.id !== S.me.id); let sel = to || null, emo = '⭐';
+  sheet(`<h2>💝 칭찬 스티커<button class="x" data-close>✕</button></h2>
+    <label class="lbl">누구에게?</label><div class="who-chips">${others.map(m => `<button data-to="${m.id}" class="${m.id === sel ? 'on' : ''}">${av(m, 26)}${esc(m.nick)}</button>`).join('')}</div>
+    <label class="lbl">스티커</label><div class="stk">${STK.map(e => `<button data-e="${e}" class="${e === emo ? 'on' : ''}">${e}</button>`).join('')}</div>
+    <label class="lbl">왜 칭찬해요?</label><input class="inp" id="stR" maxlength="80" placeholder="예: 동생이랑 사이좋게 놀았어요">
+    <div class="chips" style="margin-top:8px">${['정리정돈 최고', '숙제 끝!', '양보해줘서 고마워', '오늘도 수고했어', '사랑해요'].map(t => `<button class="chip" data-rs="${t}">${t}</button>`).join('')}</div>
+    <div class="foot"><button class="btn" data-close>취소</button><button class="btn p" id="stS">주기</button></div>`, (s, close) => {
+    s.querySelectorAll('[data-to]').forEach(b => b.onclick = () => { sel = +b.dataset.to; s.querySelectorAll('[data-to]').forEach(x => x.classList.toggle('on', x === b)); });
+    s.querySelectorAll('[data-e]').forEach(b => b.onclick = () => { emo = b.dataset.e; s.querySelectorAll('[data-e]').forEach(x => x.classList.toggle('on', x === b)); });
+    s.querySelectorAll('[data-rs]').forEach(b => b.onclick = () => { s.querySelector('#stR').value = b.dataset.rs; });
+    s.querySelector('#stS').onclick = async () => { if (!sel) return toast('받는 사람을 골라 주세요', 1); try { const r = await rpc('fh_sticker_give', { p_to: sel, p_emoji: emo, p_reason: s.querySelector('#stR').value.trim() || null }); close(); confetti(); toast(`${emo} ${M(sel).nick}에게 줬어요! (오늘 ${r.left}개 남음)`); if (location.hash.startsWith('#/points')) render(); } catch (e) { toast(e.message, 1); } };
+  });
+}
+
+/* =====================================================================
+   📊 주간 리포트
+   ===================================================================== */
+route('/report', '📊 주간 가족 리포트', async (el, alive) => {
+  const q = new URLSearchParams(location.hash.split('?')[1] || ''), td = dayKey();
+  const mon = addDays(td, -((D(td).getDay() + 6) % 7)), start = q.get('w') || mon;
+  const r = await rpc('fh_week', { p_start: start }); if (!alive()) return;
+  const best = r.members.slice().sort((a, b) => b.points - a.points)[0], tot = r.members.reduce((a, x) => ({ n: a.n + x.todo_n, d: a.d + x.todo_d, p: a.p + x.points }), { n: 0, d: 0, p: 0 });
+  el.innerHTML = `<div class="card"><div class="cal-h"><a class="btn sm" href="#/report?w=${addDays(start, -7)}">‹</a><b style="font-size:17px">${md(start)} ~ ${md(addDays(start, 6))}</b>${start < mon ? `<a class="btn sm" href="#/report?w=${addDays(start, 7)}">›</a>` : '<span style="width:34px"></span>'}</div>
+      <div class="pts" style="margin-top:6px"><div><b>${tot.n ? Math.round(tot.d / tot.n * 100) : 0}%</b><span>가족 할 일 달성</span></div><div><b>${fmtN(tot.p)}</b><span>모은 포인트</span></div><div><b>${r.photos.length}</b><span>올린 사진</span></div></div>
+      ${start === mon ? '<p class="hint" style="text-align:center">이번 주 진행 중 · 일요일 밤에 완성돼요</p>' : ''}</div>
+    ${best && best.points > 0 ? `<div class="card" style="background:#fff9db;text-align:center"><div style="font-size:40px">👑</div><b style="font-weight:400;font-size:18px">이번 주 MVP · ${esc(M(best.id).nick)}</b><div class="muted" style="font-size:13px">${fmtN(best.points)}점을 모았어요!</div></div>` : ''}
+    ${r.members.map(x => { const m = M(x.id); return `<div class="rep">${best && best.id === x.id && x.points > 0 ? '<span class="crown">👑</span>' : ''}<div class="rh">${av(m, 44)}<b>${esc(m.nick)}</b><span style="margin-left:auto" class="muted">${x.score != null ? `평균 ${x.score}점` : '점수 기록 없음'}</span></div>
+      <div class="stats"><div><b>${x.todo_d}/${x.todo_n}</b><span>할 일</span></div><div><b>${x.perfect}</b><span>완벽한 날</span></div><div><b>${fmtN(x.points)}</b><span>포인트</span></div><div><b>${x.stickers}</b><span>칭찬</span></div></div>
+      <div class="moods">${[...Array(7)].map((_, i) => { const k = addDays(start, i), mo = x.moods.find(y => y.day === k); return `<span title="${md(k)}">${mo ? mo.mood : '<span style="opacity:.2">⚪</span>'}</span>`; }).join('')}</div></div>`; }).join('')}
+    ${r.photos.length ? `<div class="card"><h3>📸 이번 주 사진</h3><div class="album">${r.photos.map(id => `<div class="pic" data-pid="${id}"></div>`).join('')}</div></div>` : ''}
+    <div class="card"><h3>🧾 그 밖에</h3><div class="ev"><span class="ei">🛒</span><span class="eb">장보기로 산 물건</span><span class="dd">${r.shopping}개</span></div><div class="ev"><span class="ei">📍</span><span class="eb">도착 알림</span><span class="dd">${r.checkins}번</span></div><div class="ev"><span class="ei">📝</span><span class="eb">게시판 글</span><span class="dd">${r.members.reduce((a, x) => a + x.posts, 0)}개</span></div></div>`;
+  $$('.pic[data-pid]', el).forEach(async d => { const src = await photoSrc(+d.dataset.pid); if (src) { d.style.backgroundImage = `url(${src})`; d.onclick = () => lightbox(src); } });
+});
+
+/* =====================================================================
+   ✈️ 가족 여행
+   ===================================================================== */
+const TRIP_EMO = ['✈️', '🏝', '🏔', '🚗', '🏕', '🎢', '🚢', '🚄', '🇯🇵', '🇺🇸', '🇻🇳', '🇹🇭', '🇪🇺', '🇨🇳'];
+const PACK_TPL = {
+  '🧳 기본': ['휴대폰 충전기', '보조배터리', '세면도구', '상비약', '속옷', '양말', '잠옷', '선크림', '우산'],
+  '🌏 해외': ['여권', '항공권(e-티켓)', '여행자보험', '환전·트래블카드', '유심·eSIM·로밍', '멀티 어댑터', '숙소 바우처', '볼펜(입국신고서)'],
+  '👶 아이': ['아이 상비약(해열제)', '물티슈', '아이 간식', '장난감·책', '여벌 옷', '아이 물병', '체온계'],
+  '🏊 물놀이': ['수영복', '래쉬가드', '수경', '튜브', '방수팩', '비치타월', '아쿠아슈즈'],
+  '⛄ 겨울': ['패딩', '장갑', '목도리', '핫팩', '털모자', '립밤'],
+  '🏕 캠핑': ['텐트', '침낭', '랜턴', '버너·가스', '코펠', '아이스박스', '모기퇴치제']
+};
+const DOC_KIND = { passport: ['🛂', '여권'], photo: ['🪪', '여권·증명사진'], ticket: ['✈️', '항공권·승차권'], stay: ['🏨', '숙소 예약'], insurance: ['🛡', '여행자보험'], etc: ['📎', '기타'] };
+const EXP_CAT = { '교통': '🚌', '숙박': '🏨', '식비': '🍜', '관광': '🎡', '쇼핑': '🛍', '기타': '💳' };
+const isAbroad = t => t.country && !/^(대한민국|한국|국내|korea)$/i.test(t.country.trim());
+const mapLink = (t, place) => isAbroad(t) ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place)}` : `https://map.naver.com/p/search/${encodeURIComponent(place)}`;
+const tripDays = t => { const out = []; for (let k = t.start_on; k <= t.end_on; k = addDays(k, 1)) out.push(k); return out; };
+function tripDD(t) { const td = dayKey(); if (td < t.start_on) return { txt: 'D-' + diffDays(t.start_on, td), cls: 'up' }; if (td <= t.end_on) return { txt: `여행 ${diffDays(td, t.start_on) + 1}일째`, cls: 'now' }; return { txt: '다녀옴', cls: 'past' }; }
+const nights = t => { const n = diffDays(t.end_on, t.start_on); return n ? `${n}박 ${n + 1}일` : '당일'; };
+const TFILE = new Map();
+async function tripFileSrc(id) { if (!TFILE.has(id)) TFILE.set(id, rpc('fh_trip_file', { p_id: id }).then(r => r.data).catch(() => null)); return TFILE.get(id); }
+
+route('/trip', '✈️ 가족 여행', async (el, alive) => {
+  const q = new URLSearchParams(location.hash.split('?')[1] || ''), id = +q.get('id');
+  if (id) return tripDetail(el, alive, id, q.get('tab') || 'plan');
+  const l = await rpc('fh_trips'); if (!alive()) return; const td = dayKey();
+  const now = l.filter(t => t.end_on >= td), past = l.filter(t => t.end_on < td);
+  const card = t => { const d = tripDD(t), pc = t.pack_n ? Math.round(t.pack_d / t.pack_n * 100) : 0;
+    return `<button class="trip-card ${t.mine ? '' : 'other'} ${d.cls}" data-trip="${t.id}" data-mine="${t.mine ? 1 : 0}"><span class="te">${t.emoji}</span><span class="tb"><b>${esc(t.title)}</b><small>${esc(t.place || '')}${t.place ? ' · ' : ''}${md(t.start_on)} ~ ${md(t.end_on)} · ${nights(t)}</small>
+      <span class="tm">${t.members.map(i => M(i).emoji).join('')}${t.mine ? '' : ' <span class="tag">참여 안 함</span>'}</span>${t.mine && t.end_on >= td && t.pack_n ? `<span class="bar" style="margin-top:6px;height:8px"><i style="width:${pc}%"></i></span><small>준비물 ${t.pack_d}/${t.pack_n}</small>` : ''}</span><span class="tdd">${d.txt}</span></button>`; };
+  el.innerHTML = `<button class="btn p block" id="trNew" style="margin-bottom:14px">＋ 새 가족 여행 만들기</button>
+    ${now.length ? `<div class="card"><h3>🧳 다가오는 여행</h3>${now.map(card).join('')}</div>` : '<div class="card empty">아직 계획한 여행이 없어요<br><small>장소·날짜·함께 갈 가족을 정하면 일정·준비물·서류·경비를 한곳에서 챙길 수 있어요</small></div>'}
+    ${past.length ? `<div class="card"><h3>📷 다녀온 여행 <small>${past.length}번</small></h3>${past.map(card).join('')}</div>` : ''}`;
+  $('#trNew').onclick = () => tripForm(null);
+  $$('[data-trip]', el).forEach(b => b.onclick = () => b.dataset.mine === '1' ? go('#/trip?id=' + b.dataset.trip) : toast('함께 가는 가족만 자세히 볼 수 있어요'));
+});
+
+async function tripDetail(el, alive, id, tab) {
+  const r = await rpc('fh_trip', { p_id: id }); if (!alive()) return;
+  const t = r.trip, d = tripDD(t), plans = r.items.filter(i => i.kind === 'plan'), packs = r.items.filter(i => i.kind === 'pack');
+  const canDel = t.created_by === S.me.id || S.me.role === 'admin';
+  const TABS = [['plan', '🗓 일정'], ['pack', `🧳 준비물${packs.length ? ` ${packs.filter(p => p.done).length}/${packs.length}` : ''}`], ['doc', '🛂 서류'], ['money', '💰 경비'], ['share', '💬 공유'], ['info', 'ℹ️ 정보']];
+  el.innerHTML = `<div class="card trip-head"><div class="row"><span style="font-size:44px">${t.emoji}</span><div style="flex:1;min-width:0"><b style="font-weight:400;font-size:20px">${esc(t.title)}</b>
+      <div class="muted" style="font-size:13px">${esc(t.place || '')}${t.country ? ` (${esc(t.country)})` : ''}</div><div style="font-size:13.5px">${md(t.start_on)} ~ ${md(t.end_on)} · ${nights(t)}</div></div><span class="tdd big">${d.txt}</span></div>
+      <div class="row" style="margin-top:8px;flex-wrap:wrap">${t.members.map(i => `<span class="tag" style="font-size:13px">${M(i).emoji} ${esc(M(i).nick)}</span>`).join('')}<button class="btn sm" id="trEdit" style="margin-left:auto">✏️ 수정</button></div></div>
+    <div class="ttabs">${TABS.map(([k, n]) => `<a class="chip ${tab === k ? 'on' : ''}" href="#/trip?id=${id}&tab=${k}">${n}</a>`).join('')}</div>
+    <div id="tbody"></div>`;
+  $('#trEdit').onclick = () => tripForm(t);
+  const body = $('#tbody'), reload = () => tripDetail(el, alive, id, tab);
+  const fn = { plan: tripPlan, pack: tripPack, doc: tripDoc, money: tripMoney, share: tripShare, info: tripInfo }[tab] || tripPlan;
+  fn(body, r, t, reload, canDel);
+}
+
+function tripPlan(el, r, t, reload) {
+  const plans = r.items.filter(i => i.kind === 'plan'), td = dayKey(), days = tripDays(t), none = plans.filter(p => !p.day || !days.includes(p.day));
+  const row = p => `<div class="plan" data-pl="${p.id}"><span class="pt">${p.time || '--:--'}</span><span class="pb"><b>${esc(p.title)}</b>${p.place ? `<a href="${mapLink(t, p.place)}" target="_blank" rel="noopener" class="pmap" onclick="event.stopPropagation()">🗺 ${esc(p.place)}</a>` : ''}${p.memo ? `<small>${linkify(p.memo)}</small>` : ''}</span></div>`;
+  el.innerHTML = days.map((k, i) => { const l = plans.filter(p => p.day === k); return `<div class="card day ${k === td ? 'today' : ''}"><h3>Day ${i + 1} <small style="margin-left:6px">${md(k)}${k === td ? ' · 오늘' : ''}</small><small><button class="btn sm" data-addday="${k}">＋ 추가</button></small></h3>${l.map(row).join('') || '<div class="muted" style="font-size:13.5px;padding:4px 0">아직 일정이 없어요</div>'}</div>`; }).join('')
+    + (none.length ? `<div class="card"><h3>📌 날짜 미정</h3>${none.map(row).join('')}</div>` : '')
+    + `<p class="hint">장소를 넣으면 ${isAbroad(t) ? '구글 지도' : '네이버 지도'}로 바로 열 수 있어요. 일정을 누르면 고칠 수 있어요.</p>`;
+  $$('[data-addday]', el).forEach(b => b.onclick = () => planForm(t, null, b.dataset.addday, reload));
+  $$('[data-pl]', el).forEach(b => b.onclick = () => planForm(t, plans.find(p => p.id === +b.dataset.pl), null, reload));
+}
+function planForm(t, p, day, reload) {
+  const x = p || { day, time: '', title: '', place: '', memo: '' }, days = tripDays(t);
+  sheet(`<h2>${p ? '✏️ 일정 고치기' : '🗓 일정 추가'}<button class="x" data-close>✕</button></h2>
+    <label class="lbl">날짜</label><div class="chips">${days.map((k, i) => `<button class="chip ${x.day === k ? 'on' : ''}" data-d="${k}">Day${i + 1} ${D(k).getMonth() + 1}/${D(k).getDate()}</button>`).join('')}</div>
+    <div class="row" style="margin-top:4px"><div style="flex:0 0 120px"><label class="lbl">시간</label><input class="inp" type="time" id="plT" value="${x.time || ''}"></div><div style="flex:1"><label class="lbl">할 일</label><input class="inp" id="plN" maxlength="80" value="${esc(x.title)}" placeholder="예: 유니버설 스튜디오"></div></div>
+    <label class="lbl">장소 (지도 검색어)</label><input class="inp" id="plP" maxlength="120" value="${esc(x.place || '')}" placeholder="예: 유니버설 스튜디오 재팬">
+    <label class="lbl">메모</label><textarea class="inp" id="plM" maxlength="500" placeholder="예약번호, 입장 시간, 링크 등" style="min-height:64px">${esc(x.memo || '')}</textarea>
+    <div class="foot">${p ? '<button class="btn r" id="plD">지우기</button>' : '<button class="btn" data-close>취소</button>'}<button class="btn p" id="plS">저장</button></div>`, (s, close) => {
+    let dd = x.day; s.querySelectorAll('[data-d]').forEach(b => b.onclick = () => { dd = b.dataset.d; s.querySelectorAll('[data-d]').forEach(y => y.classList.toggle('on', y === b)); });
+    s.querySelector('#plS').onclick = async () => { try { await rpc('fh_trip_item_save', { p_trip: t.id, p_id: p ? p.id : null, p_kind: 'plan', p_day: dd || null, p_time: s.querySelector('#plT').value, p_title: s.querySelector('#plN').value, p_place: s.querySelector('#plP').value.trim(), p_memo: s.querySelector('#plM').value.trim(), p_assignee: null }); close(); toast('저장했어요'); reload(); } catch (e) { toast(e.message, 1); } };
+    if (p) s.querySelector('#plD').onclick = async () => { await rpc('fh_trip_item_del', { p_id: p.id }); close(); reload(); };
+    setTimeout(() => !p && s.querySelector('#plN').focus(), 80);
+  });
+}
+
+let PACK_WHO = null;
+function tripPack(el, r, t, reload) {
+  const packs = r.items.filter(i => i.kind === 'pack'), dn = packs.filter(p => p.done).length;
+  const groups = [[null, '👨‍👩‍👧‍👦 공용']].concat(t.members.map(i => [i, `${M(i).emoji} ${M(i).nick}`]));
+  if (PACK_WHO !== null && !t.members.includes(PACK_WHO)) PACK_WHO = null;
+  el.innerHTML = `<div class="card">${packs.length ? `<div class="row"><div class="bar" style="flex:1;height:14px"><i style="width:${dn / packs.length * 100}%"></i></div><b style="font-weight:400">${dn}/${packs.length}</b></div>${dn === packs.length ? '<p style="text-align:center;margin:8px 0 0">🎉 모두 챙겼어요! 출발 준비 끝</p>' : ''}<div class="sep"></div>` : ''}
+      <label class="lbl" style="margin-top:0">누구 준비물?</label><div class="who-chips">${groups.map(([i, n]) => `<button data-pw="${i ?? ''}" class="${PACK_WHO === i ? 'on' : ''}">${n}</button>`).join('')}</div>
+      <div class="row"><input class="inp" id="pkIn" maxlength="80" placeholder="준비물 적기" enterkeyhint="done"><button class="btn p" id="pkAdd">추가</button></div>
+      <label class="lbl">한 번에 넣기 (템플릿)</label><div class="chips">${Object.keys(PACK_TPL).map(k => `<button class="chip" data-tpl="${k}">${k}</button>`).join('')}</div>
+      <p class="hint">템플릿은 위에서 고른 사람(또는 공용)에게 들어가요. 체크는 가족 누구나 할 수 있어요.</p></div>
+    ${groups.map(([i, n]) => { const l = packs.filter(p => (p.assignee ?? null) === i); if (!l.length) return ''; const d = l.filter(p => p.done).length;
+      return `<div class="card"><h3>${n} <small>${d}/${l.length}</small></h3><ul class="tlist">${l.map(p => `<li class="${p.done ? 'done' : ''}"><button class="ck" data-pk="${p.id}">${p.done ? '✓' : ''}</button><span class="tt" data-pk="${p.id}">${esc(p.title)}${p.done && p.done_by ? ` <small class="muted">${M(p.done_by).emoji}</small>` : ''}</span><button class="del" data-pkd="${p.id}">✕</button></li>`).join('')}</ul></div>`; }).join('')}`;
+  $$('[data-pw]', el).forEach(b => b.onclick = () => { PACK_WHO = b.dataset.pw ? +b.dataset.pw : null; $$('[data-pw]', el).forEach(y => y.classList.toggle('on', y === b)); });
+  const add = async () => { const v = $('#pkIn').value.trim(); if (!v) return; try { await rpc('fh_trip_item_save', { p_trip: t.id, p_id: null, p_kind: 'pack', p_day: null, p_time: null, p_title: v, p_place: null, p_memo: null, p_assignee: PACK_WHO }); reload(); } catch (e) { toast(e.message, 1); } };
+  $('#pkAdd').onclick = add; $('#pkIn').onkeydown = e => { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); add(); } };
+  $$('[data-tpl]', el).forEach(b => b.onclick = async () => { const x = await rpc('fh_trip_pack_bulk', { p_trip: t.id, p_titles: PACK_TPL[b.dataset.tpl], p_assignee: PACK_WHO }); toast(`${x.added}개 넣었어요`); reload(); });
+  $$('[data-pk]', el).forEach(b => b.onclick = async () => { await rpc('fh_trip_item_toggle', { p_id: +b.dataset.pk }); reload(); });
+  $$('[data-pkd]', el).forEach(b => b.onclick = async () => { await rpc('fh_trip_item_del', { p_id: +b.dataset.pkd }); reload(); });
+}
+
+function tripDoc(el, r, t, reload) {
+  const limit = addDays(t.end_on, 183), abroad = isAbroad(t);
+  const warn = f => f.kind === 'passport' && f.expires_on ? (f.expires_on < t.end_on ? '<span class="tag no">⛔ 여행 중 만료</span>' : f.expires_on < limit ? '<span class="tag wait">⚠️ 6개월 미만</span>' : '<span class="tag ok">유효</span>') : '';
+  const who = [...t.members, null];
+  el.innerHTML = `<div class="card" style="background:#fff9db"><div class="row"><span style="font-size:28px">🔐</span><span style="flex:1;font-size:13.5px;line-height:1.55">이 여행에 <b>함께 가는 가족만</b>볼 수 있어요.<br><small class="muted">여권은 민감한 정보라 여행이 끝나면 지우는 걸 추천해요.</small></span></div>
+      <button class="btn p block" id="dcAdd" style="margin-top:10px">📷 서류·사진 올리기</button></div>
+    ${abroad ? `<div class="card"><h3>🛂 여권 체크 <small>귀국일 기준 6개월 이상 남아야 안전해요</small></h3>${t.members.map(i => { const pp = r.files.find(f => f.kind === 'passport' && f.member === i);
+      return `<div class="ev"><span class="ei">${M(i).emoji}</span><span class="eb">${esc(M(i).nick)}<small>${pp ? (pp.expires_on ? '만료 ' + pp.expires_on.replace(/-/g, '.') : '만료일 미입력') : '여권 사진 없음'}</small></span>${pp ? warn(pp) || '<span class="tag">확인</span>' : '<span class="tag no">미등록</span>'}</div>`; }).join('')}</div>` : ''}
+    ${who.map(i => { const l = r.files.filter(f => (f.member ?? null) === i); if (!l.length) return '';
+      return `<div class="card"><h3>${i ? `${M(i).emoji} ${esc(M(i).nick)}` : '👨‍👩‍👧‍👦 가족 공용'}</h3><div class="docs">${l.map(f => `<div class="doc"><div class="dimg" data-fid="${f.id}"></div><div class="dmeta">${(DOC_KIND[f.kind] || DOC_KIND.etc)[0]} ${esc(f.title || (DOC_KIND[f.kind] || DOC_KIND.etc)[1])}${f.expires_on ? `<small>~${f.expires_on.replace(/-/g, '.')}</small>` : ''}${warn(f)}</div><button class="del" data-fdel="${f.id}">🗑</button></div>`).join('')}</div></div>`; }).join('')}
+    ${r.files.length ? '' : '<div class="empty">여권, 여권 사진, 항공권, 숙소 예약 화면을 올려 두면<br>공항·호텔에서 바로 꺼내 볼 수 있어요</div>'}`;
+  $('#dcAdd').onclick = () => docForm(t, reload);
+  $$('[data-fid]', el).forEach(async d => { const src = await tripFileSrc(+d.dataset.fid); if (src) { d.style.backgroundImage = `url(${src})`; d.onclick = () => lightbox(src, `trip_${d.dataset.fid}.jpg`); } });
+  $$('[data-fdel]', el).forEach(b => b.onclick = async () => { if (!(await confirmBox('이 파일을 지울까요?', '지우기'))) return; await rpc('fh_trip_file_del', { p_id: +b.dataset.fdel }); reload(); });
+}
+function docForm(t, reload) {
+  let who = S.me.id, kind = 'passport', files = [];
+  sheet(`<h2>📷 서류·사진 올리기<button class="x" data-close>✕</button></h2>
+    <label class="lbl">누구 것?</label><div class="who-chips">${t.members.map(i => `<button data-w="${i}" class="${i === who ? 'on' : ''}">${av(M(i), 26)}${esc(M(i).nick)}</button>`).join('')}<button data-w="">👨‍👩‍👧‍👦 공용</button></div>
+    <label class="lbl">종류</label><div class="chips">${Object.entries(DOC_KIND).map(([k, v]) => `<button class="chip ${k === kind ? 'on' : ''}" data-k="${k}">${v[0]} ${v[1]}</button>`).join('')}</div>
+    <label class="lbl">이름 (선택)</label><input class="inp" id="dfT" maxlength="60" placeholder="예: 가는 비행기 e-티켓">
+    <div id="dfEx"><label class="lbl">여권 만료일</label><input class="inp" type="date" id="dfE"></div>
+    <div class="upl" id="dfUp"></div><input type="file" id="dfF" accept="image/*" multiple hidden>
+    <p class="hint">PDF는 화면 캡처해서 사진으로 올려 주세요. 글씨가 잘 보이게 크게 저장해요.</p>
+    <div class="foot"><button class="btn" data-close>취소</button><button class="btn p" id="dfS">올리기</button></div>`, (s, close) => {
+    const sync = () => { s.querySelector('#dfEx').hidden = kind !== 'passport'; };
+    s.querySelectorAll('[data-w]').forEach(b => b.onclick = () => { who = b.dataset.w ? +b.dataset.w : null; s.querySelectorAll('[data-w]').forEach(y => y.classList.toggle('on', y === b)); });
+    s.querySelectorAll('[data-k]').forEach(b => b.onclick = () => { kind = b.dataset.k; s.querySelectorAll('[data-k]').forEach(y => y.classList.toggle('on', y === b)); sync(); }); sync();
+    const up = s.querySelector('#dfUp'), fi = s.querySelector('#dfF');
+    const paint = () => { up.innerHTML = files.map((f, i) => `<div class="th" style="background-image:url(${f.data})"><button data-rm="${i}">✕</button></div>`).join('') + (files.length < 6 ? '<button class="add" id="dfA">📷</button>' : ''); up.querySelectorAll('[data-rm]').forEach(b => b.onclick = () => { files.splice(+b.dataset.rm, 1); paint(); }); const a = up.querySelector('#dfA'); if (a) a.onclick = () => fi.click(); };
+    fi.onchange = async () => { for (const f of [...fi.files].slice(0, 6 - files.length)) { try { files.push(await compressImage(f, 1800, .85)); } catch (e) { toast(e.message, 1); } } fi.value = ''; paint(); }; paint();
+    s.querySelector('#dfS').onclick = async () => { if (!files.length) return toast('사진을 골라 주세요', 1); const btn = s.querySelector('#dfS'); btn.disabled = true;
+      try { for (let i = 0; i < files.length; i++) { btn.textContent = `올리는 중 ${i + 1}/${files.length}`; await rpc('fh_trip_file_add', { p_trip: t.id, p_member: who, p_kind: kind, p_title: s.querySelector('#dfT').value.trim() || null, p_data: files[i].data, p_expires: kind === 'passport' ? (s.querySelector('#dfE').value || null) : null }); }
+        close(); toast('올렸어요 🔐'); reload(); } catch (e) { toast(e.message, 1); btn.disabled = false; btn.textContent = '올리기'; } };
+  });
+}
+
+function tripMoney(el, r, t, reload) {
+  const krw = e => e.currency === 'KRW' ? +e.amount : +e.amount * (+t.rate || 1), ex = r.expenses, tot = ex.reduce((a, e) => a + krw(e), 0);
+  const byCat = {}, byWho = {}; ex.forEach(e => { byCat[e.category] = (byCat[e.category] || 0) + krw(e); byWho[e.paid_by] = (byWho[e.paid_by] || 0) + krw(e); });
+  const mx = Math.max(1, ...Object.values(byCat)), cur = t.currency || 'KRW';
+  el.innerHTML = `<div class="card" style="text-align:center"><div class="muted" style="font-size:13px">지금까지 쓴 돈 (원화 환산)</div><div style="font-family:var(--hf);font-size:36px;color:var(--org-d)">₩${fmtN(Math.round(tot))}</div>
+      <div class="muted" style="font-size:12.5px">${cur !== 'KRW' ? `환율 1 ${esc(cur)} = ${t.rate}원 (정보 탭에서 수정) · ` : ''}1인당 약 ₩${fmtN(Math.round(tot / Math.max(1, t.members.length)))}</div>
+      <button class="btn p block" id="exAdd" style="margin-top:10px">＋ 쓴 돈 적기</button></div>
+    ${ex.length ? `<div class="card"><h3>📊 어디에 썼나</h3>${Object.entries(byCat).sort((a, b) => b[1] - a[1]).map(([c, v]) => `<div class="row" style="margin:6px 0"><span style="width:76px">${EXP_CAT[c] || '💳'} ${esc(c)}</span><div class="bar" style="flex:1"><i style="width:${v / mx * 100}%;background:var(--org)"></i></div><span style="width:86px;text-align:right">₩${fmtN(Math.round(v))}</span></div>`).join('')}
+      <div class="sep"></div><div class="muted" style="font-size:13px">누가 냈나</div>${Object.entries(byWho).map(([w, v]) => `<div class="row" style="margin:4px 0">${M(+w).emoji} ${esc(M(+w).nick)}<span style="margin-left:auto">₩${fmtN(Math.round(v))}</span></div>`).join('')}</div>
+    <div class="card"><h3>🧾 내역</h3>${ex.map(e => `<div class="ev" data-ex="${e.id}" style="cursor:pointer"><span class="ei">${EXP_CAT[e.category] || '💳'}</span><span class="eb">${esc(e.title)}<small>${e.day ? md(e.day) + ' · ' : ''}${M(e.paid_by).emoji} ${esc(M(e.paid_by).nick)}</small></span><span style="text-align:right">${e.currency === 'KRW' ? '₩' + fmtN(e.amount) : `${fmtN(e.amount)} ${esc(e.currency)}<small class="muted" style="display:block">₩${fmtN(Math.round(krw(e)))}</small>`}</span></div>`).join('')}</div>` : '<div class="empty">여행 중에 쓴 돈을 적으면 자동으로 합계와 1인당 금액을 계산해요</div>'}`;
+  $('#exAdd').onclick = () => expForm(t, null, reload);
+  $$('[data-ex]', el).forEach(b => b.onclick = () => expForm(t, ex.find(e => e.id === +b.dataset.ex), reload));
+}
+function expForm(t, e, reload) {
+  const td = dayKey(), days = tripDays(t), x = e || { day: days.includes(td) ? td : t.start_on, title: '', category: '식비', amount: '', currency: t.currency || 'KRW', paid_by: S.me.id };
+  const curs = [...new Set([t.currency || 'KRW', 'KRW'])];
+  sheet(`<h2>${e ? '✏️ 경비 고치기' : '💰 쓴 돈 적기'}<button class="x" data-close>✕</button></h2>
+    <label class="lbl">어디에?</label><div class="chips">${Object.entries(EXP_CAT).map(([c, i]) => `<button class="chip ${x.category === c ? 'on' : ''}" data-c="${c}">${i} ${c}</button>`).join('')}</div>
+    <label class="lbl">내용</label><input class="inp" id="exT" maxlength="60" value="${esc(x.title)}" placeholder="예: 라멘 점심">
+    <label class="lbl">금액</label><div class="row"><input class="inp" id="exA" type="number" inputmode="decimal" value="${x.amount}"><div class="chips">${curs.map(c => `<button class="chip ${x.currency === c ? 'on' : ''}" data-cu="${c}">${esc(c)}</button>`).join('')}</div></div>
+    <label class="lbl">날짜</label><div class="chips">${days.map((k, i) => `<button class="chip ${x.day === k ? 'on' : ''}" data-d="${k}">Day${i + 1}</button>`).join('')}</div>
+    <label class="lbl">누가 냈어요?</label><div class="who-chips">${t.members.map(i => `<button data-p="${i}" class="${x.paid_by === i ? 'on' : ''}">${av(M(i), 26)}${esc(M(i).nick)}</button>`).join('')}</div>
+    <div class="foot">${e ? '<button class="btn r" id="exD">지우기</button>' : '<button class="btn" data-close>취소</button>'}<button class="btn p" id="exS">저장</button></div>`, (s, close) => {
+    let c = x.category, cu = x.currency, dd = x.day, pb = x.paid_by;
+    const pick = (sel, fn) => s.querySelectorAll(sel).forEach(b => b.onclick = () => { fn(b); s.querySelectorAll(sel).forEach(y => y.classList.toggle('on', y === b)); });
+    pick('[data-c]', b => c = b.dataset.c); pick('[data-cu]', b => cu = b.dataset.cu); pick('[data-d]', b => dd = b.dataset.d); pick('[data-p]', b => pb = +b.dataset.p);
+    s.querySelector('#exS').onclick = async () => { try { await rpc('fh_trip_exp_save', { p_trip: t.id, p_id: e ? e.id : null, p_day: dd, p_title: s.querySelector('#exT').value || c, p_category: c, p_amount: parseFloat(s.querySelector('#exA').value), p_currency: cu, p_paid_by: pb }); close(); toast('적었어요 💰'); reload(); } catch (er) { toast(er.message, 1); } };
+    if (e) s.querySelector('#exD').onclick = async () => { await rpc('fh_trip_exp_del', { p_id: e.id }); close(); reload(); };
+  });
+}
+
+function tripSummary(r, t, withPack) {
+  const plans = r.items.filter(i => i.kind === 'plan'), left = r.items.filter(i => i.kind === 'pack' && !i.done);
+  let s = `${t.emoji} ${t.title}\n📍 ${t.place || ''}${t.country ? ` (${t.country})` : ''}\n📅 ${md(t.start_on)} ~ ${md(t.end_on)} · ${nights(t)}\n👨‍👩‍👧‍👦 ${t.members.map(i => M(i).nick).join(', ')}\n`;
+  if (t.stay) s += `🏨 ${t.stay}\n`;
+  tripDays(t).forEach((k, i) => { const l = plans.filter(p => p.day === k); if (l.length) s += `\n[Day ${i + 1} · ${md(k)}]\n` + l.map(p => `${p.time ? p.time + ' ' : '· '}${p.title}${p.place ? ` (${p.place})` : ''}`).join('\n') + '\n'; });
+  if (withPack && left.length) s += `\n🧳 아직 못 챙긴 준비물: ${left.map(p => p.title + (p.assignee ? `(${M(p.assignee).nick})` : '')).join(', ')}\n`;
+  return s.trim();
+}
+function tripShare(el, r, t, reload) {
+  let to = t.members.filter(i => i !== S.me.id);
+  el.innerHTML = `<div class="card"><h3>💬 함께 가는 가족에게 보내기</h3>
+      <label class="lbl" style="margin-top:0">받는 사람 (여러 명 선택)</label><div class="who-chips" id="shTo">${t.members.filter(i => i !== S.me.id).map(i => `<button data-to="${i}" class="on">${av(M(i), 26)}${esc(M(i).nick)}</button>`).join('') || '<span class="muted">함께 가는 다른 가족이 없어요 (정보 탭에서 추가)</span>'}</div>
+      <textarea class="inp" id="shB" maxlength="4000" placeholder="예: 내일 아침 7시에 출발해요! 여권 꼭 챙기기 🛂" style="min-height:110px"></textarea>
+      <div class="chips" style="margin-top:8px"><button class="chip" id="shSum">📋 일정 요약 넣기</button><button class="chip" id="shPk">🧳 남은 준비물 넣기</button><button class="chip" data-q="⏰ 내일 출발이에요! 일찍 자요">⏰ 내일 출발</button><button class="chip" data-q="🛂 여권 챙겼는지 확인해 주세요!">🛂 여권 확인</button></div>
+      <div class="foot"><button class="btn" id="shExt">📤 카톡 등 공유</button><button class="btn p" id="shGo">📣 가족에게 보내기</button></div>
+      <p class="hint">"가족에게 보내기"는 Family Hub 안에 기록되고 휴대폰 알림이 가요. "카톡 등 공유"는 휴대폰 공유 창으로 다른 앱에 보낼 수 있어요.</p></div>
+    <div class="card"><h3>📨 주고받은 메시지</h3>${r.msgs.length ? r.msgs.map(x => `<div class="msg ${x.from === S.me.id ? 'out' : ''}">${av(M(x.from), 36)}<div class="mb"><div class="mh"><b>${esc(M(x.from).nick)}</b> → ${x.to.map(i => M(i).emoji).join('')} · ${ago(x.at)}</div><div class="mt">${linkify(x.body)}</div></div></div>`).join('') : '<div class="empty">아직 메시지가 없어요</div>'}</div>`;
+  $$('#shTo [data-to]').forEach(b => b.onclick = () => { b.classList.toggle('on'); to = $$('#shTo [data-to].on').map(x => +x.dataset.to); });
+  const ins = v => { const ta = $('#shB'); ta.value = (ta.value ? ta.value + '\n\n' : '') + v; };
+  $('#shSum').onclick = () => ins(tripSummary(r, t, false));
+  $('#shPk').onclick = () => { const left = r.items.filter(i => i.kind === 'pack' && !i.done); ins(left.length ? '🧳 아직 못 챙긴 준비물\n' + left.map(p => '· ' + p.title + (p.assignee ? ` (${M(p.assignee).nick})` : '')).join('\n') : '🧳 준비물 모두 챙겼어요!'); };
+  $$('[data-q]', el).forEach(b => b.onclick = () => ins(b.dataset.q));
+  $('#shGo').onclick = async () => { try { const x = await rpc('fh_trip_share', { p_trip: t.id, p_to: to, p_body: $('#shB').value.trim() }); toast(`📣 ${x.sent}명에게 보냈어요`); reload(); } catch (e) { toast(e.message, 1); } };
+  $('#shExt').onclick = async () => { const text = $('#shB').value.trim() || tripSummary(r, t, true);
+    try { if (navigator.share) await navigator.share({ title: t.title, text }); else { await navigator.clipboard.writeText(text); toast('복사했어요 · 카톡에 붙여넣기 하세요'); } } catch (e) { if (e.name !== 'AbortError') { try { await navigator.clipboard.writeText(text); toast('복사했어요'); } catch (er) { toast('공유하지 못했어요', 1); } } } };
+}
+
+function tripInfo(el, r, t, reload, canDel) {
+  const q = encodeURIComponent(t.place || t.title);
+  el.innerHTML = `<div class="card"><h3>🏨 숙소</h3><div style="white-space:pre-wrap;line-height:1.6">${t.stay ? linkify(t.stay) : '<span class="muted">아직 안 적었어요</span>'}</div>${t.stay ? `<a class="btn sm" style="margin-top:8px" target="_blank" rel="noopener" href="${mapLink(t, t.stay.split('\n')[0])}">🗺 지도에서 보기</a>` : ''}</div>
+    <div class="card"><h3>🚨 비상 연락처</h3><div style="white-space:pre-wrap;line-height:1.6">${t.emergency ? linkify(t.emergency) : '<span class="muted">숙소·현지 비상번호·대사관·보험사 번호를 적어 두세요</span>'}</div>${isAbroad(t) ? '<p class="hint">해외에서 사건·사고가 나면 영사콜센터 +82-2-3210-0404 (24시간)</p>' : ''}</div>
+    ${t.memo ? `<div class="card"><h3>📝 메모</h3><div style="white-space:pre-wrap;line-height:1.6">${linkify(t.memo)}</div></div>` : ''}
+    <div class="card"><h3>🔗 바로가기</h3><div class="chips"><a class="chip" target="_blank" rel="noopener" href="https://www.google.com/search?q=${q}+날씨">🌤 ${esc(t.place || '')} 날씨</a>${t.currency && t.currency !== 'KRW' ? `<a class="chip" target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent(t.currency)}+KRW+환율">💱 ${esc(t.currency)} 환율</a>` : ''}<a class="chip" target="_blank" rel="noopener" href="${mapLink(t, t.place || t.title)}">🗺 지도</a>${isAbroad(t) ? '<a class="chip" target="_blank" rel="noopener" href="https://www.0404.go.kr">🌏 해외안전여행</a>' : ''}</div></div>
+    <button class="btn block" id="tiEdit" style="margin-bottom:10px">✏️ 여행 정보 수정</button>${canDel ? '<button class="btn r block" id="tiDel">🗑 여행 삭제</button>' : ''}`;
+  $('#tiEdit').onclick = () => tripForm(t);
+  if (canDel) $('#tiDel').onclick = async () => { if (!(await confirmBox('이 여행을 삭제할까요? 일정·준비물·서류·경비가 모두 지워져요', '삭제'))) return; await rpc('fh_trip_del', { p_id: t.id }); toast('삭제했어요'); go('#/trip'); };
+}
+
+function tripForm(t) {
+  const td = dayKey(), x = t || { title: '', place: '', country: '대한민국', start_on: addDays(td, 14), end_on: addDays(td, 16), emoji: '✈️', members: S.members.map(m => m.id), stay: '', emergency: '', memo: '', currency: 'KRW', rate: 1 };
+  sheet(`<h2>${t ? '✏️ 여행 수정' : '✈️ 새 가족 여행'}<button class="x" data-close>✕</button></h2>
+    <div class="stk" id="tfE">${TRIP_EMO.map(e => `<button data-e="${e}" class="${x.emoji === e ? 'on' : ''}" style="width:42px;height:42px;font-size:23px">${e}</button>`).join('')}</div>
+    <label class="lbl">여행 이름</label><input class="inp" id="tfT" maxlength="60" value="${esc(x.title)}" placeholder="예: 오사카 가족여행">
+    <div class="row"><div style="flex:1"><label class="lbl">장소</label><input class="inp" id="tfP" maxlength="80" value="${esc(x.place || '')}" placeholder="예: 오사카"></div><div style="flex:0 0 120px"><label class="lbl">나라</label><input class="inp" id="tfC" maxlength="40" value="${esc(x.country || '')}" list="tfCL"><datalist id="tfCL"><option>대한민국</option><option>일본</option><option>베트남</option><option>태국</option><option>미국</option><option>중국</option><option>대만</option><option>필리핀</option></datalist></div></div>
+    <div class="row"><div style="flex:1"><label class="lbl">출발</label><input class="inp" type="date" id="tfS" value="${x.start_on}"></div><div style="flex:1"><label class="lbl">도착</label><input class="inp" type="date" id="tfD" value="${x.end_on}"></div></div>
+    <label class="lbl">함께 가는 가족</label><div class="who-chips" id="tfM">${S.members.map(m => `<button data-m="${m.id}" class="${x.members.includes(m.id) ? 'on' : ''}">${av(m, 26)}${esc(m.nick)}</button>`).join('')}</div>
+    <label class="lbl">숙소 (이름·주소·예약번호)</label><textarea class="inp" id="tfSt" maxlength="500" style="min-height:60px">${esc(x.stay || '')}</textarea>
+    <label class="lbl">비상 연락처</label><textarea class="inp" id="tfEm" maxlength="500" style="min-height:60px" placeholder="숙소 전화, 현지 비상번호, 보험사 등">${esc(x.emergency || '')}</textarea>
+    <div class="row"><div style="flex:0 0 110px"><label class="lbl">현지 통화</label><input class="inp" id="tfCu" maxlength="5" value="${esc(x.currency || 'KRW')}" placeholder="JPY"></div><div style="flex:1"><label class="lbl">환율 (1단위 = 원)</label><input class="inp" id="tfR" type="number" step="0.0001" value="${x.rate}"></div></div>
+    <label class="lbl">메모</label><textarea class="inp" id="tfMe" maxlength="1000" style="min-height:60px">${esc(x.memo || '')}</textarea>
+    <div class="foot"><button class="btn" data-close>취소</button><button class="btn p" id="tfGo">${t ? '저장' : '만들기'}</button></div>`, (s, close) => {
+    let emo = x.emoji;
+    s.querySelectorAll('[data-e]').forEach(b => b.onclick = () => { emo = b.dataset.e; s.querySelectorAll('[data-e]').forEach(y => y.classList.toggle('on', y === b)); });
+    s.querySelectorAll('[data-m]').forEach(b => b.onclick = () => b.classList.toggle('on'));
+    const CUR = { '일본': ['JPY', 9.2], '베트남': ['VND', 0.055], '태국': ['THB', 40], '미국': ['USD', 1400], '중국': ['CNY', 195], '대만': ['TWD', 44], '필리핀': ['PHP', 24], '대한민국': ['KRW', 1] };
+    s.querySelector('#tfC').onchange = e => { const c = CUR[e.target.value.trim()]; if (c && !t) { s.querySelector('#tfCu').value = c[0]; s.querySelector('#tfR').value = c[1]; toast('환율은 대략값이에요. 출발 전에 고쳐 주세요'); } };
+    s.querySelector('#tfGo').onclick = async () => {
+      const mem = [...s.querySelectorAll('[data-m].on')].map(b => +b.dataset.m); if (!mem.length) return toast('함께 가는 가족을 골라 주세요', 1);
+      if (!mem.includes(S.me.id) && !t) { if (!(await confirmBox('나는 빼고 만들까요? (만든 사람은 계속 볼 수 있어요)', '네'))) return; }
+      try { const r = await rpc('fh_trip_save', { p_id: t ? t.id : null, p_title: s.querySelector('#tfT').value, p_place: s.querySelector('#tfP').value.trim(), p_country: s.querySelector('#tfC').value.trim(), p_start: s.querySelector('#tfS').value, p_end: s.querySelector('#tfD').value, p_emoji: emo, p_members: mem, p_stay: s.querySelector('#tfSt').value.trim(), p_emergency: s.querySelector('#tfEm').value.trim(), p_memo: s.querySelector('#tfMe').value.trim(), p_currency: s.querySelector('#tfCu').value.trim(), p_rate: parseFloat(s.querySelector('#tfR').value) || 1 });
+        close(); toast(t ? '저장했어요' : '여행을 만들었어요 ✈️ 함께 가는 가족에게 알림이 가요'); go('#/trip?id=' + r.id); render(); } catch (e) { toast(e.message, 1); }
+    };
+  });
+}
+
+/* =====================================================================
+   📦 Digital Hub (이 기기에만 저장 · 백업 파일로 옮기기)
+   ===================================================================== */
+const HUB = {
+  key() { return 'hub_' + S.me.id; },
+  load() { const d = store.get(this.key(), null) || { box: [] }; d.box = d.box || []; return d; },
+  save(d) { try { localStorage.setItem('fh_' + this.key(), JSON.stringify(d)); } catch (e) { toast('기기 저장 공간이 부족해요 — 백업 후 정리해 주세요', 1); } }
+};
+const HIMG = {
+  db: null, open() { return this.db || (this.db = new Promise((res, rej) => { const r = indexedDB.open('fh_hub_img', 1); r.onupgradeneeded = () => r.result.createObjectStore('img'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); })); },
+  async tx(mode, fn) { const db = await this.open(); return new Promise((res, rej) => { const t = db.transaction('img', mode), st = t.objectStore('img'), out = fn(st); t.oncomplete = () => res(out && out.result); t.onerror = () => rej(t.error); }); },
+  k(id) { return S.me.id + ':' + id; }, put(id, v) { return this.tx('readwrite', st => st.put(v, this.k(id))); }, get(id) { return this.tx('readonly', st => st.get(this.k(id))); }, del(id) { return this.tx('readwrite', st => st.delete(this.k(id))).catch(() => {}); },
+  async many(ids) { const o = {}; for (const id of ids || []) { try { o[id] = await this.get(id); } catch (e) {} } return o; }
+};
+const HSVG = {
+  yt: '<svg viewBox="0 0 24 24" width="100%" height="100%"><circle cx="12" cy="12" r="10" fill="#e53935"/><path d="M10 8.2v7.6l6-3.8z" fill="#fff"/></svg>',
+  ig: '<svg viewBox="0 0 24 24" width="100%" height="100%"><defs><linearGradient id="fhig" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#f58529"/><stop offset=".5" stop-color="#dd2a7b"/><stop offset="1" stop-color="#8134af"/></linearGradient></defs><rect x="2" y="2" width="20" height="20" rx="6" fill="url(#fhig)"/><path d="M8 9.2h1.6l1-1.6h2.8l1 1.6H16a1.4 1.4 0 0 1 1.4 1.4v4.6A1.4 1.4 0 0 1 16 16.6H8a1.4 1.4 0 0 1-1.4-1.4v-4.6A1.4 1.4 0 0 1 8 9.2Z" fill="none" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/><circle cx="12" cy="12.8" r="2.1" fill="none" stroke="#fff" stroke-width="1.5"/></svg>',
+  web: '<svg viewBox="0 0 24 24" width="100%" height="100%"><circle cx="12" cy="12" r="10" fill="#228be6"/><g fill="none" stroke="#fff" stroke-width="1.4"><circle cx="12" cy="12" r="6.2"/><path d="M5.8 12h12.4M12 5.8c-2.2 2.1-2.2 10.3 0 12.4M12 5.8c2.2 2.1 2.2 10.3 0 12.4"/></g></svg>',
+  memo: '<svg viewBox="0 0 24 24" width="100%" height="100%"><rect x="3" y="2" width="18" height="20" rx="4" fill="#f59f00"/><path d="M7.5 8h9M7.5 12h9M7.5 16h5.5" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/></svg>' };
+const HT = { yt: [HSVG.yt, '유튜브'], web: [HSVG.web, '웹페이지'], memo: [HSVG.memo, '메모'], ig: [HSVG.ig, '인스타'] };
+const hubGuess = u => /youtu\.?be/i.test(u) ? 'yt' : /instagram\.com|instagr\.am/i.test(u) ? 'ig' : 'web';
+const urlIn = t => { const m = String(t || '').match(/https?:\/\/[^\s<>"']+/i); return m ? m[0].replace(/[),.]+$/, '') : ''; };
+const HUBF = { q: '', t: '', open: null };
+route('/hub', '📦 Digital Hub', async el => {
+  const d = HUB.load(), last = store.get('hub_bak_' + S.me.id, null), days = last ? Math.floor((Date.now() - last) / 864e5) : null;
+  el.innerHTML = `<div class="card"><h3>📦 Digital Hub <small>${d.box.length}개 · 이 기기에만 저장</small></h3>
+      <div class="hub-tools"><input class="inp" id="hQ" placeholder="🔎 제목·키워드 검색" value="${esc(HUBF.q)}" autocomplete="off">
+      <div class="chips">${[['', '전체'], ...Object.entries(HT).map(([k, v]) => [k, `<i>${v[0]}</i>${v[1]}`])].map(([k, l]) => `<button class="chip ${HUBF.t === k ? 'on' : ''}" data-hf="${k}">${l}</button>`).join('')}</div></div>
+      <button class="btn p block" id="hNew">＋ 추가</button>
+      <ul class="hub-list" id="hList" style="margin-top:8px"></ul></div>
+    <div class="card"><h3>💾 백업·복원</h3><p class="hint" style="margin:0 0 10px">Digital Hub는 서버가 아닌 <b>이 휴대폰에만</b> 저장돼요. 폰을 바꾸거나 앱을 지우기 전에 <b>백업 파일</b>을 받아 두고, 새 폰에서 올리면 그대로 돌아와요.</p>
+      ${d.box.length && (days === null || days >= 30) ? `<div class="alert gold" style="margin-bottom:10px"><span class="ai">⚠️</span><span><b>${days === null ? '아직 백업한 적이 없어요' : `마지막 백업 ${days}일 전`}</b><small>백업 파일을 받아 두세요</small></span></div>` : ''}
+      <div class="row"><button class="btn p sm" id="hBak">⬇ 백업 파일 받기</button><button class="btn sm" id="hRes">⬆ 백업 파일 올리기</button></div><input type="file" id="hFile" accept=".json,application/json" hidden></div>`;
+  const list = () => {
+    const q = HUBF.q.trim().toLowerCase(), l = d.box.filter(x => (!HUBF.t || x.type === HUBF.t) && (!q || (x.title + ' ' + (x.text || '')).toLowerCase().includes(q))).sort((a, b) => b.at - a.at);
+    $('#hList').innerHTML = l.length ? l.map(x => `<li><button class="hm" data-ho="${x.id}"><span class="hi">${(HT[x.type] || HT.web)[0]}</span><span class="ht">${esc(x.title)}${(x.imgs || []).length ? ` 📷${x.imgs.length}` : ''}</span><span class="hd">${new Date(x.at).getMonth() + 1}/${new Date(x.at).getDate()}</span></button>${x.type === 'memo' && HUBF.open === x.id ? `<div class="hub-memo">${linkify(x.text || '')}<div data-himgs="${(x.imgs || []).join(',')}"></div><div style="margin-top:8px"><button class="btn sm" data-he="${x.id}">✏️ 고치기</button> <button class="btn sm" data-hd="${x.id}">🗑 지우기</button></div></div>` : ''}</li>`).join('')
+      : `<li class="empty">${d.box.length ? '찾는 항목이 없어요' : '유튜브·인스타·웹 주소나 메모를 저장해 보세요.<br><small>안드로이드: 다른 앱에서 <b>공유 → Family Hub</b>로 바로 저장돼요</small>'}</li>`;
+    $$('[data-himgs]').forEach(async w => { const ids = w.dataset.himgs.split(',').filter(Boolean), m = await HIMG.many(ids); w.innerHTML = ids.filter(i => m[i]).map(i => `<img src="${m[i]}" alt="">`).join(''); w.querySelectorAll('img').forEach(i => i.onclick = () => lightbox(i.src)); });
+    $$('[data-ho]').forEach(b => b.onclick = () => { const x = d.box.find(y => y.id === b.dataset.ho); if (x.type === 'memo') { HUBF.open = HUBF.open === x.id ? null : x.id; list(); } else hubItemSheet(x, d); });
+    $$('[data-he]').forEach(b => b.onclick = () => hubForm(d.box.find(y => y.id === b.dataset.he), null, d));
+    $$('[data-hd]').forEach(b => b.onclick = async () => { if (!(await confirmBox('이 메모를 지울까요?', '지우기'))) return; const x = d.box.find(y => y.id === b.dataset.hd); (x.imgs || []).forEach(i => HIMG.del(i)); d.box = d.box.filter(y => y !== x); HUB.save(d); render(); });
+  };
+  list();
+  $('#hQ').oninput = e => { HUBF.q = e.target.value; list(); };
+  $$('[data-hf]', el).forEach(b => b.onclick = () => { HUBF.t = b.dataset.hf; $$('[data-hf]', el).forEach(x => x.classList.toggle('on', x === b)); list(); });
+  $('#hNew').onclick = () => hubForm(null, null, d);
+  $('#hBak').onclick = async () => { const images = await HIMG.many(d.box.flatMap(x => x.imgs || []));
+    const blob = new Blob([JSON.stringify({ app: 'FamilyHub', kind: 'digital-hub', v: 1, member: S.me.nick, saved_at: new Date().toISOString(), data: d, images })], { type: 'application/json' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `FamilyHub_DigitalHub_${S.me.nick}_${dayKey().replace(/-/g, '')}.json`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    store.set('hub_bak_' + S.me.id, Date.now()); toast('백업 파일을 받았어요 (다운로드·파일 앱)'); setTimeout(render, 600); };
+  $('#hRes').onclick = () => $('#hFile').click();
+  $('#hFile').onchange = async e => { const f = e.target.files[0]; e.target.value = ''; if (!f) return; let j; try { j = JSON.parse(await f.text()); } catch (er) { return toast('백업 파일을 읽을 수 없어요', 1); }
+    const o = j && (j.app === 'FamilyHub' || j.app === 'VOY') && j.data; if (!o) return toast('Digital Hub 백업 파일이 아니에요', 1);
+    const ids = new Set(d.box.map(x => x.id)); let n = 0; (o.box || []).forEach(x => { if (!ids.has(x.id)) { d.box.push(x); n++; } });
+    for (const [id, src] of Object.entries(j.images || {})) { try { if (src && !(await HIMG.get(id))) await HIMG.put(id, src); } catch (er) {} }
+    HUB.save(d); toast(`복원했어요 — ${n}개 추가 (이미 있던 항목은 그대로)`); render(); };
+  const share = sessionStorage.getItem('fh_share'); if (share) { sessionStorage.removeItem('fh_share'); try { const p = JSON.parse(share), url = urlIn(p.url) || urlIn(p.text), rest = (p.text || '').replace(url, '').trim(); hubForm(null, url ? { url, title: (p.title || rest).slice(0, 60) } : { text: p.text || p.title, title: (p.title || '').slice(0, 60) }, d); } catch (er) {} }
+});
+function hubItemSheet(x, d) {
+  sheet(`<h2><span style="width:30px;height:30px;display:inline-block">${(HT[x.type] || HT.web)[0]}</span> ${esc(x.title)}<button class="x" data-close>✕</button></h2><p style="word-break:break-all;font-size:13.5px" class="muted">${esc(x.url)}</p>
+    <div class="foot"><a class="btn p" href="${esc(x.url)}" target="_blank" rel="noopener">열기 ↗</a><button class="btn" id="hcp">주소 복사</button></div><div class="foot"><button class="btn sm" id="hed">✏️ 고치기</button><button class="btn sm r" id="hdl">🗑 지우기</button></div>`, (s, close) => {
+    s.querySelector('#hcp').onclick = async () => { try { await navigator.clipboard.writeText(x.url); toast('복사했어요'); } catch (e) { toast('복사하지 못했어요', 1); } };
+    s.querySelector('#hed').onclick = () => { close(); hubForm(x, null, d); };
+    s.querySelector('#hdl').onclick = () => { d.box = d.box.filter(y => y !== x); HUB.save(d); close(); render(); };
+  });
+}
+function hubForm(item, pre, d) {
+  const x = item || { type: pre && pre.url ? hubGuess(pre.url) : pre ? 'memo' : 'yt', title: (pre && pre.title) || '', url: (pre && pre.url) || '', text: (pre && pre.text) || '', imgs: [] };
+  sheet(`<h2>${item ? 'Digital Hub 고치기' : pre ? '📥 공유받은 내용 저장' : '📦 Digital Hub에 추가'}<button class="x" data-close>✕</button></h2>
+    <div class="htypes">${Object.entries(HT).map(([k, v]) => `<button data-ty="${k}" class="${x.type === k ? 'on' : ''}"><i>${v[0]}</i>${v[1]}</button>`).join('')}</div>
+    <label class="lbl">제목·키워드 *</label><input class="inp" id="hT" maxlength="60" value="${esc(x.title)}" placeholder="검색할 때 쓸 제목">
+    <div id="hUW"><label class="lbl">주소</label><div class="row"><input class="inp" id="hU" inputmode="url" value="${esc(x.url)}" placeholder="https://"><button class="btn sm" id="hP">붙여넣기</button></div></div>
+    <div id="hXW"><label class="lbl">내용</label><textarea class="inp" id="hX" maxlength="3000" placeholder="메모 내용">${esc(x.text)}</textarea><label class="lbl">사진 (최대 6장 · 이 기기에만)</label><div class="upl" id="hUp"></div><input type="file" id="hFi" accept="image/*" multiple hidden></div>
+    <div class="foot"><button class="btn" data-close>취소</button><button class="btn p" id="hS">저장</button></div>`, (s, close) => {
+    let type = x.type; const sync = () => { s.querySelectorAll('[data-ty]').forEach(b => b.classList.toggle('on', b.dataset.ty === type)); s.querySelector('#hUW').hidden = type === 'memo'; s.querySelector('#hXW').hidden = type !== 'memo'; };
+    s.querySelectorAll('[data-ty]').forEach(b => b.onclick = () => { type = b.dataset.ty; sync(); }); sync();
+    const u = s.querySelector('#hU'); u.oninput = () => { if (u.value.trim() && type !== 'memo') { type = hubGuess(u.value); sync(); } };
+    s.querySelector('#hP').onclick = async () => { try { const t = await navigator.clipboard.readText(); u.value = urlIn(t) || t.trim(); u.oninput(); } catch (e) { toast('길게 눌러 직접 붙여넣어 주세요', 1); } };
+    const imgs = (x.imgs || []).map(id => ({ id })), up = s.querySelector('#hUp'), fi = s.querySelector('#hFi');
+    const paint = async () => { const have = await HIMG.many(imgs.filter(i => i.id && !i.src).map(i => i.id)); imgs.forEach(i => { if (!i.src && i.id) i.src = have[i.id]; });
+      up.innerHTML = imgs.map((i, k) => i.src ? `<div class="th" style="background-image:url(${i.src})"><button data-rm="${k}">✕</button></div>` : '').join('') + (imgs.length < 6 ? '<button class="add" id="hAdd">📷</button>' : '');
+      up.querySelectorAll('[data-rm]').forEach(b => b.onclick = () => { imgs.splice(+b.dataset.rm, 1); paint(); }); const a = up.querySelector('#hAdd'); if (a) a.onclick = () => fi.click(); };
+    fi.onchange = async () => { for (const f of [...fi.files].slice(0, 6 - imgs.length)) { try { imgs.push({ src: (await compressImage(f)).data, fresh: true }); } catch (e) { toast(e.message, 1); } } fi.value = ''; paint(); };
+    paint();
+    s.querySelector('#hS').onclick = async () => {
+      const title = s.querySelector('#hT').value.trim(), url = urlIn(u.value) || u.value.trim(), text = s.querySelector('#hX').value.trim();
+      if (!title) return toast('제목·키워드를 넣어 주세요', 1);
+      if (type !== 'memo' && !/^https?:\/\//i.test(url)) return toast('http로 시작하는 주소를 넣어 주세요', 1);
+      if (type === 'memo' && !text && !imgs.length) return toast('메모 내용이나 사진을 넣어 주세요', 1);
+      const ids = []; if (type === 'memo') for (const i of imgs) { if (i.fresh) { const id = uid(); try { await HIMG.put(id, i.src); ids.push(id); } catch (e) { toast('사진 저장 공간이 부족해요', 1); } } else if (i.id) ids.push(i.id); }
+      (x.imgs || []).filter(id => !ids.includes(id)).forEach(id => HIMG.del(id));
+      const o = { type, title, url: type === 'memo' ? '' : url, text: type === 'memo' ? text : '', imgs: ids };
+      if (item) Object.assign(d.box.find(y => y.id === item.id), o, { up: Date.now() }); else d.box.push({ id: uid(), at: Date.now(), ...o });
+      HUB.save(d); close(); toast(item ? '고쳤어요' : '📦 Digital Hub에 저장했어요'); render();
+    };
+  });
+}
+(function shareCatch() { try { const sp = new URLSearchParams(location.search); if (!sp.has('share')) return; sessionStorage.setItem('fh_share', JSON.stringify({ title: sp.get('title') || '', text: sp.get('text') || '', url: sp.get('url') || '' })); history.replaceState(null, '', location.pathname + '#/hub'); } catch (e) {} })();
+
+/* =====================================================================
+   ⚙️ 내 설정 · 알림
+   ===================================================================== */
+const COLORS = ['#339af0', '#f06595', '#fab005', '#51cf66', '#9775fa', '#ff922b', '#20c997', '#868e96'];
+const EMOJIS = ['🦁', '🐰', '🐱', '🐣', '🐶', '🐻', '🐼', '🦊', '🐯', '🐨', '🐸', '🐧', '🦄', '🐳', '👨', '👩', '👧', '👦', '👶', '🧒'];
+route('/me', '⚙️ 내 설정', async el => {
+  const ps = await pushState();
+  el.innerHTML = `<div class="card"><h3>${av(S.me, 36)} ${esc(S.me.nick)} <small>${S.me.role === 'admin' ? '👑 admin' : '가족'}</small></h3>
+      <label class="lbl">내 캐릭터</label><div class="stk" id="emo">${EMOJIS.map(e => `<button data-e="${e}" class="${S.me.emoji === e ? 'on' : ''}" style="width:44px;height:44px;font-size:24px">${e}</button>`).join('')}</div>
+      <label class="lbl">내 색깔</label><div class="row" style="flex-wrap:wrap">${COLORS.map(c => `<button data-c="${c}" style="width:36px;height:36px;border-radius:50%;background:${c};border:3px solid ${S.me.color === c ? 'var(--ink)' : '#fff'};box-shadow:0 0 0 1px #ddd"></button>`).join('')}</div></div>
+    <div class="card"><h3>🔔 알림</h3>
+      <div class="row"><span style="flex:1">휴대폰 알림 받기<small class="muted" style="display:block">${esc(ps.hint)}</small></span><label class="switch"><input type="checkbox" id="pushOn" ${ps.on ? 'checked' : ''} ${ps.can ? '' : 'disabled'}><span></span></label></div>
+      ${ps.on ? '<button class="btn sm" id="pushTest" style="margin-top:10px">🔔 테스트 알림 보내기</button>' : ''}
+      <p class="hint">새 비밀 메시지·게시판 글·댓글·칭찬 스티커·도착 알림·일정 D-day·생일·저녁 9시 하루 마무리 알림이 와요.<br>📱 <b>아이폰</b>은 Safari에서 <b>공유 → 홈 화면에 추가</b>로 설치한 뒤, 설치한 앱에서 켜야 알림이 와요.</p></div>
+    <div class="card"><h3>🔑 비밀번호 바꾸기</h3>${pinForm(false)}</div>
+    <div class="card"><h3>📲 앱으로 설치</h3><p class="hint" style="margin:0">· 안드로이드(크롬·삼성 인터넷): 메뉴 ⋮ → <b>홈 화면에 추가 / 앱 설치</b><br>· 아이폰(Safari): 아래 공유 버튼 → <b>홈 화면에 추가</b></p>${window.__bip ? '<button class="btn p sm" id="inst" style="margin-top:10px">📲 지금 설치하기</button>' : ''}</div>
+    ${S.me.role === 'admin' ? '<a class="btn block" href="admin/" style="margin-bottom:12px">🛠 admin 사이트 열기</a>' : ''}
+    <button class="btn block" id="logout">로그아웃</button>
+    <p class="hint" style="text-align:center">Family Hub ${APP_VER}</p>`;
+  bindPinForm(false);
+  $$('#emo [data-e]').forEach(b => b.onclick = async () => { const r = await rpc('fh_profile_save', { p_emoji: b.dataset.e, p_color: null }); S.me = { ...S.me, ...r }; S.members = S.members.map(m => m.id === r.id ? { ...m, ...r } : m); toast('바꿨어요 ' + r.emoji); render(); });
+  $$('[data-c]', el).forEach(b => b.onclick = async () => { const r = await rpc('fh_profile_save', { p_emoji: null, p_color: b.dataset.c }); S.me = { ...S.me, ...r }; S.members = S.members.map(m => m.id === r.id ? { ...m, ...r } : m); render(); });
+  $('#pushOn').onchange = async e => { e.target.disabled = true; try { if (e.target.checked) await pushEnable(); else await pushDisable(); } catch (er) { toast(er.message, 1); } render(); };
+  if ($('#pushTest')) $('#pushTest').onclick = async () => { const r = await rpc('fh_push_test'); toast(r.server ? `테스트 알림을 보냈어요 (구독 ${r.subs}개)` : '알림 서버가 아직 연결되지 않았어요 (설치 안내 5단계)', !r.server); };
+  if ($('#inst')) $('#inst').onclick = () => { window.__bip.prompt(); window.__bip = null; };
+  $('#logout').onclick = async () => { if (!(await confirmBox('로그아웃할까요?', '로그아웃'))) return; await rpc('fh_logout').catch(() => {}); logoutLocal(); location.hash = '#/'; render(); };
+});
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); window.__bip = e; });
+
+/* ---------------- 웹 푸시 ---------------- */
+const b64u = s => { const p = '='.repeat((4 - s.length % 4) % 4), b = atob((s + p).replace(/-/g, '+').replace(/_/g, '/')); return Uint8Array.from([...b].map(c => c.charCodeAt(0))); };
+let SWR = null;
+async function swReg() { if (!('serviceWorker' in navigator)) return null; if (SWR) return SWR; try { SWR = await navigator.serviceWorker.register('sw.js'); await navigator.serviceWorker.ready; } catch (e) { SWR = null; } return SWR; }
+async function pushState() {
+  const sup = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+  if (!sup) return { can: false, on: false, hint: /iPhone|iPad/.test(navigator.userAgent) ? '홈 화면에 추가한 앱에서 열어 주세요' : '이 브라우저는 알림을 지원하지 않아요' };
+  if (Notification.permission === 'denied') return { can: false, on: false, hint: '알림이 차단돼 있어요. 폰 설정 → 앱/사이트 알림에서 허용해 주세요' };
+  const reg = await swReg(), sub = reg && await reg.pushManager.getSubscription().catch(() => null);
+  return { can: true, on: !!sub && store.get('push_on', false), hint: sub ? '켜져 있어요' : '꺼져 있어요' };
+}
+async function pushEnable() {
+  const perm = await Notification.requestPermission(); if (perm !== 'granted') throw new Error('알림을 허용해야 켤 수 있어요');
+  const reg = await swReg(); if (!reg) throw new Error('앱 설치 기능을 쓸 수 없는 환경이에요');
+  let sub = await reg.pushManager.getSubscription(); if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64u(VAPID_PUBLIC_KEY) });
+  const j = sub.toJSON(); await rpc('fh_push_save', { p_endpoint: j.endpoint, p_p256dh: j.keys.p256dh, p_auth: j.keys.auth, p_ua: navigator.userAgent });
+  store.set('push_on', true); toast('🔔 알림을 켰어요');
+}
+async function pushDisable() { const reg = await swReg(), sub = reg && await reg.pushManager.getSubscription(); if (sub) { await rpc('fh_push_del', { p_endpoint: sub.endpoint }).catch(() => {}); await sub.unsubscribe().catch(() => {}); } store.set('push_on', false); toast('알림을 껐어요'); }
+async function pushSyncSilently() {   // 로그인한 사람이 바뀌어도 이 기기의 구독을 지금 사람에게 연결
+  try { if (!store.get('push_on', false) || Notification.permission !== 'granted') return; const reg = await swReg(), sub = reg && await reg.pushManager.getSubscription(); if (!sub) return; const j = sub.toJSON(); await rpc('fh_push_save', { p_endpoint: j.endpoint, p_p256dh: j.keys.p256dh, p_auth: j.keys.auth, p_ua: navigator.userAgent }); } catch (e) {}
+}
+/* 앱을 열었을 때 오늘의 알림을 폰 알림으로도 한 번씩 (하루 1회, 항목별) */
+async function notifyLocal(al) {
+  try { if (!('Notification' in window) || Notification.permission !== 'granted') return; const reg = await swReg(); if (!reg) return;
+    const k = 'shown_' + dayKey(), shown = store.get(k, []); const fresh = al.filter(a => /오늘|D-1|D-0|타임캡슐/.test(a.t) && !shown.includes(a.t));
+    if (!fresh.length || document.visibilityState === 'visible') { store.set(k, shown.concat(fresh.map(a => a.t))); return; }
+    for (const a of fresh) reg.showNotification(a.i + ' ' + a.t, { body: a.s, icon: 'icons/fh-192.png', badge: 'icons/badge.png', tag: a.t, data: { url: a.to } });
+    store.set(k, shown.concat(fresh.map(a => a.t)));
+  } catch (e) {}
+}
+if ('serviceWorker' in navigator) { swReg(); navigator.serviceWorker.addEventListener('message', e => { if (e.data && e.data.type === 'fh-push' && S.me) { toast((e.data.data && e.data.data.title) || '새 알림'); } }); }
+if (navigator.clearAppBadge) document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { navigator.clearAppBadge().catch(() => {}); SWR && SWR.active && SWR.active.postMessage({ type: 'clear-badge' }); } });
+
+/* ---------------- 시작 ---------------- */
+setInterval(() => { if (document.visibilityState === 'visible' && S.me && (location.hash === '' || location.hash === '#/')) rpc('fh_home').then(h => { const before = S.home && S.home.unread; S.home = h; S.members = h.members; if (h.unread !== before && $('header.top')) $('header.top').outerHTML = topBar('/', true); }).catch(() => {}); }, 60000);
+render();
+</script>
+</body>
+</html>
