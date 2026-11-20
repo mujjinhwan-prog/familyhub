@@ -1,6 +1,0 @@
-Family Hub 알림 서버 비밀값 — GitHub에 올리지 마세요!
-(Supabase → Edge Functions → Secrets 에 그대로 붙여넣기)
-
-VAPID_PUBLIC_KEY  = BORHql6j4hY0yWJlD1CXtbzeYXIF1dxkHLbD4SyYQqQn9riQjrM4j2w5gs2mhKcUHBvh_vkjFiVPOSnAA2W_IVw
-VAPID_PRIVATE_KEY = EKWqxpDXBUx-j2nijsuU4YOVzVXLTrJapI3JZ0PjKls
-PUSH_SECRET       = ITOr4zSFrs_6Zo6H39T2d2_QrXz7nvOE
