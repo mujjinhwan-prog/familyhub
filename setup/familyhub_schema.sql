@@ -21,8 +21,8 @@ create table if not exists public.members (
   nick text,
   birth date not null,
   role text not null default 'member' check (role in ('admin','member')),
-  emoji text not null default '🙂',
-  color text not null default '#4dabf7',
+  emoji text not null default '',
+  color text not null default '#1e3a5f',
   sort int not null default 0,
   pass_hash text not null,
   must_change boolean not null default true,
@@ -130,7 +130,7 @@ create table if not exists public.stickers (
 create table if not exists public.rewards (
   id bigserial primary key,
   title text not null,
-  emoji text not null default '🎁',
+  emoji text not null default '',
   cost int not null check (cost > 0),
   active boolean not null default true,
   sort int not null default 0
@@ -200,6 +200,27 @@ create table if not exists public.push_subs (
 create table if not exists public.app_secrets (key text primary key, value text);
 create table if not exists public.settings (key text primary key, value jsonb);
 
+alter table public.members add column if not exists photo text;
+alter table public.members add column if not exists photo_at timestamptz;
+-- 사진 인증 할 일 (아이들 Before·After → 부모가 점수)
+alter table public.members add column if not exists is_parent boolean not null default false;
+alter table public.todos add column if not exists proof boolean not null default false;
+alter table public.todos add column if not exists status text;            -- null / todo / review / approved / rejected
+alter table public.todos add column if not exists points int;              -- 부모가 준 점수
+alter table public.todos add column if not exists max_points int;
+alter table public.todos add column if not exists assigned_by int references public.members(id) on delete set null;
+alter table public.todos add column if not exists submitted_at timestamptz;
+alter table public.todos add column if not exists reviewed_by int references public.members(id) on delete set null;
+alter table public.todos add column if not exists reviewed_at timestamptz;
+alter table public.todos add column if not exists review_note text;
+create table if not exists public.todo_photos (
+  todo_id bigint not null references public.todos(id) on delete cascade,
+  kind text not null check (kind in ('before','after')),
+  data text not null,
+  created_at timestamptz not null default now(),
+  primary key (todo_id, kind)
+);
+
 insert into public.settings values
   ('points', '{"todo":10,"bonus":20,"bonus_min":3,"todo_cap":10,"sticker":5,"sticker_per_day":3}')
 on conflict (key) do nothing;
@@ -209,15 +230,15 @@ insert into public.members (name, nick, birth, role, emoji, color, sort, pass_ha
 select v.name, v.nick, v.birth::date, v.role, v.emoji, v.color, v.sort,
        extensions.crypt(to_char(v.birth::date, 'YYMMDD'), extensions.gen_salt('bf'))
 from (values
-  ('송진환','진환','1980-08-26','admin', '🦁','#339af0',1),
-  ('김근영','근영','1983-06-13','member','🐰','#f06595',2),
-  ('송민하','민하','2016-05-25','member','🐱','#fab005',3),
-  ('송효양','효양','2021-01-13','member','🐣','#51cf66',4)
+  ('송진환','songjinhwan','1980-08-26','admin', '','#1d1d1f',1),
+  ('김근영','kimkunyoung','1983-06-13','member','','#0071e3',2),
+  ('송민하','songminha','2016-05-25','member','','#86868b',3),
+  ('송효양','songhyoyang','2021-01-13','member','','#424245',4)
 ) as v(name, nick, birth, role, emoji, color, sort)
 where not exists (select 1 from public.members);
 
 insert into public.rewards (title, emoji, cost, sort)
-select * from (values ('주말 게임 30분','🎮',100,1), ('원하는 간식 하나','🍦',150,2), ('용돈 1,000원','💰',200,3), ('저녁 메뉴 고르기','🍕',250,4)) v
+select * from (values ('주말 게임 30분','',100,1), ('원하는 간식 하나','',150,2), ('용돈 1,000원','',200,3), ('저녁 메뉴 고르기','',250,4)) v
 where not exists (select 1 from public.rewards);
 
 -- 가족 여행
@@ -281,9 +302,16 @@ create table if not exists public.trip_msgs (
   created_at timestamptz not null default now()
 );
 
+do $$ begin
+  if not exists (select 1 from public.settings where key = 'parent_seeded') then
+    update public.members set is_parent = true where role = 'admin' or name in ('송진환', '김근영');
+    insert into public.settings values ('parent_seeded', 'true');
+  end if;
+end $$;
+
 -- RLS: 켜두고 정책은 만들지 않음 → 테이블 직접 접근 차단
 do $$ declare t text; begin
-  foreach t in array array['members','sessions','events','todos','day_logs','locations','checkins','messages','posts','post_photos','comments','likes','stickers','rewards','redemptions','point_adjust','growth','shopping','missions','mission_logs','push_subs','app_secrets','settings','trips','trip_items','trip_files','trip_expenses','trip_msgs'] loop
+  foreach t in array array['members','sessions','events','todos','day_logs','locations','checkins','messages','posts','post_photos','comments','likes','stickers','rewards','redemptions','point_adjust','growth','shopping','missions','mission_logs','push_subs','app_secrets','settings','trips','trip_items','trip_files','trip_expenses','trip_msgs','todo_photos'] loop
     execute format('alter table public.%I enable row level security', t);
     execute format('revoke all on public.%I from anon, authenticated', t);
   end loop;
@@ -315,7 +343,8 @@ end $$;
 
 create or replace function public.fh_mj(m public.members) returns jsonb language sql stable as $$
   select jsonb_build_object('id', m.id, 'name', m.name, 'nick', coalesce(m.nick, m.name), 'birth', m.birth,
-    'role', m.role, 'emoji', m.emoji, 'color', m.color, 'sort', m.sort, 'must_change', m.must_change)
+    'role', m.role, 'emoji', m.emoji, 'color', m.color, 'sort', m.sort, 'must_change', m.must_change, 'parent', m.is_parent or m.role = 'admin',
+    'photo_v', case when m.photo is not null then floor(extract(epoch from m.photo_at))::bigint end)
 $$;
 
 create or replace function public.fh_rules() returns jsonb language sql stable security definer set search_path = public as $$
@@ -328,13 +357,17 @@ create or replace function public.fh_points(p_member int, p_from date default nu
 returns jsonb language plpgsql stable security definer set search_path = public as $$
 declare r jsonb := public.fh_rules(); t int; b int; s int; mi int; a int; spent int;
 begin
-  select coalesce(sum(least(d, (r->>'todo_cap')::int) * (r->>'todo')::int
+  select coalesce(sum(least(dn, (r->>'todo_cap')::int) * (r->>'todo')::int
            + case when n >= (r->>'bonus_min')::int and d = n then (r->>'bonus')::int else 0 end), 0)
     into t
-    from (select day, count(*) n, count(*) filter (where done) d from public.todos
+    from (select day, count(*) n, count(*) filter (where done) d, count(*) filter (where done and not proof) dn from public.todos
            where member_id = p_member and day <= public.fh_today()
              and (p_from is null or day >= p_from) and (p_to is null or day <= p_to)
            group by day) x;
+  -- 사진 인증 할 일: 부모가 준 점수
+  select t + coalesce(sum(points), 0) into t from public.todos
+   where member_id = p_member and proof and status = 'approved'
+     and (p_from is null or day >= p_from) and (p_to is null or day <= p_to);
   select count(*) * (r->>'sticker')::int into s from public.stickers
    where to_id = p_member and (p_from is null or (created_at at time zone 'Asia/Seoul')::date >= p_from)
      and (p_to is null or (created_at at time zone 'Asia/Seoul')::date <= p_to);
@@ -459,7 +492,10 @@ begin
                  'pack_left', (select count(*) from public.trip_items i where i.trip_id = t.id and i.kind = 'pack' and not i.done)) order by t.start_on), '[]')
                from public.trips t where t.end_on >= td and t.start_on <= td + 60 and (m.id = any(t.members) or t.created_by = m.id)),
     'pending', case when m.role = 'admin' then (select count(*) from public.redemptions where status = 'pending') else 0 end,
-    'new_posts', (select count(*) from public.posts where created_at > now() - interval '1 day' and member_id <> m.id)
+    'new_posts', (select count(*) from public.posts where created_at > now() - interval '1 day' and member_id <> m.id),
+    'reviews', case when m.is_parent or m.role = 'admin' then (select count(*) from public.todos where status = 'review' and member_id <> m.id) else 0 end,
+    'my_proof', (select jsonb_build_object('todo', count(*) filter (where status in ('todo', 'rejected')), 'review', count(*) filter (where status = 'review'))
+                   from public.todos where member_id = m.id and proof and day >= td - 1)
   ) into o;
   return o;
 end $$;
@@ -470,7 +506,10 @@ language plpgsql security definer set search_path = public as $$
 declare m public.members := public.fh_auth(p_token); who int := coalesce(p_member, m.id);
 begin
   return jsonb_build_object(
-    'items', (select coalesce(jsonb_agg(jsonb_build_object('id', id, 'text', text, 'done', done) order by sort, id), '[]') from public.todos where member_id = who and day = p_day),
+    'items', (select coalesce(jsonb_agg(jsonb_build_object('id', t.id, 'text', t.text, 'done', t.done, 'proof', t.proof, 'status', t.status, 'points', t.points, 'max', t.max_points,
+               'by', t.assigned_by, 'note', t.review_note, 'rby', t.reviewed_by,
+               'before', exists (select 1 from public.todo_photos ph where ph.todo_id = t.id and ph.kind = 'before'),
+               'after', exists (select 1 from public.todo_photos ph where ph.todo_id = t.id and ph.kind = 'after')) order by t.sort, t.id), '[]') from public.todos t where t.member_id = who and t.day = p_day),
     'days', (select coalesce(jsonb_object_agg(day, jsonb_build_object('n', n, 'd', d)), '{}') from
               (select day, count(*) n, count(*) filter (where done) d from public.todos
                 where member_id = who and day between p_day - 14 and p_day + 7 group by day) x),
@@ -480,14 +519,16 @@ begin
     'points', public.fh_points(who));
 end $$;
 
-create or replace function public.fh_todo_add(p_token uuid, p_day date, p_text text) returns jsonb
+drop function if exists public.fh_todo_add(uuid, date, text);
+create or replace function public.fh_todo_add(p_token uuid, p_day date, p_text text, p_proof boolean default false) returns jsonb
 language plpgsql security definer set search_path = public as $$
 declare m public.members := public.fh_auth(p_token);
 begin
   if coalesce(trim(p_text), '') = '' then return '{"error":"EMPTY"}'; end if;
   if p_day < public.fh_today() then return '{"error":"PAST"}'; end if;
-  insert into public.todos(member_id, day, text, sort)
-  values (m.id, p_day, left(trim(p_text), 100), (select coalesce(max(sort), 0) + 1 from public.todos where member_id = m.id and day = p_day));
+  insert into public.todos(member_id, day, text, sort, proof, status, max_points)
+  values (m.id, p_day, left(trim(p_text), 100), (select coalesce(max(sort), 0) + 1 from public.todos where member_id = m.id and day = p_day),
+          coalesce(p_proof, false), case when p_proof then 'todo' end, case when p_proof then 20 end);
   return '{"ok":true}';
 end $$;
 
@@ -498,6 +539,7 @@ begin
   select * into t from public.todos where id = p_id and member_id = m.id;
   if not found then return '{"error":"NOTFOUND"}'; end if;
   if t.day < public.fh_today() - 1 then return '{"error":"PAST"}'; end if;   -- 어제 것까지만 체크 가능
+  if t.proof then return '{"error":"PROOF"}'; end if;                         -- 사진 인증 할 일은 부모 확인으로만 완료
   update public.todos set done = not done, done_at = case when not done then now() end where id = p_id;
   select count(*), count(*) filter (where done) into n, d from public.todos where member_id = m.id and day = t.day;
   return jsonb_build_object('ok', true, 'all', n > 0 and n = d, 'n', n, 'd', d);
@@ -507,7 +549,8 @@ create or replace function public.fh_todo_del(p_token uuid, p_id bigint) returns
 language plpgsql security definer set search_path = public as $$
 declare m public.members := public.fh_auth(p_token);
 begin
-  delete from public.todos where id = p_id and member_id = m.id and (not done or day >= public.fh_today());
+  delete from public.todos where id = p_id and coalesce(status, '') <> 'approved'
+     and (member_id = m.id and (not done or day >= public.fh_today()) or (assigned_by = m.id));
   return '{"ok":true}';
 end $$;
 
@@ -515,10 +558,11 @@ create or replace function public.fh_todo_carry(p_token uuid, p_ids bigint[]) re
 language plpgsql security definer set search_path = public as $$
 declare m public.members := public.fh_auth(p_token); td date := public.fh_today();
 begin
-  insert into public.todos(member_id, day, text, sort)
-  select m.id, td, text, row_number() over (order by sort, id) + (select coalesce(max(sort), 0) from public.todos where member_id = m.id and day = td)
-    from public.todos where id = any(p_ids) and member_id = m.id and not done;
-  delete from public.todos where id = any(p_ids) and member_id = m.id and not done and day < td;
+  insert into public.todos(member_id, day, text, sort, proof, status, max_points, assigned_by)
+  select m.id, td, text, row_number() over (order by sort, id) + (select coalesce(max(sort), 0) from public.todos where member_id = m.id and day = td),
+         proof, case when proof then 'todo' end, max_points, assigned_by
+    from public.todos where id = any(p_ids) and member_id = m.id and not done and coalesce(status, '') <> 'review';
+  delete from public.todos where id = any(p_ids) and member_id = m.id and not done and coalesce(status, '') <> 'review' and day < td;
   return '{"ok":true}';
 end $$;
 
@@ -802,9 +846,9 @@ begin
   if not found then return '{"error":"NOTFOUND"}'; end if;
   bal := (public.fh_points(m.id)->>'balance')::int;
   if bal < r.cost then return jsonb_build_object('error', 'POINTS', 'balance', bal); end if;
-  insert into public.redemptions(member_id, reward_id, title, cost) values (m.id, r.id, r.emoji || ' ' || r.title, r.cost);
+  insert into public.redemptions(member_id, reward_id, title, cost) values (m.id, r.id, trim(r.emoji || ' ' || r.title), r.cost);
   perform public.fh_notify((select array_agg(id) from public.members where role = 'admin' and active and id <> m.id),
-     '🎁 ' || coalesce(m.nick, m.name) || '님의 보상 신청', r.emoji || ' ' || r.title || ' (' || r.cost || '점) · admin에서 승인해 주세요', './admin/');
+     coalesce(m.nick, m.name) || '님의 보상 신청', trim(r.emoji || ' ' || r.title) || ' (' || r.cost || '점) · admin에서 승인해 주세요', './admin/');
   return '{"ok":true}';
 end $$;
 
@@ -1116,7 +1160,7 @@ language plpgsql security definer set search_path = public as $$
 declare a public.members := public.fh_admin(p_token);
 begin
   if coalesce(trim(p_title), '') = '' or coalesce(p_cost, 0) <= 0 then return '{"error":"INPUT"}'; end if;
-  if p_id is null then insert into public.rewards(title, emoji, cost, active, sort) values (trim(p_title), coalesce(nullif(p_emoji, ''), '🎁'), p_cost, coalesce(p_active, true), coalesce(p_sort, 0));
+  if p_id is null then insert into public.rewards(title, emoji, cost, active, sort) values (trim(p_title), coalesce(p_emoji, ''), p_cost, coalesce(p_active, true), coalesce(p_sort, 0));
   else update public.rewards set title = trim(p_title), emoji = coalesce(nullif(p_emoji, ''), emoji), cost = p_cost, active = coalesce(p_active, active), sort = coalesce(p_sort, sort) where id = p_id; end if;
   return '{"ok":true}';
 end $$;
@@ -1369,12 +1413,135 @@ begin
   return jsonb_build_object('ok', true, 'sent', array_length(ids, 1));
 end $$;
 
+-- ---------------------------------------------------------------- 프로필 사진
+create or replace function public.fh_photo_me(p_token uuid, p_data text) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare m public.members := public.fh_auth(p_token);
+begin
+  if p_data is not null and (length(p_data) > 400000 or left(p_data, 11) <> 'data:image/') then return '{"error":"SIZE"}'; end if;
+  update public.members set photo = p_data, photo_at = case when p_data is null then null else now() end where id = m.id returning * into m;
+  return public.fh_mj(m);
+end $$;
+
+create or replace function public.fh_admin_member_photo(p_token uuid, p_id int, p_data text) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare a public.members := public.fh_admin(p_token);
+begin
+  if p_data is not null and (length(p_data) > 400000 or left(p_data, 11) <> 'data:image/') then return '{"error":"SIZE"}'; end if;
+  update public.members set photo = p_data, photo_at = case when p_data is null then null else now() end where id = p_id;
+  return '{"ok":true}';
+end $$;
+
+create or replace function public.fh_member_photos(p_token uuid, p_ids int[]) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare m public.members := public.fh_auth(p_token);
+begin
+  return (select coalesce(jsonb_object_agg(id, photo), '{}') from public.members where id = any(p_ids) and photo is not null);
+end $$;
+
+-- ---------------------------------------------------------------- 사진 인증 할 일
+create or replace function public.fh_parent(p_token uuid) returns public.members
+language plpgsql security definer set search_path = public as $$
+declare m public.members := public.fh_auth(p_token);
+begin
+  if not (m.is_parent or m.role = 'admin') then raise exception 'NOT_PARENT' using errcode = '42501'; end if;
+  return m;
+end $$;
+
+-- 부모가 아이에게 할 일 주기 (사진 인증 + 최대 점수)
+create or replace function public.fh_todo_assign(p_token uuid, p_member int, p_day date, p_text text, p_max int) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare m public.members := public.fh_parent(p_token);
+begin
+  if coalesce(trim(p_text), '') = '' then return '{"error":"EMPTY"}'; end if;
+  if p_day < public.fh_today() then return '{"error":"PAST"}'; end if;
+  insert into public.todos(member_id, day, text, sort, proof, status, max_points, assigned_by)
+  values (p_member, p_day, left(trim(p_text), 100), (select coalesce(max(sort), 0) + 1 from public.todos where member_id = p_member and day = p_day),
+          true, 'todo', greatest(1, least(coalesce(p_max, 20), 100)), m.id);
+  perform public.fh_notify(array[p_member], '📋 새 할 일이 생겼어요', coalesce(m.nick, m.name) || ': ' || left(trim(p_text), 60) || ' (최대 ' || coalesce(p_max, 20) || '점 · 사진 인증)', './#/todo');
+  return '{"ok":true}';
+end $$;
+
+-- 아이가 Before / After 사진 올리기
+create or replace function public.fh_todo_photo(p_token uuid, p_id bigint, p_kind text, p_data text) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare m public.members := public.fh_auth(p_token); t public.todos;
+begin
+  select * into t from public.todos where id = p_id and member_id = m.id and proof;
+  if not found then return '{"error":"NOTFOUND"}'; end if;
+  if t.status in ('review', 'approved') then return '{"error":"LOCKED_TODO"}'; end if;
+  if p_kind not in ('before', 'after') then return '{"error":"INPUT"}'; end if;
+  if p_data is null then delete from public.todo_photos where todo_id = p_id and kind = p_kind; return '{"ok":true}'; end if;
+  if length(p_data) > 1500000 or left(p_data, 11) <> 'data:image/' then return '{"error":"SIZE"}'; end if;
+  insert into public.todo_photos(todo_id, kind, data) values (p_id, p_kind, p_data)
+  on conflict (todo_id, kind) do update set data = excluded.data, created_at = now();
+  return '{"ok":true}';
+end $$;
+
+-- 확인 요청 보내기 (After 사진 필수)
+create or replace function public.fh_todo_submit(p_token uuid, p_id bigint) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare m public.members := public.fh_auth(p_token); t public.todos; ids int[];
+begin
+  select * into t from public.todos where id = p_id and member_id = m.id and proof;
+  if not found then return '{"error":"NOTFOUND"}'; end if;
+  if not exists (select 1 from public.todo_photos where todo_id = p_id and kind = 'after') then return '{"error":"NO_AFTER"}'; end if;
+  update public.todos set status = 'review', submitted_at = now(), review_note = null where id = p_id;
+  select array_agg(id) into ids from public.members where active and (is_parent or role = 'admin') and id <> m.id;
+  perform public.fh_notify(ids, '📸 ' || coalesce(m.nick, m.name) || '의 인증 사진', left(t.text, 60) || ' · Before/After를 확인하고 점수를 주세요', './#/review');
+  return '{"ok":true}';
+end $$;
+
+create or replace function public.fh_todo_photos(p_token uuid, p_id bigint) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare m public.members := public.fh_auth(p_token);
+begin
+  return (select coalesce(jsonb_object_agg(kind, data), '{}') from public.todo_photos where todo_id = p_id);
+end $$;
+
+-- 부모 확인 목록
+create or replace function public.fh_review_list(p_token uuid) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare m public.members := public.fh_parent(p_token);
+begin
+  return jsonb_build_object(
+    'pending', (select coalesce(jsonb_agg(jsonb_build_object('id', t.id, 'member', t.member_id, 'text', t.text, 'day', t.day, 'max', coalesce(t.max_points, 20), 'by', t.assigned_by, 'at', t.submitted_at,
+                  'before', exists (select 1 from public.todo_photos ph where ph.todo_id = t.id and ph.kind = 'before')) order by t.submitted_at), '[]')
+                from public.todos t where t.status = 'review' and t.member_id <> m.id),
+    'done', (select coalesce(jsonb_agg(jsonb_build_object('id', t.id, 'member', t.member_id, 'text', t.text, 'day', t.day, 'status', t.status, 'points', t.points, 'note', t.review_note, 'rby', t.reviewed_by, 'at', t.reviewed_at) order by t.reviewed_at desc), '[]')
+                from (select * from public.todos where proof and status in ('approved', 'rejected') and reviewed_at > now() - interval '14 days' order by reviewed_at desc limit 30) t));
+end $$;
+
+-- 부모가 점수 주기 / 다시 하기
+create or replace function public.fh_todo_review(p_token uuid, p_id bigint, p_ok boolean, p_points int, p_note text) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare m public.members := public.fh_parent(p_token); t public.todos; pts int;
+begin
+  select * into t from public.todos where id = p_id and status = 'review';
+  if not found then return '{"error":"NOTFOUND"}'; end if;
+  if t.member_id = m.id then return '{"error":"SELF_REVIEW"}'; end if;
+  if p_ok then
+    pts := greatest(0, least(coalesce(p_points, t.max_points, 20), 100));
+    update public.todos set status = 'approved', done = true, done_at = now(), points = pts, reviewed_by = m.id, reviewed_at = now(), review_note = nullif(left(trim(coalesce(p_note, '')), 200), '') where id = p_id;
+    perform public.fh_notify(array[t.member_id], '✅ 인증 완료! +' || pts || '점', left(t.text, 50) || coalesce(' · ' || nullif(trim(coalesce(p_note, '')), ''), ' · 정말 잘했어요!'), './#/todo');
+  else
+    update public.todos set status = 'rejected', reviewed_by = m.id, reviewed_at = now(), review_note = nullif(left(trim(coalesce(p_note, '')), 200), '') where id = p_id;
+    perform public.fh_notify(array[t.member_id], '🔁 한 번 더 해 볼까요?', left(t.text, 50) || coalesce(' · ' || nullif(trim(coalesce(p_note, '')), ''), ''), './#/todo');
+  end if;
+  return jsonb_build_object('ok', true, 'points', pts);
+end $$;
+
+create or replace function public.fh_admin_member_parent(p_token uuid, p_id int, p_on boolean) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare a public.members := public.fh_admin(p_token);
+begin update public.members set is_parent = coalesce(p_on, false) where id = p_id; return '{"ok":true}'; end $$;
+
 -- ---------------------------------------------------------------- 실행 권한 정리
 do $$ declare f record; begin
   for f in select p.oid::regprocedure sig, p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace
             where n.nspname = 'public' and p.proname like 'fh\_%' loop
     execute format('revoke all on function %s from public, anon, authenticated', f.sig);
-    if f.proname not in ('fh_auth','fh_admin','fh_mj','fh_rules','fh_points','fh_notify','fh_others','fh_nick','fh_daily_push','fh_next','fh_trip_get') then
+    if f.proname not in ('fh_auth','fh_admin','fh_mj','fh_rules','fh_points','fh_notify','fh_others','fh_nick','fh_daily_push','fh_next','fh_trip_get','fh_parent') then
       execute format('grant execute on function %s to anon, authenticated', f.sig);
     end if;
   end loop;
