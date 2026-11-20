@@ -472,6 +472,15 @@ li.pf.done .pf-ck{background:var(--blue);border-color:var(--blue);color:#fff!imp
 .menu-float .chapter{max-width:none;padding:12px 0 10px}
 .home-todo .ht-list li{padding:9px 2px}
 .chapter a span{text-align:center;line-height:1.25}
+.shop .got{flex:0 0 auto;display:inline-flex;align-items:center;gap:4px;border:0;border-radius:980px;background:#e8f2fd;color:var(--blue);font:600 12.5px/1 inherit;padding:8px 12px;cursor:pointer}
+.shop .got:active{background:var(--blue);color:#fff}
+.shop .undo{flex:0 0 auto;border:0;background:none;color:var(--gray);font-size:12px;text-decoration:underline;padding:6px 2px;cursor:pointer}
+.shop li.done .tt{text-decoration:none;color:var(--gray)}
+.shop li.done .tt .nm{text-decoration:line-through;color:var(--gray-2)}
+.shop li.done .tt small b{color:var(--ink);font-weight:600}
+.need-got{margin-top:12px;padding-top:10px;border-top:1px solid var(--line-2)}
+.need-got .ng-h{font-size:12px;color:var(--gray);margin-bottom:2px}
+.need-got .shop li{padding:8px 2px}
 .setup-warn{background:#fff;border-radius:18px;padding:22px;margin:24px;line-height:1.6}
 .loader{display:grid;place-items:center;min-height:50vh}
 .spin{width:26px;height:26px;border-radius:50%;border:2.5px solid var(--line);border-top-color:var(--ink);animation:sp .8s linear infinite}
@@ -628,7 +637,7 @@ li.pf.done .pf-ck{background:var(--blue);border-color:var(--blue);color:#fff!imp
 const SB_URL = 'https://kcpymvsvczjjqptvtvxf.supabase.co';          // Project Settings → API → Project URL
 const SB_KEY = 'sb_publishable_I70vgd6mSVcflUH_NkzGAw_z0z2dWt7';                         // Project Settings → API Keys → anon(public) 또는 Publishable key
 const VAPID_PUBLIC_KEY = 'BORHql6j4hY0yWJlD1CXtbzeYXIF1dxkHLbD4SyYQqQn9riQjrM4j2w5gs2mhKcUHBvh_vkjFiVPOSnAA2W_IVw';
-const APP_VER = 'v2.8 · 2026.11';
+const APP_VER = 'v2.11 · 2026.11';
 
 /* ---------------- 기본 도구 ---------------- */
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -733,14 +742,14 @@ function menuData() {
     { id: 'board', t: '게시판', to: '#/board', paths: ['/board', '/album', '/capsule'], big: [['가족 게시판', '#/board'], ['가족 앨범', '#/album'], ['타임캡슐', '#/capsule']], cols: [['바로가기', [['새 글 쓰기', '#/board'], ['1년 전 오늘', '#/album']]]] },
     { id: 'trip', t: '여행', to: '#/trip', paths: ['/trip'], big: [['여행 모두 보기', '#/trip']].concat(trips.map(t => [t.title, '#/trip?id=' + t.id])), cols: [['여행 준비하기', [['새 여행 만들기', '#/trip?new=1'], ['준비물 체크', trips[0] ? `#/trip?id=${trips[0].id}&tab=pack` : '#/trip'], ['여권·서류', trips[0] ? `#/trip?id=${trips[0].id}&tab=doc` : '#/trip'], ['여행 경비', trips[0] ? `#/trip?id=${trips[0].id}&tab=money` : '#/trip']]], ['그 외 여행 관련 항목', [['일정 공유하기', trips[0] ? `#/trip?id=${trips[0].id}&tab=share` : '#/trip'], ['가족 캘린더', '#/cal']]]] },
     { id: 'cal', t: '캘린더', to: '#/cal', paths: ['/cal', '/report'], big: [['가족 캘린더', '#/cal'], ['주간 리포트', '#/report']], cols: [['바로가기', [['일정 추가하기', '#/cal'], ['생일·기념일', '#/cal']]]] },
-    { id: 'life', t: '생활', to: '#/shop', paths: ['/shop', '/hub', '/more'], big: [['난…이것이 필요해', '#/shop'], ['Digital Hub', '#/hub'], ['가족 게임', 'games/']], cols: [['바로가기', [['필요한 것 적기', '#/shop'], ['Digital Hub 백업', '#/hub']]], ['가족 게임', [['룰렛 다트', 'games/'], ['사다리타기', 'games/'], ['패밀리 6/45', 'games/'], ['랜덤 뽑기', 'games/']]]] },
+    { id: 'life', t: '생활', to: '#/shop', paths: ['/shop', '/hub', '/more'], big: [['우리집에…필요해', '#/shop'], ['Digital Hub', '#/hub'], ['가족 게임', 'games/']], cols: [['바로가기', [['필요한 것 적기', '#/shop'], ['Digital Hub 백업', '#/hub']]], ['가족 게임', [['룰렛 다트', 'games/'], ['사다리타기', 'games/'], ['패밀리 6/45', 'games/'], ['랜덤 뽑기', 'games/']]]] },
     { id: 'me', t: '설정', to: '#/me', paths: ['/me'], big: [['내 설정', '#/me']].concat(admin ? [['admin', 'admin/']] : []), cols: [['계정', [['프로필 사진', '#/me'], ['비밀번호 바꾸기', '#/me'], ['알림 켜기', '#/me']]].concat(admin ? [['관리', [['가족 구성원 관리', 'admin/'], ['보상 승인', 'admin/'], ['포인트 규칙', 'admin/']]]] : [])] }
   ];
 }
 const PAGE = {
   '/todo': ['To do list', '오늘 할 일을 하나씩, 완료하면 포인트.'], '/review': ['사진 인증 확인', 'Before·After를 보고 점수를 주세요.'], '/family': ['가족 위치', '지금 우리 가족은 어디에.'], '/board': ['가족 게시판', '우리 가족의 이야기.'],
   '/more': ['전체 메뉴', 'Family Hub의 모든 것.'], '/msg': ['비밀 메시지', '둘만 볼 수 있는 편지.'], '/capsule': ['타임캡슐', '정한 날에 열리는 편지.'], '/album': ['가족 앨범', '게시판에 올린 사진이 모이는 곳.'],
-  '/cal': ['가족 캘린더', '일정·생일·기념일·여행을 한눈에.'], '/shop': ['난…이것이 필요해', '필요한 걸 적어 두면 가족 누구든 챙겨줘요.'], '/mission': ['가족 미션', '함께 정하고 함께 이루는 목표.'],
+  '/cal': ['가족 캘린더', '일정·생일·기념일·여행을 한눈에.'], '/shop': ['우리집에…필요해', '필요한 걸 적어 두면, 구한 사람이 지우고 이름이 남아요.'], '/mission': ['가족 미션', '함께 정하고 함께 이루는 목표.'],
   '/growth': ['성장 기록', '키·몸무게, 그리고 그날의 추억.'], '/points': ['포인트', '칭찬은 스티커로, 노력은 포인트로.'], '/report': ['주간 리포트', '이번 주 우리 가족.'],
   '/hub': ['Digital Hub', '내 폰에만 보관하는 링크와 메모.'], '/me': ['내 설정', '프로필 사진, 비밀번호, 알림.'], '/trip': ['가족 여행', '일정·준비물·서류·경비를 한곳에서.']
 };
@@ -956,6 +965,7 @@ route('/', '홈', async (el, alive) => {
       </button>`; }).join('')}</div>
 
     <div class="card home-todo" id="homeTodo"><h3>오늘 나의 To do <small><a href="#/todo">전체 보기</a></small></h3><div class="loader" style="min-height:60px"><div class="spin"></div></div></div>
+    <div class="card home-need" id="homeNeed"><h3>우리집에…필요해 <small><a href="#/shop">전체 보기</a></small></h3><div class="loader" style="min-height:60px"><div class="spin"></div></div></div>
     <div class="menu-float">${chapterNav('/')}</div>
     ${al.length ? `<div class="alerts">${al.slice(0, 6).map(a => `<a class="alert ${a.cls || ''}" href="${a.to}" style="text-decoration:none;color:inherit"><span class="ai">${icon(a.ic || 'bell', 17)}</span><span><b>${esc(a.t)}</b><small>${esc(a.s)}</small></span></a>`).join('')}</div>` : ''}
 
@@ -967,11 +977,27 @@ route('/', '홈', async (el, alive) => {
     ${h.onthisday.length ? `<div class="card"><h3>○년 전 오늘</h3><div class="otd">${h.onthisday.map(p => `<div class="ph" data-photo="${p.photo}"><span>${D(td).getFullYear() - p.year}년 전</span></div>`).join('')}</div></div>` : ''}
 
     `;
-  homeTodo($('#homeTodo'));
+  homeTodo($('#homeTodo')); homeNeed($('#homeNeed'));
   $$('[data-mem]', el).forEach(b => b.onclick = () => memberSheet(M(+b.dataset.mem)));
   $$('[data-photo]', el).forEach(async d => { const src = await photoSrc(+d.dataset.photo); if (src) { d.style.backgroundImage = `url(${src})`; d.onclick = () => lightbox(src); } });
 });
 
+async function homeNeed(box) {
+  if (!box) return; let l;
+  try { l = await rpc('fh_shop_list'); } catch (e) { const ld = box.querySelector('.loader'); if (ld) ld.outerHTML = `<div class="empty">${esc(e.message)}</div>`; return; }
+  const left = l.filter(x => !x.done), got = l.filter(x => x.done && x.done_at && Date.now() - Date.parse(x.done_at) < 864e5);
+  box.innerHTML = `<h3>우리집에…필요해 <small>${left.length ? `${left.length}개 · ` : ''}<a href="#/shop">전체 보기</a></small></h3>
+    <ul class="shop need-list">${left.slice(0, 6).map(x => `<li><span class="tt">${esc(x.text)}${x.qty ? ` <span class="tag">${esc(x.qty)}</span>` : ''}<small>${esc(M(x.by).nick)} 님이 적음 · ${ago(x.at)}</small></span><button class="got" data-nst="${x.id}">${icon('check', 14, 2.4)} 구했어요</button></li>`).join('')
+      || '<li class="empty" style="display:block;border:none;padding:14px 0">필요한 게 생기면 적어 두세요. 구한 사람이 지워요</li>'}
+      ${left.length > 6 ? `<li style="display:block;border:none;padding:8px 0 0"><a href="#/shop">+ ${left.length - 6}개 더 보기</a></li>` : ''}</ul>
+    <div class="row" style="margin-top:8px"><input class="inp" id="hnIn" maxlength="60" placeholder="필요한 것 (예: 우유)" enterkeyhint="done" autocomplete="off"><button class="btn p" id="hnAdd">추가</button></div>
+    ${got.length ? `<div class="need-got"><div class="ng-h">오늘 지운 것</div><ul class="shop">${got.slice(0, 5).map(x => `<li class="done"><span class="tt"><span class="nm">${esc(x.text)}</span><small><b>${esc(M(x.done_by).nick)}</b> 님이 구해서 지웠어요 · ${ago(x.done_at)}</small></span><button class="undo" data-nst="${x.id}" data-undo="1">되돌리기</button></li>`).join('')}</ul></div>` : ''}`;
+  const again = () => homeNeed(box);
+  const add = async () => { const i = box.querySelector('#hnIn'), v = i.value.trim(); if (!v) return i.focus(); try { await rpc('fh_shop_add', { p_text: v, p_qty: null }); await again(); setTimeout(() => box.querySelector('#hnIn') && box.querySelector('#hnIn').focus(), 50); } catch (e) { toast(e.message, 1); } };
+  box.querySelector('#hnAdd').onclick = add;
+  box.querySelector('#hnIn').onkeydown = e => { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); add(); } };
+  box.querySelectorAll('[data-nst]').forEach(b => b.onclick = async () => { try { await rpc('fh_shop_toggle', { p_id: +b.dataset.nst }); toast(b.dataset.undo ? '다시 필요해 목록으로 옮겼어요' : '구해서 지웠어요'); await again(); } catch (e) { toast(e.message, 1); } });
+}
 const progHTML = p => p && p.n ? `<div class="bar"><i style="width:${p.d / p.n * 100}%"></i></div><div class="meta">할 일 ${p.d}/${p.n}${p.d === p.n ? ' · 완료' : ''}</div>` : `<div class="meta">할 일 아직 없음</div>`;
 async function homeTodo(box) {
   if (!box) return; const td = dayKey(); let r;
@@ -1337,7 +1363,7 @@ route('/album', '가족 앨범', async (el, alive) => {
 route('/more', '더보기', async el => {
   const h = S.home || {};
   const T = [['#/cal', 'cal', '가족 캘린더', '일정·기념일'], ['#/points', 'star', '포인트', '칭찬·상점'],
-    ['#/mission', 'flag', '가족 미션', '함께 도전'], ['#/shop', 'cart', '난…이것이 필요해', `${h.shopping || 0}개 남음`], ['#/album', 'image', '가족 앨범', '1년 전 오늘'],
+    ['#/mission', 'flag', '가족 미션', '함께 도전'], ['#/shop', 'cart', '우리집에…필요해', `${h.shopping || 0}개 남음`], ['#/album', 'image', '가족 앨범', '1년 전 오늘'],
     ['#/trip', 'plane', '가족 여행', (h.trips || []).length ? tripDD(h.trips[0]).txt : '일정·준비물·서류', 1],
     ['#/capsule', 'hourglass', '타임캡슐', '미래에 열리는 편지'], ['#/growth', 'trend', '성장 기록', '키·몸무게·추억'], ['#/report', 'chart', '주간 리포트', '이번 주 우리 가족'],
     ['#/msg', 'mail', '비밀 메시지', '둘만 보는 편지'], ['games/', 'game', '가족 게임', '룰렛·사다리 외'], ['#/hub', 'box', 'Digital Hub', '내 폰에 보관'], ['#/me', 'gear', '내 설정', '사진·비번·알림']];
@@ -1394,23 +1420,25 @@ function eventForm(e, day) {
 }
 
 /* =====================================================================
-   🛒 난…이것이 필요해
+   🛒 우리집에…필요해
    ===================================================================== */
-route('/shop', '난…이것이 필요해', async (el, alive) => {
+route('/shop', '우리집에…필요해', async (el, alive) => {
   const l = await rpc('fh_shop_list'); if (!alive()) return;
   const left = l.filter(x => !x.done), done = l.filter(x => x.done);
   el.innerHTML = `<div class="card"><div class="row"><input class="inp" id="sT" maxlength="60" placeholder="필요한 것 (예: 우유)" enterkeyhint="done"><input class="inp" id="sQ" maxlength="20" placeholder="수량" style="flex:0 0 72px"><button class="btn p" id="sAdd">추가</button></div>
       <div class="chips" style="margin-top:10px">${['우유', '계란', '두부', '휴지', '과일', '라면', '간식'].map(t => `<button class="chip" data-qt="${t}">＋${t}</button>`).join('')}</div></div>
-    <div class="card"><h3>필요해요 <small>${left.length}개</small></h3><ul class="shop">${left.map(x => shopLi(x)).join('') || `<li class="empty" style="display:block">${done.length ? '다 챙겼어요!' : '필요한 걸 적어 두면 가족 누구든 챙겨줘요'}</li>`}</ul></div>
-    ${done.length ? `<div class="card"><h3>챙겼어요 <small><button class="btn sm" id="sClr">비우기</button></small></h3><ul class="shop">${done.map(x => shopLi(x)).join('')}</ul></div>` : ''}`;
+    <div class="card"><h3>필요해요 <small>${left.length}개</small></h3><ul class="shop">${left.map(x => shopLi(x)).join('') || `<li class="empty" style="display:block">${done.length ? '필요한 걸 다 구했어요!' : '필요한 걸 적어 두면 구한 사람이 지워요'}</li>`}</ul></div>
+    ${done.length ? `<div class="card"><h3>구해서 지운 것 <small>최근 3일</small></h3><ul class="shop">${done.map(x => shopLi(x)).join('')}</ul></div>` : ''}`;
   const add = async t => { const v = (t || $('#sT').value).trim(); if (!v) return; try { await rpc('fh_shop_add', { p_text: v, p_qty: t ? null : $('#sQ').value }); render(); } catch (e) { toast(e.message, 1); } };
   $('#sAdd').onclick = () => add(); $('#sT').onkeydown = e => { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); add(); } };
   $$('[data-qt]', el).forEach(b => b.onclick = () => add(b.dataset.qt));
-  $$('[data-st]', el).forEach(b => b.onclick = async () => { await rpc('fh_shop_toggle', { p_id: +b.dataset.st }); render(); });
+  $$('[data-st]', el).forEach(b => b.onclick = async () => { try { await rpc('fh_shop_toggle', { p_id: +b.dataset.st }); toast(b.classList.contains('undo') ? '다시 필요해 목록으로 옮겼어요' : '구해서 지웠어요'); render(); } catch (e) { toast(e.message, 1); } });
   $$('[data-sd]', el).forEach(b => b.onclick = async () => { await rpc('fh_shop_del', { p_id: +b.dataset.sd }); render(); });
   if ($('#sClr')) $('#sClr').onclick = async () => { await rpc('fh_shop_del', { p_id: null }); render(); };
 });
-const shopLi = x => `<li class="${x.done ? 'done' : ''}"><button class="ck" data-st="${x.id}" style="${x.done ? 'background:var(--grn)' : ''}">${x.done ? '✓' : ''}</button><span class="tt" data-st="${x.id}">${esc(x.text)}${x.qty ? ` <span class="tag">${esc(x.qty)}</span>` : ''}<small>${x.done ? `${esc(M(x.done_by).nick)}가 챙겼어요 · ${ago(x.done_at)}` : `${esc(M(x.by).nick)} · ${ago(x.at)}`}</small></span><button class="del" style="color:#c9c2b8" data-sd="${x.id}">✕</button></li>`;
+const shopLi = x => x.done
+  ? `<li class="done"><span class="tt"><span class="nm">${esc(x.text)}</span>${x.qty ? ` <span class="tag">${esc(x.qty)}</span>` : ''}<small><b>${esc(M(x.done_by).nick)}</b> 님이 구해서 지웠어요 · ${ago(x.done_at)}</small></span><button class="undo" data-st="${x.id}">되돌리기</button></li>`
+  : `<li><span class="tt">${esc(x.text)}${x.qty ? ` <span class="tag">${esc(x.qty)}</span>` : ''}<small>${esc(M(x.by).nick)} 님이 적음 · ${ago(x.at)}</small></span><button class="got" data-st="${x.id}">${icon('check', 14, 2.4)} 구했어요</button>${x.by === S.me.id ? `<button class="del" data-sd="${x.id}" aria-label="잘못 적은 것 삭제">✕</button>` : ''}</li>`;
 
 /* =====================================================================
    🚩 가족 미션
