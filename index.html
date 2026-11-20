@@ -481,6 +481,7 @@ li.pf.done .pf-ck{background:var(--blue);border-color:var(--blue);color:#fff!imp
 .need-got{margin-top:12px;padding-top:10px;border-top:1px solid var(--line-2)}
 .need-got .ng-h{font-size:12px;color:var(--gray);margin-bottom:2px}
 .need-got .shop li{padding:8px 2px}
+.phead p{white-space:pre-line}
 .setup-warn{background:#fff;border-radius:18px;padding:22px;margin:24px;line-height:1.6}
 .loader{display:grid;place-items:center;min-height:50vh}
 .spin{width:26px;height:26px;border-radius:50%;border:2.5px solid var(--line);border-top-color:var(--ink);animation:sp .8s linear infinite}
@@ -637,7 +638,7 @@ li.pf.done .pf-ck{background:var(--blue);border-color:var(--blue);color:#fff!imp
 const SB_URL = 'https://kcpymvsvczjjqptvtvxf.supabase.co';          // Project Settings → API → Project URL
 const SB_KEY = 'sb_publishable_I70vgd6mSVcflUH_NkzGAw_z0z2dWt7';                         // Project Settings → API Keys → anon(public) 또는 Publishable key
 const VAPID_PUBLIC_KEY = 'BORHql6j4hY0yWJlD1CXtbzeYXIF1dxkHLbD4SyYQqQn9riQjrM4j2w5gs2mhKcUHBvh_vkjFiVPOSnAA2W_IVw';
-const APP_VER = 'v2.11 · 2026.11';
+const APP_VER = 'v2.12 · 2026.11';
 
 /* ---------------- 기본 도구 ---------------- */
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -749,7 +750,7 @@ function menuData() {
 const PAGE = {
   '/todo': ['To do list', '오늘 할 일을 하나씩, 완료하면 포인트.'], '/review': ['사진 인증 확인', 'Before·After를 보고 점수를 주세요.'], '/family': ['가족 위치', '지금 우리 가족은 어디에.'], '/board': ['가족 게시판', '우리 가족의 이야기.'],
   '/more': ['전체 메뉴', 'Family Hub의 모든 것.'], '/msg': ['비밀 메시지', '둘만 볼 수 있는 편지.'], '/capsule': ['타임캡슐', '정한 날에 열리는 편지.'], '/album': ['가족 앨범', '게시판에 올린 사진이 모이는 곳.'],
-  '/cal': ['가족 캘린더', '일정·생일·기념일·여행을 한눈에.'], '/shop': ['우리집에…필요해', '필요한 걸 적어 두면, 구한 사람이 지우고 이름이 남아요.'], '/mission': ['가족 미션', '함께 정하고 함께 이루는 목표.'],
+  '/cal': ['가족 캘린더', '일정·생일·기념일·여행을 한눈에.'], '/shop': ['우리집에…필요해', '필요한 것이 있으면 올려 주세요.\n구한 사람이 지워주세요.'], '/mission': ['가족 미션', '함께 정하고 함께 이루는 목표.'],
   '/growth': ['성장 기록', '키·몸무게, 그리고 그날의 추억.'], '/points': ['포인트', '칭찬은 스티커로, 노력은 포인트로.'], '/report': ['주간 리포트', '이번 주 우리 가족.'],
   '/hub': ['Digital Hub', '내 폰에만 보관하는 링크와 메모.'], '/me': ['내 설정', '프로필 사진, 비밀번호, 알림.'], '/trip': ['가족 여행', '일정·준비물·서류·경비를 한곳에서.']
 };
@@ -988,7 +989,7 @@ async function homeNeed(box) {
   const left = l.filter(x => !x.done), got = l.filter(x => x.done && x.done_at && Date.now() - Date.parse(x.done_at) < 864e5);
   box.innerHTML = `<h3>우리집에…필요해 <small>${left.length ? `${left.length}개 · ` : ''}<a href="#/shop">전체 보기</a></small></h3>
     <ul class="shop need-list">${left.slice(0, 6).map(x => `<li><span class="tt">${esc(x.text)}${x.qty ? ` <span class="tag">${esc(x.qty)}</span>` : ''}<small>${esc(M(x.by).nick)} 님이 적음 · ${ago(x.at)}</small></span><button class="got" data-nst="${x.id}">${icon('check', 14, 2.4)} 구했어요</button></li>`).join('')
-      || '<li class="empty" style="display:block;border:none;padding:14px 0">필요한 게 생기면 적어 두세요. 구한 사람이 지워요</li>'}
+      || '<li class="empty" style="display:block;border:none;padding:14px 0">필요한 것이 있으면 올려 주세요.<br>구한 사람이 지워주세요.</li>'}
       ${left.length > 6 ? `<li style="display:block;border:none;padding:8px 0 0"><a href="#/shop">+ ${left.length - 6}개 더 보기</a></li>` : ''}</ul>
     <div class="row" style="margin-top:8px"><input class="inp" id="hnIn" maxlength="60" placeholder="필요한 것 (예: 우유)" enterkeyhint="done" autocomplete="off"><button class="btn p" id="hnAdd">추가</button></div>
     ${got.length ? `<div class="need-got"><div class="ng-h">오늘 지운 것</div><ul class="shop">${got.slice(0, 5).map(x => `<li class="done"><span class="tt"><span class="nm">${esc(x.text)}</span><small><b>${esc(M(x.done_by).nick)}</b> 님이 구해서 지웠어요 · ${ago(x.done_at)}</small></span><button class="undo" data-nst="${x.id}" data-undo="1">되돌리기</button></li>`).join('')}</ul></div>` : ''}`;
@@ -1427,7 +1428,7 @@ route('/shop', '우리집에…필요해', async (el, alive) => {
   const left = l.filter(x => !x.done), done = l.filter(x => x.done);
   el.innerHTML = `<div class="card"><div class="row"><input class="inp" id="sT" maxlength="60" placeholder="필요한 것 (예: 우유)" enterkeyhint="done"><input class="inp" id="sQ" maxlength="20" placeholder="수량" style="flex:0 0 72px"><button class="btn p" id="sAdd">추가</button></div>
       <div class="chips" style="margin-top:10px">${['우유', '계란', '두부', '휴지', '과일', '라면', '간식'].map(t => `<button class="chip" data-qt="${t}">＋${t}</button>`).join('')}</div></div>
-    <div class="card"><h3>필요해요 <small>${left.length}개</small></h3><ul class="shop">${left.map(x => shopLi(x)).join('') || `<li class="empty" style="display:block">${done.length ? '필요한 걸 다 구했어요!' : '필요한 걸 적어 두면 구한 사람이 지워요'}</li>`}</ul></div>
+    <div class="card"><h3>필요해요 <small>${left.length}개</small></h3><ul class="shop">${left.map(x => shopLi(x)).join('') || `<li class="empty" style="display:block">${done.length ? '필요한 걸 다 구했어요!' : '필요한 것이 있으면 올려 주세요.<br>구한 사람이 지워주세요.'}</li>`}</ul></div>
     ${done.length ? `<div class="card"><h3>구해서 지운 것 <small>최근 3일</small></h3><ul class="shop">${done.map(x => shopLi(x)).join('')}</ul></div>` : ''}`;
   const add = async t => { const v = (t || $('#sT').value).trim(); if (!v) return; try { await rpc('fh_shop_add', { p_text: v, p_qty: t ? null : $('#sQ').value }); render(); } catch (e) { toast(e.message, 1); } };
   $('#sAdd').onclick = () => add(); $('#sT').onkeydown = e => { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); add(); } };
